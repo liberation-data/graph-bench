@@ -25,3 +25,14 @@ replay_pid*
 
 # Kotlin Gradle plugin data, see https://kotlinlang.org/docs/whatsnew20.html#new-directory-for-kotlin-data-in-gradle-projects
 .kotlin/
+
+# Build output
+build/
+.gradle/
+
+# The Gradle wrapper is kept
+!gradle/wrapper/gradle-wrapper.jar
+
+# Results: the published run is kept, the rest are local
+results/*
+!results/*-sf1.0.json
