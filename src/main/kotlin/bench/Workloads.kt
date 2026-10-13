@@ -146,7 +146,45 @@ object Queries {
     )
 }
 
+/**
+ * A walk of [hops] FOLLOWS out from one person, counting the paths: the cost of going from a node
+ * to its neighbours and nothing else. Neo4j and FalkorDB keep a node's relationships with it. Oracle
+ * finds them in an index over the relationships' table, by the node they leave.
+ *
+ * The SQL finds the person's `nid` first and tests the first relationship's `src` against it, so it
+ * names no column of the node the pattern starts from. That keeps clear of the Oracle fault [Raw]
+ * turns join elimination off for, and leaves Oracle free to answer from the index alone.
+ */
+object Hops {
+    /** The nodes on the way are named: FalkorDB takes paths through a node with no name as one path, and counts fewer. */
+    fun cypher(hops: Int): String = "MATCH (p:Person {id: \$id})" + (1..hops).joinToString("") { "-[:FOLLOWS]->(n$it)" } + " RETURN count(*)"
+
+    fun sql(hops: Int): String {
+        val steps = (1..hops).joinToString(" ") { "-[e$it IS edge WHERE e$it.type = 'FOLLOWS']-> (n$it IS node)" }
+        return """
+            SELECT COUNT(*) FROM GRAPH_TABLE ($GRAPH MATCH (p IS node) $steps COLUMNS (e1.src AS src))
+            WHERE src = (SELECT nid FROM ${GRAPH}_node WHERE JSON_VALUE(props, '$.id') = ${'$'}id)
+        """.trimIndent()
+    }
+
+    /** For each of [people] and each number of hops up to [upTo]: the paths counted, and the quickest of three calls in milliseconds. */
+    fun measure(engine: Engine, people: List<String>, upTo: Int): List<List<Any>> = (1..upTo).flatMap { hops ->
+        val statement = if (engine.sql) sql(hops) else cypher(hops)
+        fun call(id: String): Pair<Long, Double> {
+            val before = System.nanoTime()
+            val paths = (engine.query(statement, mapOf("id" to id)).single() as Number).toLong()
+            return paths to (System.nanoTime() - before) / 1e6
+        }
+        people.take(20).forEach { call(it) }
+        people.map { id -> (1..3).map { call(id) }.let { calls -> listOf(hops, id, calls.first().first, calls.minOf { it.second }) } }
+    }
+}
+
 class Workloads(private val engine: Engine, private val scale: Scale) {
+
+    /** The people the hop-by-hop walks start from: the same on every engine. */
+    val walkers: List<String> = SplittableRandom(99).let { r -> List(150) { "p" + r.nextInt(scale.persons) } }
+
 
     private val gom = engine.gom
 

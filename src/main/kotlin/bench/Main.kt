@@ -145,6 +145,18 @@ private fun run(engineName: String, factor: Double, phases: Set<String>) {
         each("traverse", workloads.traversals, ::measure)
         each("concurrent", workloads.concurrent) { concurrently(it, 8, 15) }
         each("write", workloads.writes, ::measure)
+        if ("hops" in phases) {
+            println("$engineName: hops")
+            // Once over everything first: the server has then compiled what it runs and holds the graph in memory.
+            Hops.measure(engine, workloads.walkers, 4)
+            val rows = Hops.measure(engine, workloads.walkers, 4)
+            File("results/hops-$engineName-sf$factor.csv").writeText("hops,person,paths,ms\n" + rows.joinToString("\n") { it.joinToString(",") } + "\n")
+            for ((hops, of) in rows.groupBy { it[0] }) {
+                val paths = of.map { (it[2] as Long).toDouble() }.sorted()
+                val millis = of.map { it[3] as Double }.sorted()
+                println("  %d hops: median %,.0f paths, %.2f ms; largest %,.0f paths, %.2f ms".format(hops, percentile(paths, 0.5), percentile(millis, 0.5), paths.last(), millis.last()))
+            }
+        }
         file(engineName, factor).apply { parentFile.mkdirs() }.writeText(json.writeValueAsString(Results(engineName, factor, load, outcomes.values.toList())))
     }
 }

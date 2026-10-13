@@ -36,3 +36,4 @@ build/
 # Results: the published run is kept, the rest are local
 results/*
 !results/*-sf1.0.json
+!results/hops-*-sf1.0.csv
