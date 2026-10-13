@@ -1,14 +1,39 @@
-# Neo4j vs FalkorDB vs Oracle: one model, one workload, three engines
+# Graph Bench
+
+**Using Drivine to compare the performance of Neo4j, FalkorDB and Oracle.**
 
 *14 October 2026*
 
-[Drivine4j](https://github.com/liberation-data/drivine4j) maps one annotated model onto several graph
-stores. Neo4j and FalkorDB speak Cypher. Oracle does not: there Drivine reads the graph with SQL/PGQ
-(`GRAPH_TABLE`) and writes it as rows. That makes a question easy to ask that is usually hard to ask
-fairly: with the same model, the same application code and the same data, how do the three compare?
+[Drivine4j](https://github.com/liberation-data/drivine4j) is a graph mapping library for the JVM. You
+describe your domain as fragments (a node) and views (a node with what is related to it), and
+Drivine writes the statement that loads or saves one. Until now those statements were Cypher, for
+Neo4j, FalkorDB, Memgraph and Neptune.
 
-This repository is the harness that asks it, and this page is what it answered on a graph of 1.1
-million nodes and 4.5 million relationships.
+Drivine 0.1.0 adds Oracle. Oracle Database 23ai has a property graph, but it is not an openCypher
+database: a graph is read with SQL/PGQ (`GRAPH_TABLE`) and cannot be written through at all. Drivine
+keeps a graph there as two tables, reads it with SQL/PGQ and writes it as rows, behind the same
+model, the same query DSL and the same object manager as on the graph engines.
+
+That is what makes this comparison reasonable. Benchmarks across a graph database and a relational
+one usually compare two different applications, each written for its store. Here there is one. A
+`@GraphView` says what is wanted, a node and its neighbours, and not how to fetch it, so the same
+line of Kotlin runs on all three engines and each is asked the same question in its own language.
+The harness checks that they give the same answer.
+
+This repository is that harness, and this page is what it found on a graph of 1.1 million nodes and
+4.5 million relationships.
+
+### What Drivine costs
+
+Little. A load is one statement and one round trip, however many relationships the view has, and so
+is a save. In the results below, loading an issue with its repo, its author, its assignees, its
+topics and its comments takes 1.4 to 3.3 ms on every engine. That is about what a traversal of
+three hops written by hand takes on the same engine, and it comes back as a typed object. Saving an
+issue with ten new comments, eleven nodes and ten relationships, is a single statement of 1.2 to
+11.6 ms.
+
+Where Drivine did cost something, this page says so: two of the four slow results below are
+statements Drivine could write better, and both are being fixed.
 
 ## The short version
 
