@@ -376,6 +376,17 @@ statement then counts every FOLLOWS in the graph: on a small copy of this one, 1
 a parameter and not written into the statement, the same query ends the server process: `ORA-07445`
 in `kkocfbMarkBindFroCB`, and `ORA-03113` to the client.
 
+It is not the property graph's doing. The same happens in plain SQL, with two tables and a foreign
+key, whenever the filter is `JSON_VALUE` of a JSON column that has a function-based index over it:
+
+```sql
+SELECT COUNT(*) FROM je_edge e JOIN je_node n ON n.nid = e.src
+WHERE JSON_VALUE(n.props, '$.id') = 'p7'      -- 3 without the index, 3,000 with it
+```
+
+[`bugs/oracle-join-elimination.sql`](bugs/oracle-join-elimination.sql) is a script of thirty lines
+that shows it from an empty schema.
+
 The SQL written by hand here therefore carries a hint that turns join elimination off,
 `/*+ OPT_PARAM('_optimizer_join_elimination_enabled' 'false') */`. That costs Oracle a primary key
 probe for each node a pattern passes through, so its traversal numbers are a little worse than they
