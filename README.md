@@ -27,18 +27,13 @@ This repository is that harness, and this page is what it found on a graph of 1.
 
 Little. A load or a save is one statement and one round trip, however many relationships it has:
 an issue with its repo, author, assignees, topics and comments loads in 1.5 to 3.5 ms on every
-engine. The first run found four statements Drivine could write better. All four are
-[fixed](#what-changed-in-drivine) and measured here.
+engine.
 
 ## The short version
 
 - **No engine wins everywhere.** FalkorDB is fastest on most workloads, often by 3 to 4 times.
   Neo4j is never far off and has no bad result. Oracle keeps up on reads and sustains the most view
   loads a second under eight threads, but is 4 to 5 times slower than Neo4j on batch writes.
-- **The outliers were plans, not engines.** In the first run four results were off by one to three
-  orders of magnitude. Each had a specific cause in how a statement was planned. All four are gone:
-  a path view on Oracle went from 1,503 ms to 1.4 ms, and a filter on an indexed property from
-  68 ms to 0.4 ms, without the database changing.
 - **Oracle has no index-free adjacency, and it did not matter.** Walking relationships through an
   index cost Oracle less for each path than Neo4j, out to 275,000 paths. What costs Oracle is
   reading the nodes on the way. [The numbers are below.](#does-oracle-miss-index-free-adjacency)
@@ -46,7 +41,7 @@ engine. The first run found four statements Drivine could write better. All four
   three rough edges in it, all reported and all with a small workaround. Oracle Free 23.26 has a
   sharper one, where a graph query can return a wrong answer or end the server process.
 - **Every engine gave the same answers.** Each read workload's results are digested and compared
-  across the three. They agree on all of them, in every run.
+  across the three. They agree on all of them.
 
 ## What was run
 
@@ -74,10 +69,10 @@ Comment -[:ON]-> Issue              Comment -[:WRITTEN_BY]-> Person
 
 The data is generated from fixed seeds, so every engine holds exactly the same graph.
 
-**The engines.** Neo4j 2026.07.1 (Community), FalkorDB 6.0.0 and Oracle Database Free 23.26. Neo4j
-and FalkorDB ran through Drivine4j 0.1.6, which has the fixes for them. Oracle ran through Drivine's
-main branch at [977303f](https://github.com/liberation-data/drivine4j/commit/977303f), which is 0.1.6
-with the fix for #65 and not yet released. The first run used 0.1.5.
+**The engines.** Neo4j 2026.07.1 (Community), FalkorDB 6.0.0 and Oracle Database Free 23.26,
+through Drivine4j 0.1.6. Oracle ran on Drivine's main branch at
+[977303f](https://github.com/liberation-data/drivine4j/commit/977303f), which adds a change to how
+it indexes properties that is not released yet.
 
 **The limits.** Each engine ran alone, in a fresh container given 2 CPUs and 4 GB. Oracle Free
 allows itself 2 CPU threads and 2 GB whatever it is given, so the others were held to the same
@@ -216,8 +211,8 @@ paying off. One slow result is left: a view load under eight threads, 731 calls 
 2,850 and 3,531 for the others. That is the CPU limit: the load costs FalkorDB about 2.8 ms of CPU,
 and it has two CPUs. Calls through its client, with Drivine left out, top out at the same rate.
 
-**Neo4j** is rarely the fastest and never far off. It is the only engine that had no result needing
-an explanation in either run. Everything by id or by a short traversal lands between 1 and 2 ms.
+**Neo4j** is rarely the fastest and never far off. It is the only engine with no result needing an
+explanation. Everything by id or by a short traversal lands between 1 and 2 ms.
 
 **Oracle** is the surprise. Its graph is two tables, with labels and properties as JSON, read
 through a SQL property graph, and it still loads views faster than either graph engine (1.52 ms
@@ -225,50 +220,11 @@ for five relationships, 0.81 ms for a nested one), and sustains the most view lo
 eight threads. Traversals written by hand keep pace up to two hops and fall behind at three (3.2 ms
 against 2.1 and 0.6), though
 [that is not the price of the walk itself](#does-oracle-miss-index-free-adjacency). Writes are
-where the relational storage shows. Saving one thing is close to Neo4j now, but anything in bulk is
+where the relational storage shows. Saving one thing is close to Neo4j, but anything in bulk is
 4 to 5 times slower: `saveAll` of 1,000 fragments takes 215 ms.
 
 Scans of a whole label come out about the same on all three, between 25 and 67 ms for 250,000
 nodes. Grouping all 1.5 million FOLLOWS takes the graph engines about 0.75 seconds and Oracle 1.2.
-
-## Since the first run
-
-The first run used Drivine 0.1.5 and found four results that were slow because of the statement and
-not the engine. All four statements are changed in Drivine since, and the hand-written SQL/PGQ
-changed too. Everything else is the same: the graph, the engines' versions, the limits, the host.
-The first run's results are in [`results/drivine-0.1.5/`](results/drivine-0.1.5), and its write-up
-is this file [as it was](https://github.com/liberation-data/graph-bench/blob/f69352e/README.md).
-Oracle's run on 0.1.6, before the fix for #65, is in [`results/drivine-0.1.6/`](results/drivine-0.1.6).
-
-The rows that moved for a reason we know, median in milliseconds unless marked:
-
-| workload | engine | first run | now | why |
-|---|---|---:|---:|---|
-| load a `@GraphPath` view | Oracle | 1503.10 | 1.18 | the path is read from its root ([drivine4j#64](https://github.com/liberation-data/drivine4j/issues/64)) |
-| load a `@GraphPath` view | FalkorDB | 53.36 | 0.43 | the far label is tested after the match ([drivine4j#67](https://github.com/liberation-data/drivine4j/issues/67)) |
-| `loadAll` by an indexed property | FalkorDB | 23.81 | 0.34 | no parentheses the `WHERE` does not need ([drivine4j#66](https://github.com/liberation-data/drivine4j/issues/66)) |
-| `loadAll` by an indexed property | Oracle | 71.76 | 0.40 | an index over the label's nodes ([drivine4j#65](https://github.com/liberation-data/drivine4j/issues/65)) |
-| 1 hop, by hand | Oracle | 0.55 | 0.21 | SQL without the hint |
-| 3 hops, by hand | Oracle | 8.57 | 3.15 | SQL without the hint |
-| 1 to 4 hops, by hand | Oracle | 1.10 | 0.57 | SQL without the hint |
-| 2 hops, 8 threads (calls/s) | Oracle | 1,585 | 4,711 | SQL without the hint |
-| every FOLLOWS, grouped | Oracle | 835.50 | 1169.60 | SQL without the hint |
-
-**The hint.** In the first run every SQL statement written by hand turned Oracle's join elimination
-off, to keep clear of [a bug](#oracle-free-2326-a-graph-query-that-answers-for-the-wrong-nodes).
-They now avoid the bug by how they are written, and Oracle plans them as it likes. That helped
-every traversal from a node, and tripled what Oracle does with two hops under eight threads. It
-cost one statement: grouping every FOLLOWS has no node to start from, lost the hint with the rest,
-and Oracle's own plan for it is slower than the one the hint happened to give it. We have left it
-as Oracle chooses it.
-
-**What we cannot account for.** Oracle's single saves came out about twice as fast as in the first
-run (a new fragment in 1.94 ms against 3.68, a view with ten comments in 5.44 against 11.55), and
-Neo4j's save of a view with 100 comments halved. None of the fixes touches those statements. Other
-changes went into Drivine between the runs and the host was doing other work during them, and we
-have not separated the two. Oracle's runs on 0.1.6 and on main, a day apart, differ by up to 1.8
-times on statements the fix for #65 does not touch. Read that as the size of the noise on a single
-run.
 
 ## Does Oracle miss index-free adjacency?
 
@@ -311,13 +267,8 @@ so Oracle answers it without touching a node's row, and the last hop without tou
 relationship's row either. The moment a query wants something of the nodes it passes, each one is a
 primary key probe and a JSON document to open. That is the difference between two numbers on this
 page for three hops of FOLLOWS: 0.38 ms here, and 3.15 ms in the traversal table above, where the
-query counts the distinct people at the end and not the paths. In the first run that was 8.57 ms,
-because the [workaround for an Oracle bug](#oracle-free-2326-a-graph-query-that-answers-for-the-wrong-nodes)
-it then carried made Oracle visit every node on the way. It is also why Oracle's batch writes and
-its grouped traversals trail: they are about nodes, not about relationships.
-
-This measurement is from the first run and was not repeated. Its statements are written by hand,
-were already in the form the traversals now use, and nothing in Drivine comes into them.
+query counts the distinct people at the end and not the paths. It is also why Oracle's batch writes
+and its grouped traversals trail: they are about nodes, not about relationships.
 
 Three cautions. This is counting, the kindest case for an index. The graph fits in memory, and a
 B-tree over 4.5 million relationships is only a few levels deep; over billions, or colder, each
@@ -327,71 +278,6 @@ is Neo4j Community, which does not have the faster runtime of the Enterprise edi
 The nodes on the way are named in the Cypher, `(n1)`, `(n2)`. FalkorDB counts the paths through a
 node with no name as one path for each place they end, so `()-[:FOLLOWS]->()` would have had it
 count fewer, and do less.
-
-## The four outliers of the first run, and why
-
-All four are fixed in Drivine and gone from the tables above. They stay here because the
-causes are worth knowing if you write statements for these engines yourself.
-
-### Oracle: a path view, 1.5 seconds. Fixed: 1.4 ms
-
-A `@GraphPath` field maps the far end of a walk of several hops. On Oracle, Drivine 0.1.5 read it as
-
-```sql
-SELECT JSON_ARRAYAGG(orgs_.doc ...)
-FROM GRAPH_TABLE (bench MATCH (orgs_ IS node) COLUMNS (orgs_.nid, orgs_.doc)) orgs_
-WHERE orgs_.nid IN (
-    SELECT reached_.nid
-    FROM GRAPH_TABLE (bench MATCH (person_ IS node) -[...FOLLOWS]-> (m1 IS node ...) -[...MEMBER_OF]-> (reached_ IS node ...)
-                      COLUMNS (person_.nid AS src, reached_.nid)) reached_
-    WHERE reached_.src = person_.nid)
-```
-
-The outer query is over every node, and Oracle does not turn the `IN` around to start from the
-person. So it read all 1.1 million nodes for each load, and the time was linear in the size of the
-graph: 40 ms at 11,000 nodes, 72 ms at 56,000, 1,503 ms at 1.1 million.
-
-Drivine now reads the path's own rows, outward from the person, and groups them by the node they
-reach so that a node reached two ways is still there once
-([drivine4j#64](https://github.com/liberation-data/drivine4j/issues/64)). Same answer, 1.36 ms.
-
-### Oracle: `loadAll` by an indexed property, 72 ms. Fixed: 0.40 ms
-
-The statement tests the label with `JSON_EXISTS(labels, '$[*]?(@ == "Issue")')`, which the index
-over labels can answer, and the property with `JSON_VALUE(props, '$.repoKey') = $p`, which the index
-over `repoKey` can answer. Oracle estimates that the label index returns one row and picks it. It
-returns 250,000.
-
-The first thought was to test the label another way whenever a property with an index is in the
-filter, so that the optimizer is left with the property's index. That is right when the property is
-selective and badly wrong when it is not, and Drivine cannot know which from where it stands: on a
-skewed property it turned 10 ms into seconds. So it was taken back out.
-
-Drivine now gives the property a second index, over the nodes of its label only:
-`CASE WHEN JSON_EXISTS(labels, '$[*]?(@ == "Issue")') THEN JSON_VALUE(props, '$.repoKey') END`. The
-filter is written as that expression, which tests the label as well, so one index answers both and
-there is no choice for the optimizer to get wrong
-([drivine4j#65](https://github.com/liberation-data/drivine4j/issues/65)). Same answer, 0.40 ms.
-
-### FalkorDB: `loadAll` by an indexed property, 24 ms. Fixed: 0.34 ms
-
-Drivine's query DSL wrote several conditions as `WHERE (a AND b)`. FalkorDB 6.0.0 answers a
-parenthesised `WHERE` with a label scan; without the parentheses it uses the index. FalkorDB 4.20.7
-uses the index either way. Reported as
-[FalkorDB#3331](https://github.com/FalkorDB/FalkorDB/issues/3331). Drivine had no need to write the
-parentheses and no longer does
-([drivine4j#66](https://github.com/liberation-data/drivine4j/issues/66)). A condition that does
-need them, `a AND (b OR c)`, is still scanned on FalkorDB 6 until the engine changes.
-
-### FalkorDB: a path view, 53 ms. Fixed: 0.43 ms
-
-The path was read with `OPTIONAL MATCH (person)-[:FOLLOWS]->(:Person)-[:MEMBER_OF]->(orgs:Org)` from a
-person already found. With a label on the far node, FalkorDB 6.0.0 plans the walk from that end: it
-reads all 129,912 MEMBER_OF relationships and then joins back to the person. Without the label it
-walks out from the person. FalkorDB 4.20.7 walks out from the person in both cases. Reported as
-[FalkorDB#3332](https://github.com/FalkorDB/FalkorDB/issues/3332). On FalkorDB, Drivine now leaves
-the label out of the pattern and tests it on the node once it is matched
-([drivine4j#67](https://github.com/liberation-data/drivine4j/issues/67)).
 
 ## The bugs
 
@@ -406,9 +292,11 @@ a rewrite is bound to have a rough edge here and there, and we met three. All th
 previous version, 4.20.7, did well, so they are known ground and should be quick to win back. All
 are reported, with a small repro each, and none of them gives a wrong answer.
 
-Two are the plans described above ([#3331](https://github.com/FalkorDB/FalkorDB/issues/3331),
-[#3332](https://github.com/FalkorDB/FalkorDB/issues/3332)). The third is the one that shaped this
-benchmark.
+Two are plans. A `WHERE (a AND b)` in parentheses is answered with a label scan where the index
+would do ([#3331](https://github.com/FalkorDB/FalkorDB/issues/3331)), and a path with a label on its
+far node is walked from that end, reading every relationship of the last hop
+([#3332](https://github.com/FalkorDB/FalkorDB/issues/3332)). Drivine writes around both. The third
+is the one that shaped this benchmark.
 
 #### A unique constraint makes inserts slower as the label grows
 
@@ -455,11 +343,11 @@ WHERE JSON_VALUE(n.props, '$.id') = 'p7'      -- 3 without the index, 3,000 with
 [`bugs/oracle-join-elimination.sql`](bugs/oracle-join-elimination.sql) is a script of thirty lines
 that shows it from an empty schema.
 
-In the first run the SQL written by hand carried a hint that turns join elimination off,
-`/*+ OPT_PARAM('_optimizer_join_elimination_enabled' 'false') */`. That cost Oracle a primary key
-probe for each node a pattern passes through. It now does without: the node is found first, by a
-subquery, and the pattern's first relationship is tested against it, so there is no test of the
-node's properties for Oracle to drop.
+A hint that turns join elimination off,
+`/*+ OPT_PARAM('_optimizer_join_elimination_enabled' 'false') */`, avoids it, but costs Oracle a
+primary key probe for each node a pattern passes through. The SQL written by hand here does without:
+the node is found first, by a subquery, and the pattern's first relationship is tested against it,
+so there is no test of the node's properties for Oracle to drop.
 
 ```sql
 SELECT COUNT(*) FROM GRAPH_TABLE (bench
@@ -472,17 +360,14 @@ A relationship taken several times, `->{1,4}`, has no one end to test, so there 
 the starting node's `nid` and tests it with `IN`. With `=` Oracle walked from every repo and tested
 the start afterwards, 1.1 seconds where `IN` takes 0.6 ms.
 
-The statements Drivine generates read the starting node's columns, and so keep clear of it, with
-one exception found since: loading the nodes related to a node of a fragment with no label ended
-the server process. Drivine now finds that node first, as above
-([PR #76](https://github.com/liberation-data/drivine4j/pull/76)).
+The statements Drivine generates keep clear of it in the same way.
 
 ## What to make of it
 
 Take the shape of these results and not the last decimal place.
 
 - **One run of each, on a busy laptop.** Other work was running on the host (load average 6 to 9
-  on 12 cores). Results that nothing should have moved differ by up to 2 times between runs.
+  on 12 cores). The same statement can differ by up to 2 times from one run to the next.
   Differences of 3 times and more are the ones to believe.
 - **Oracle Free is not Oracle.** It is capped at 2 CPU threads and 2 GB of memory. The same
   statements on a licensed edition with real memory would behave differently, above all under
@@ -491,32 +376,9 @@ Take the shape of these results and not the last decimal place.
   here says what happens when it does not.
 - **The SQL/PGQ is ours and untuned.** It is what a competent first attempt looks like, shaped to
   get around a bug. Someone who tunes Oracle for a living would do better.
-- **The object-manager numbers measure Drivine too.** The four outliers were all statements Drivine
-  could write another way. Changing them moved those numbers by two to three orders of magnitude
-  without the databases changing.
+- **The object-manager numbers measure Drivine too.** How a statement is written decides how the
+  engine plans it, and a different plan can move a number by orders of magnitude.
 - **FalkorDB runs without unique constraints**, for the reason given above.
-
-## What changed in Drivine
-
-Four things came out of the first run for Drivine4j, and all four are measured here:
-
-1. On Oracle, a path field is read from the root outward, and not as a test of every node
-   ([#64](https://github.com/liberation-data/drivine4j/issues/64),
-   [PR #69](https://github.com/liberation-data/drivine4j/pull/69)).
-2. On FalkorDB, a `WHERE` is written without parentheses it does not need
-   ([#66](https://github.com/liberation-data/drivine4j/issues/66),
-   [PR #70](https://github.com/liberation-data/drivine4j/pull/70)).
-3. On FalkorDB, the label is left off the far end of a path's pattern and tested afterwards
-   ([#67](https://github.com/liberation-data/drivine4j/issues/67),
-   [PR #70](https://github.com/liberation-data/drivine4j/pull/70)).
-
-4. On Oracle, a filter on an indexed property reads an index over the label's nodes only
-   ([#65](https://github.com/liberation-data/drivine4j/issues/65),
-   [PR #77](https://github.com/liberation-data/drivine4j/pull/77)).
-
-The second and third work around things FalkorDB may well fix itself. The first three are in
-Drivine 0.1.6. The fourth is merged but not yet released. We will run this again when FalkorDB's
-unique constraints can go back on.
 
 ## Run it yourself
 

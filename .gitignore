@@ -37,5 +37,3 @@ build/
 results/*
 !results/*-sf1.0.json
 !results/hops-*-sf1.0.csv
-!results/drivine-0.1.5/
-!results/drivine-0.1.6/
