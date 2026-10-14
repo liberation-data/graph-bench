@@ -166,6 +166,11 @@ A cell is the median, with the 95th percentile in brackets. Lower is better.
 | every issue, grouped by state | 64.15 (76.67) | **44.79** (47.64) | 63.14 (65.62) |
 | every FOLLOWS (1.5 million), grouped: the ten most followed | 785.55 (990.19) | **732.97** (788.97) | 1169.60 (1242.30) |
 
+Over the whole graph, index-free adjacency is starting to pay: grouping 1.5 million FOLLOWS takes
+Oracle half as long again as the graph engines. But it takes a lot of data before following a
+pointer, O(1), outshines a probe of a B-tree only a few levels deep, O(log n).
+[Below](#does-oracle-miss-index-free-adjacency), out to 275,000 paths, it has not yet.
+
 ### Writes through the object manager
 
 | workload | Neo4j (ms) | FalkorDB (ms) | Oracle (ms) |
