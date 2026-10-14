@@ -9,17 +9,19 @@ import java.util.UUID
 class Workload(val group: String, val name: String, val warmup: Int, val iterations: Int, val work: (Int) -> Any?)
 
 /**
- * A statement written by hand, in Cypher and in SQL/PGQ. `§name` is a parameter in both.
+ * A statement written by hand, in Cypher and in SQL/PGQ. `§name` is a parameter in both, and `§start`
+ * in the SQL is the `nid` of the node whose id is `§id`.
  *
- * The SQL turns join elimination off. Oracle Free 23.26 drops the node a pattern starts from, and
- * the test of its id with it, when nothing else of the node is read: with the id written into the
- * statement that answers for every node, and with the id bound it ends the server process
- * (`ORA-07445` in `kkocfbMarkBindFroCB`). The price is a primary key probe for each node a pattern
- * passes through.
+ * The SQL finds the node a pattern starts from by that `nid`, tested against the first relationship's
+ * end, and names no column of the node itself. Oracle Free 23.26 drops the node a pattern starts from,
+ * and a test of its id with it, when the test is `JSON_VALUE` of its properties and nothing else of the
+ * node is read: with the id written into the statement that answers for every node, and with the id
+ * bound it ends the server process (`ORA-07445` in `kkocfbMarkBindFroCB`). Written this way there is
+ * no such test to drop, and Oracle may answer the first hop from the relationships' index alone.
  */
 class Raw(cypher: String, sql: String) {
     val cypher = cypher.trimIndent().replace('§', '$')
-    val sql = sql.trimIndent().replace('§', '$').replaceFirst("SELECT", "SELECT /*+ OPT_PARAM('_optimizer_join_elimination_enabled' 'false') */")
+    val sql = sql.trimIndent().replace("§start", "(SELECT nid FROM ${GRAPH}_node WHERE JSON_VALUE(props, '$.id') = §id)").replace('§', '$')
 
     fun on(engine: Engine, vararg parameters: Pair<String, Any?>): List<Any> =
         engine.query(if (engine.sql) sql else cypher, mapOf(*parameters))
@@ -31,8 +33,9 @@ object Queries {
         "MATCH (:Person)-[:FOLLOWS]->(p:Person {id: §id}) RETURN count(*)",
         """
         SELECT COUNT(*) FROM GRAPH_TABLE ($GRAPH
-            MATCH (a IS node) -[e IS edge WHERE e.type = 'FOLLOWS']-> (p IS node WHERE JSON_VALUE(p.props, '$.id') = §id)
-            COLUMNS (e.eid AS eid))
+            MATCH (a IS node) -[e IS edge WHERE e.type = 'FOLLOWS']-> (p IS node)
+            COLUMNS (e.dst AS start_))
+        WHERE start_ = §start
         """,
     )
 
@@ -40,9 +43,10 @@ object Queries {
         "MATCH (p:Person {id: §id})-[:FOLLOWS]->()-[:FOLLOWS]->(x) RETURN count(DISTINCT x)",
         """
         SELECT COUNT(DISTINCT nid) FROM GRAPH_TABLE ($GRAPH
-            MATCH (p IS node WHERE JSON_VALUE(p.props, '$.id') = §id)
+            MATCH (p IS node)
                   -[e1 IS edge WHERE e1.type = 'FOLLOWS']-> (a IS node) -[e2 IS edge WHERE e2.type = 'FOLLOWS']-> (x IS node)
-            COLUMNS (x.nid AS nid))
+            COLUMNS (e1.src AS start_, x.nid AS nid))
+        WHERE start_ = §start
         """,
     )
 
@@ -50,19 +54,26 @@ object Queries {
         "MATCH (p:Person {id: §id})-[:FOLLOWS]->()-[:FOLLOWS]->()-[:FOLLOWS]->(x) RETURN count(DISTINCT x)",
         """
         SELECT COUNT(DISTINCT nid) FROM GRAPH_TABLE ($GRAPH
-            MATCH (p IS node WHERE JSON_VALUE(p.props, '$.id') = §id)
+            MATCH (p IS node)
                   -[e1 IS edge WHERE e1.type = 'FOLLOWS']-> (a IS node) -[e2 IS edge WHERE e2.type = 'FOLLOWS']-> (b IS node)
                   -[e3 IS edge WHERE e3.type = 'FOLLOWS']-> (x IS node)
-            COLUMNS (x.nid AS nid))
+            COLUMNS (e1.src AS start_, x.nid AS nid))
+        WHERE start_ = §start
         """,
     )
 
+    /**
+     * A relationship taken several times has no one end to test, so the SQL reads the `nid` of the node
+     * itself; and it tests it with `IN`, which Oracle takes into each length of the walk. With `=` it
+     * walks from every repo and tests the start afterwards.
+     */
     val dependencies = Raw(
         "MATCH (r:Repo {id: §id})-[:DEPENDS_ON*1..4]->(d) RETURN count(DISTINCT d)",
         """
         SELECT COUNT(DISTINCT nid) FROM GRAPH_TABLE ($GRAPH
-            MATCH (r IS node WHERE JSON_VALUE(r.props, '$.id') = §id) -[e IS edge WHERE e.type = 'DEPENDS_ON']->{1,4} (d IS node)
-            COLUMNS (d.nid AS nid))
+            MATCH (r IS node) -[e IS edge WHERE e.type = 'DEPENDS_ON']->{1,4} (d IS node)
+            COLUMNS (r.nid AS start_, d.nid AS nid))
+        WHERE start_ IN §start
         """,
     )
 
@@ -77,10 +88,11 @@ object Queries {
         """
         SELECT JSON_OBJECT('topic' VALUE topic, 'n' VALUE n RETURNING JSON) AS r FROM (
             SELECT topic, COUNT(*) AS n FROM GRAPH_TABLE ($GRAPH
-                MATCH (o IS node WHERE JSON_VALUE(o.props, '$.id') = §id) <-[e1 IS edge WHERE e1.type = 'OWNED_BY']- (r IS node)
+                MATCH (o IS node) <-[e1 IS edge WHERE e1.type = 'OWNED_BY']- (r IS node)
                       <-[e2 IS edge WHERE e2.type = 'IN_REPO']- (i IS node WHERE JSON_VALUE(i.props, '$.state') = 'open')
                       -[e3 IS edge WHERE e3.type = 'TAGGED']-> (t IS node)
-                COLUMNS (JSON_VALUE(t.props, '$.id') AS topic))
+                COLUMNS (e1.dst AS start_, JSON_VALUE(t.props, '$.id') AS topic))
+            WHERE start_ = §start
             GROUP BY topic ORDER BY n DESC, topic FETCH FIRST 10 ROWS ONLY)
         """,
     )
@@ -95,9 +107,10 @@ object Queries {
         """
         SELECT JSON_OBJECT('person' VALUE person, 'n' VALUE n RETURNING JSON) AS r FROM (
             SELECT person, COUNT(*) AS n FROM GRAPH_TABLE ($GRAPH
-                MATCH (r IS node WHERE JSON_VALUE(r.props, '$.id') = §id) <-[e1 IS edge WHERE e1.type = 'IN_REPO']- (i IS node)
+                MATCH (r IS node) <-[e1 IS edge WHERE e1.type = 'IN_REPO']- (i IS node)
                       <-[e2 IS edge WHERE e2.type = 'ON']- (c IS node) -[e3 IS edge WHERE e3.type = 'WRITTEN_BY']-> (p IS node)
-                COLUMNS (JSON_VALUE(p.props, '$.id') AS person))
+                COLUMNS (e1.dst AS start_, JSON_VALUE(p.props, '$.id') AS person))
+            WHERE start_ = §start
             GROUP BY person ORDER BY n DESC, person FETCH FIRST 10 ROWS ONLY)
         """,
     )
@@ -112,9 +125,10 @@ object Queries {
         """
         SELECT JSON_OBJECT('repo' VALUE repo, 'n' VALUE n RETURNING JSON) AS r FROM (
             SELECT repo, COUNT(*) AS n FROM GRAPH_TABLE ($GRAPH
-                MATCH (p IS node WHERE JSON_VALUE(p.props, '$.id') = §id) -[e1 IS edge WHERE e1.type = 'FOLLOWS']-> (f IS node)
+                MATCH (p IS node) -[e1 IS edge WHERE e1.type = 'FOLLOWS']-> (f IS node)
                       <-[e2 IS edge WHERE e2.type = 'OPENED_BY']- (i IS node) -[e3 IS edge WHERE e3.type = 'IN_REPO']-> (r IS node)
-                COLUMNS (JSON_VALUE(r.props, '$.id') AS repo))
+                COLUMNS (e1.src AS start_, JSON_VALUE(r.props, '$.id') AS repo))
+            WHERE start_ = §start
             GROUP BY repo ORDER BY n DESC, repo FETCH FIRST 10 ROWS ONLY)
         """,
     )
@@ -152,8 +166,7 @@ object Queries {
  * finds them in an index over the relationships' table, by the node they leave.
  *
  * The SQL finds the person's `nid` first and tests the first relationship's `src` against it, so it
- * names no column of the node the pattern starts from. That keeps clear of the Oracle fault [Raw]
- * turns join elimination off for, and leaves Oracle free to answer from the index alone.
+ * names no column of the node the pattern starts from, as [Raw] does and for the same reason.
  */
 object Hops {
     /** The nodes on the way are named: FalkorDB takes paths through a node with no name as one path, and counts fewer. */
