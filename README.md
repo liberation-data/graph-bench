@@ -114,10 +114,6 @@ processors. Neo4j had a 1 GB heap and a 2 GB page cache. The host is an Apple M2
    WHERE start_ = (SELECT nid FROM bench_node WHERE JSON_VALUE(props, '$.id') = $id)
    ```
 
-   The SQL finds the person first and tests the first relationship against it, where the obvious
-   thing is to test the person in the pattern. [An Oracle bug](#oracle-free-2326-a-graph-query-that-answers-for-the-wrong-nodes)
-   is why.
-
 Each workload is warmed up, then called up to 300 times with arguments picked from a seeded list,
 so call number 17 asks every engine for the same node. Times are wall clock at the client.
 
@@ -178,7 +174,7 @@ pointer, O(1), outshines a probe of a B-tree only a few levels deep, O(log n).
 | `saveAll`: 100 new views of 5 comments | **68.53** (73.64) | 108.15 (120.97) | 270.51 (344.06) |
 
 FalkorDB's writes are measured **without unique constraints**, which the other two have. See
-[below](#a-unique-constraint-makes-inserts-slower-as-the-label-grows) for why.
+[below](#falkordb-6-a-unique-constraint-makes-inserts-slower-as-the-label-grows) for why.
 
 ### Eight threads at once
 
@@ -206,10 +202,8 @@ this says what a bulk load costs on each and is not a like for like comparison.
 
 **FalkorDB** is the quickest on point reads and on traversals: about 0.3 ms for one to four hops
 where Neo4j takes about 1 ms. It is also the quickest writer, though without the constraints the
-others carry. Version 6 is a rewrite of the engine in Rust, and the speed here says the rewrite is
-paying off. One slow result is left: a view load under eight threads, 731 calls a second against
-2,850 and 3,531 for the others. That is the CPU limit: the load costs FalkorDB about 2.8 ms of CPU,
-and it has two CPUs. Calls through its client, with Drivine left out, top out at the same rate.
+others carry. Its one slow result is a view load under eight threads, 731 calls a second against
+2,850 and 3,531 for the others: the load costs FalkorDB about 2.8 ms of CPU, and it has two CPUs.
 
 **Neo4j** is rarely the fastest and never far off. It is the only engine with no result needing an
 explanation. Everything by id or by a short traversal lands between 1 and 2 ms.
@@ -275,30 +269,13 @@ B-tree over 4.5 million relationships is only a few levels deep; over billions, 
 probe costs more, and that is exactly where index-free adjacency is meant to earn its keep. And this
 is Neo4j Community, which does not have the faster runtime of the Enterprise edition.
 
-The nodes on the way are named in the Cypher, `(n1)`, `(n2)`. FalkorDB counts the paths through a
-node with no name as one path for each place they end, so `()-[:FOLLOWS]->()` would have had it
-count fewer, and do less.
-
 ## The bugs
 
-A benchmark pushes a database down paths its own tests have not been yet, so it always finds
-something. Here is what this one found.
+### FalkorDB 6: a unique constraint makes inserts slower as the label grows
 
-### FalkorDB 6: a new engine, and three rough edges
-
-FalkorDB 6 is the engine rewritten in Rust. That is a brave thing to do to a working database, and
-on this evidence a good one: it is the fastest engine on this page by a distance. A first release of
-a rewrite is bound to have a rough edge here and there, and we met three. All three are things the
-previous version, 4.20.7, did well, so they are known ground and should be quick to win back. All
-are reported, with a small repro each, and none of them gives a wrong answer.
-
-Two are plans. A `WHERE (a AND b)` in parentheses is answered with a label scan where the index
-would do ([#3331](https://github.com/FalkorDB/FalkorDB/issues/3331)), and a path with a label on its
-far node is walked from that end, reading every relationship of the last hop
-([#3332](https://github.com/FalkorDB/FalkorDB/issues/3332)). Drivine writes around both. The third
-is the one that shaped this benchmark.
-
-#### A unique constraint makes inserts slower as the label grows
+FalkorDB 6 is the engine rewritten in Rust, and the fastest engine on this page by a distance. Its
+first release has three rough edges, all reported with a repro, none giving a wrong answer. One
+shaped this benchmark.
 
 With a unique constraint on a label, each insert costs time in proportion to the nodes already
 there. Times in milliseconds:
@@ -343,24 +320,8 @@ WHERE JSON_VALUE(n.props, '$.id') = 'p7'      -- 3 without the index, 3,000 with
 [`bugs/oracle-join-elimination.sql`](bugs/oracle-join-elimination.sql) is a script of thirty lines
 that shows it from an empty schema.
 
-A hint that turns join elimination off,
-`/*+ OPT_PARAM('_optimizer_join_elimination_enabled' 'false') */`, avoids it, but costs Oracle a
-primary key probe for each node a pattern passes through. The SQL written by hand here does without:
-the node is found first, by a subquery, and the pattern's first relationship is tested against it,
-so there is no test of the node's properties for Oracle to drop.
-
-```sql
-SELECT COUNT(*) FROM GRAPH_TABLE (bench
-    MATCH (p IS node) -[e IS edge WHERE e.type = 'FOLLOWS']-> (x IS node)
-    COLUMNS (e.src AS start_))
-WHERE start_ = (SELECT nid FROM bench_node WHERE JSON_VALUE(props, '$.id') = $id)
-```
-
-A relationship taken several times, `->{1,4}`, has no one end to test, so there the statement reads
-the starting node's `nid` and tests it with `IN`. With `=` Oracle walked from every repo and tested
-the start afterwards, 1.1 seconds where `IN` takes 0.6 ms.
-
-The statements Drivine generates keep clear of it in the same way.
+The SQL in this benchmark avoids it by finding the start node first, with a subquery, as in the
+[example above](#what-was-run), so there is no test of the node's properties for Oracle to drop.
 
 ## What to make of it
 
