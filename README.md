@@ -85,9 +85,7 @@ Comment -[:ON]-> Issue              Comment -[:WRITTEN_BY]-> Person
 The data is generated from fixed seeds, so every engine holds exactly the same graph.
 
 **The engines.** Neo4j 2026.07.1 (Community), FalkorDB 6.0.0 and Oracle Database Free 23.26, each
-through Drivine4j built from `main` at
-[`302287e`](https://github.com/liberation-data/drivine4j/commit/302287e), which is 0.1.5 and what has
-been merged since, the fixes among them. The first run used 0.1.5 as released.
+through Drivine4j 0.1.6, which has the fixes. The first run used 0.1.5.
 
 **The limits.** Each engine ran alone, in a fresh container given 2 CPUs and 4 GB. Oracle Free
 allows itself 2 CPU threads and 2 GB whatever it is given, so the others were held to the same
@@ -508,8 +506,7 @@ measured:
    ([#67](https://github.com/liberation-data/drivine4j/issues/67),
    [PR #70](https://github.com/liberation-data/drivine4j/pull/70)).
 
-The last two work around things FalkorDB may well fix itself. They are in the next release after
-0.1.5.
+The last two work around things FalkorDB may well fix itself. All three are in Drivine 0.1.6.
 
 One is open: on Oracle, a filter on an indexed property still reads every node of the label
 ([#65](https://github.com/liberation-data/drivine4j/issues/65)), for the reasons
@@ -535,8 +532,8 @@ behind this page are in [`results/`](results). To print the tables again:
 build/install/graph-bench/bin/graph-bench report --sf 1
 ```
 
-`build.gradle.kts` names the released Drivine the harness builds against. The run on this page was
-built from Drivine's source, which is what you want for a fix that is not released yet:
+`build.gradle.kts` names the released Drivine the harness builds against. To build against a
+checkout of Drivine's source instead, for a fix that is not released yet:
 
 ```bash
 DRIVINE_SOURCE=../drivine4j ./run.sh 1

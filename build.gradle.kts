@@ -9,7 +9,7 @@ plugins {
 group = "bench"
 version = "0.1.0"
 
-val drivineVersion = "0.1.5"
+val drivineVersion = "0.1.6"
 
 repositories {
     mavenCentral()
