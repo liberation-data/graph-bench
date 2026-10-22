@@ -1,4 +1,4 @@
-// One Drivine model and one set of workloads, run against Neo4j, FalkorDB and Oracle (SQL/PGQ).
+// One Drivine model and one set of workloads, run against Neo4j, FalkorDB, Oracle (SQL/PGQ) and Postgres.
 
 plugins {
     kotlin("jvm") version "2.3.21"
@@ -28,6 +28,7 @@ dependencies {
     // jfalkordb is built on Jedis 8; the Spring Boot BOM manages an older one.
     implementation("redis.clients:jedis:8.0.1")
     implementation("com.oracle.database.jdbc:ojdbc11")
+    implementation("org.postgresql:postgresql")
     implementation("com.zaxxer:HikariCP")
     runtimeOnly("ch.qos.logback:logback-classic")
 }
