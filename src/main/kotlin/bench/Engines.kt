@@ -11,7 +11,7 @@ import org.drivine.mapper.Neo4jObjectMapper
 import org.drivine.mapper.SubtypeRegistry
 import org.drivine.query.QuerySpecification
 
-/** The name of the graph on FalkorDB, and of the property graph and its tables on Oracle. */
+/** The name of the graph on FalkorDB, and of the property graph and its tables on Oracle, and of the tables on Postgres. */
 const val GRAPH = "bench"
 
 /** One database, and Drivine's managers over it. */
@@ -22,7 +22,10 @@ class Engine(val name: String, val type: DatabaseType, val provider: ConnectionP
     val gom = StatelessGraphObjectManager(pm, Neo4jObjectMapper.instance, registry)
 
     /** Whether a statement written by hand is SQL here, and not Cypher. */
-    val sql: Boolean get() = type == DatabaseType.ORACLE
+    val sql: Boolean get() = !type.speaksCypher
+
+    /** Whether the SQL is Postgres's, which keeps a graph in Oracle's tables and reads it with joins, not SQL/PGQ. */
+    val postgres: Boolean get() = type == DatabaseType.POSTGRES
 
     fun execute(statement: String, parameters: Map<String, Any?> = emptyMap()) =
         pm.execute(QuerySpecification.withStatement(statement).bind(parameters))
@@ -60,7 +63,16 @@ class Engine(val name: String, val type: DatabaseType, val provider: ConnectionP
                     graphName = GRAPH,
                 ),
             )
-            else -> error("No engine '$name': neo4j, falkordb or oracle")
+            "postgres" -> Engine(
+                name, DatabaseType.POSTGRES,
+                JdbcConnectionProvider.pooled(
+                    name, DatabaseType.POSTGRES,
+                    JdbcConnectionProvider.postgresUrl(env("BENCH_POSTGRES_HOST", "localhost"), env("BENCH_POSTGRES_PORT", "15432").toInt(), "bench"),
+                    "bench", env("BENCH_POSTGRES_PASSWORD", "bench"),
+                    graphName = GRAPH,
+                ),
+            )
+            else -> error("No engine '$name': neo4j, falkordb, oracle or postgres")
         }
     }
 }

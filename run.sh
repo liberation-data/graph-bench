@@ -8,7 +8,7 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 SF=${1:-1}; shift || true
-ENGINES=${*:-neo4j falkordb oracle}
+ENGINES=${*:-neo4j falkordb oracle postgres}
 LIMITS="--cpus 2 --memory 4g"
 
 start() {
@@ -26,6 +26,14 @@ start() {
             docker run -d --name gbench-oracle $LIMITS -p 11521:1521 -e ORACLE_PASSWORD=bench -e APP_USER=bench \
                 -e APP_USER_PASSWORD=bench gvenzl/oracle-free:23-faststart >/dev/null
             until docker logs gbench-oracle 2>&1 | grep -q "DATABASE IS READY TO USE"; do sleep 3; done ;;
+        postgres)
+            # Memory as the others are given it: a cache of 1 GB of the 4, as Neo4j's heap is, and the rest the
+            # operating system's to cache files in, which is where Postgres expects the rest of its reads to come from.
+            docker run -d --name gbench-postgres $LIMITS -p 15432:5432 -e POSTGRES_DB=bench -e POSTGRES_USER=bench \
+                -e POSTGRES_PASSWORD=bench pgvector/pgvector:pg17 \
+                -c shared_buffers=1GB -c effective_cache_size=3GB -c maintenance_work_mem=256MB -c work_mem=32MB >/dev/null
+            # The image starts a server to set itself up and stops it: ready is the second time it says so.
+            until [ "$(docker logs gbench-postgres 2>&1 | grep -c "ready to accept connections")" -ge 2 ]; do sleep 1; done ;;
     esac
 }
 

@@ -162,7 +162,7 @@ private fun run(engineName: String, factor: Double, phases: Set<String>) {
 }
 
 private fun report(factor: Double) {
-    val engines = listOf("neo4j", "falkordb", "oracle")
+    val engines = listOf("neo4j", "falkordb", "oracle", "postgres")
     val results = engines.mapNotNull { name -> file(name, factor).takeIf { it.exists() }?.let { json.readValue<Results>(it) } }
     if (results.isEmpty()) return println("No results for scale $factor")
     val names = results.map { it.engine }
@@ -202,10 +202,10 @@ fun main(args: Array<String>) {
     val factor = (options["sf"] ?: "1").toDouble()
     when (args.firstOrNull()) {
         "run" -> run(
-            options["engine"] ?: error("--engine neo4j|falkordb|oracle"), factor,
+            options["engine"] ?: error("--engine neo4j|falkordb|oracle|postgres"), factor,
             (options["phases"] ?: "load,read,traverse,concurrent,write").split(",").toSet(),
         )
         "report" -> report(factor)
-        else -> println("run --engine <neo4j|falkordb|oracle> [--sf 1] [--phases load,read,traverse,concurrent,write] | report [--sf 1]")
+        else -> println("run --engine <neo4j|falkordb|oracle|postgres> [--sf 1] [--phases load,read,traverse,concurrent,write] | report [--sf 1]")
     }
 }

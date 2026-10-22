@@ -19,13 +19,21 @@ class Workload(val group: String, val name: String, val warmup: Int, val iterati
  * bound it ends the server process (`ORA-07445` in `kkocfbMarkBindFroCB`). Written this way there is
  * no such test to drop, and Oracle may answer the first hop from the relationships' index alone.
  */
-class Raw(cypher: String, sql: String) {
+class Raw(cypher: String, sql: String, postgres: String) {
     val cypher = cypher.trimIndent().replace('§', '$')
     val sql = sql.trimIndent().replace("§start", "(SELECT nid FROM ${GRAPH}_node WHERE JSON_VALUE(props, '$.id') = §id)").replace('§', '$')
+    val postgres = postgres.trimIndent().replace('§', '$')
 
     fun on(engine: Engine, vararg parameters: Pair<String, Any?>): List<Any> =
-        engine.query(if (engine.sql) sql else cypher, mapOf(*parameters))
+        engine.query(if (engine.postgres) postgres else if (engine.sql) sql else cypher, mapOf(*parameters))
 }
+
+/**
+ * Postgres reads the graph Drivine keeps there with joins over its tables. A walk starts from the `nid`
+ * of the node whose id is `§id`, found by its label and id: the index over a label's ids is a partial
+ * index, over that label's nodes alone, so the label is named for the index to answer.
+ */
+private fun start(label: String) = "(SELECT nid FROM ${GRAPH}_node WHERE (props ->> 'id') = §id AND labels @> '[\"$label\"]')"
 
 object Queries {
 
@@ -36,6 +44,9 @@ object Queries {
             MATCH (a IS node) -[e IS edge WHERE e.type = 'FOLLOWS']-> (p IS node)
             COLUMNS (e.dst AS start_))
         WHERE start_ = §start
+        """,
+        """
+        SELECT COUNT(*) FROM ${GRAPH}_edge e WHERE e.type = 'FOLLOWS' AND e.dst = ${start("Person")}
         """,
     )
 
@@ -48,6 +59,11 @@ object Queries {
             COLUMNS (e1.src AS start_, x.nid AS nid))
         WHERE start_ = §start
         """,
+        """
+        SELECT COUNT(DISTINCT e2.dst) FROM ${GRAPH}_edge e1
+        JOIN ${GRAPH}_edge e2 ON e2.src = e1.dst AND e2.type = 'FOLLOWS'
+        WHERE e1.type = 'FOLLOWS' AND e1.src = ${start("Person")}
+        """,
     )
 
     val threeHops = Raw(
@@ -59,6 +75,12 @@ object Queries {
                   -[e3 IS edge WHERE e3.type = 'FOLLOWS']-> (x IS node)
             COLUMNS (e1.src AS start_, x.nid AS nid))
         WHERE start_ = §start
+        """,
+        """
+        SELECT COUNT(DISTINCT e3.dst) FROM ${GRAPH}_edge e1
+        JOIN ${GRAPH}_edge e2 ON e2.src = e1.dst AND e2.type = 'FOLLOWS'
+        JOIN ${GRAPH}_edge e3 ON e3.src = e2.dst AND e3.type = 'FOLLOWS'
+        WHERE e1.type = 'FOLLOWS' AND e1.src = ${start("Person")}
         """,
     )
 
@@ -74,6 +96,14 @@ object Queries {
             MATCH (r IS node) -[e IS edge WHERE e.type = 'DEPENDS_ON']->{1,4} (d IS node)
             COLUMNS (r.nid AS start_, d.nid AS nid))
         WHERE start_ IN §start
+        """,
+        """
+        WITH RECURSIVE reached (nid, depth) AS (
+            SELECT e.dst, 1 FROM ${GRAPH}_edge e WHERE e.type = 'DEPENDS_ON' AND e.src = ${start("Repo")}
+            UNION
+            SELECT e.dst, r.depth + 1 FROM reached r JOIN ${GRAPH}_edge e ON e.src = r.nid AND e.type = 'DEPENDS_ON' WHERE r.depth < 4
+        )
+        SELECT COUNT(DISTINCT nid) FROM reached
         """,
     )
 
@@ -95,6 +125,17 @@ object Queries {
             WHERE start_ = §start
             GROUP BY topic ORDER BY n DESC, topic FETCH FIRST 10 ROWS ONLY)
         """,
+        """
+        SELECT jsonb_build_object('topic', topic, 'n', n) AS r FROM (
+            SELECT t.props ->> 'id' AS topic, COUNT(*) AS n
+            FROM ${GRAPH}_edge e1
+            JOIN ${GRAPH}_edge e2 ON e2.dst = e1.src AND e2.type = 'IN_REPO'
+            JOIN ${GRAPH}_node i ON i.nid = e2.src AND (i.props ->> 'state') = 'open'
+            JOIN ${GRAPH}_edge e3 ON e3.src = i.nid AND e3.type = 'TAGGED'
+            JOIN ${GRAPH}_node t ON t.nid = e3.dst
+            WHERE e1.type = 'OWNED_BY' AND e1.dst = ${start("Org")}
+            GROUP BY topic ORDER BY n DESC, topic LIMIT 10) g
+        """,
     )
 
     val repoCommenters = Raw(
@@ -112,6 +153,16 @@ object Queries {
                 COLUMNS (e1.dst AS start_, JSON_VALUE(p.props, '$.id') AS person))
             WHERE start_ = §start
             GROUP BY person ORDER BY n DESC, person FETCH FIRST 10 ROWS ONLY)
+        """,
+        """
+        SELECT jsonb_build_object('person', person, 'n', n) AS r FROM (
+            SELECT p.props ->> 'id' AS person, COUNT(*) AS n
+            FROM ${GRAPH}_edge e1
+            JOIN ${GRAPH}_edge e2 ON e2.dst = e1.src AND e2.type = 'ON'
+            JOIN ${GRAPH}_edge e3 ON e3.src = e2.src AND e3.type = 'WRITTEN_BY'
+            JOIN ${GRAPH}_node p ON p.nid = e3.dst
+            WHERE e1.type = 'IN_REPO' AND e1.dst = ${start("Repo")}
+            GROUP BY person ORDER BY n DESC, person LIMIT 10) g
         """,
     )
 
@@ -131,6 +182,16 @@ object Queries {
             WHERE start_ = §start
             GROUP BY repo ORDER BY n DESC, repo FETCH FIRST 10 ROWS ONLY)
         """,
+        """
+        SELECT jsonb_build_object('repo', repo, 'n', n) AS r FROM (
+            SELECT r.props ->> 'id' AS repo, COUNT(*) AS n
+            FROM ${GRAPH}_edge e1
+            JOIN ${GRAPH}_edge e2 ON e2.dst = e1.dst AND e2.type = 'OPENED_BY'
+            JOIN ${GRAPH}_edge e3 ON e3.src = e2.src AND e3.type = 'IN_REPO'
+            JOIN ${GRAPH}_node r ON r.nid = e3.dst
+            WHERE e1.type = 'FOLLOWS' AND e1.src = ${start("Person")}
+            GROUP BY repo ORDER BY n DESC, repo LIMIT 10) g
+        """,
     )
 
     val issuesByState = Raw(
@@ -140,6 +201,11 @@ object Queries {
             MATCH (i IS node WHERE JSON_EXISTS(i.labels, '$[*]?(@ == "Issue")'))
             COLUMNS (JSON_VALUE(i.props, '$.state') AS state))
         GROUP BY state
+        """,
+        """
+        SELECT jsonb_build_object('state', props ->> 'state', 'n', COUNT(*)) AS r FROM ${GRAPH}_node
+        WHERE labels @> '["Issue"]'
+        GROUP BY props ->> 'state'
         """,
     )
 
@@ -156,6 +222,13 @@ object Queries {
                 MATCH (a IS node) -[e IS edge WHERE e.type = 'FOLLOWS']-> (p IS node)
                 COLUMNS (JSON_VALUE(p.props, '$.id') AS person))
             GROUP BY person ORDER BY n DESC, person FETCH FIRST 10 ROWS ONLY)
+        """,
+        """
+        SELECT jsonb_build_object('person', person, 'n', n) AS r FROM (
+            SELECT p.props ->> 'id' AS person, COUNT(*) AS n
+            FROM ${GRAPH}_edge e JOIN ${GRAPH}_node p ON p.nid = e.dst
+            WHERE e.type = 'FOLLOWS'
+            GROUP BY person ORDER BY n DESC, person LIMIT 10) g
         """,
     )
 }
@@ -180,9 +253,16 @@ object Hops {
         """.trimIndent()
     }
 
+    /** The walk on Postgres: a join of the relationships' table for each hop, from the person's `nid`. */
+    fun postgres(hops: Int): String {
+        val joins = (2..hops).joinToString("") { "\nJOIN ${GRAPH}_edge e$it ON e$it.src = e${it - 1}.dst AND e$it.type = 'FOLLOWS'" }
+        return "SELECT COUNT(*) FROM ${GRAPH}_edge e1$joins\nWHERE e1.type = 'FOLLOWS' AND e1.src = " +
+            "(SELECT nid FROM ${GRAPH}_node WHERE (props ->> 'id') = \$id AND labels @> '[\"Person\"]')"
+    }
+
     /** For each of [people] and each number of hops up to [upTo]: the paths counted, and the quickest of three calls in milliseconds. */
     fun measure(engine: Engine, people: List<String>, upTo: Int): List<List<Any>> = (1..upTo).flatMap { hops ->
-        val statement = if (engine.sql) sql(hops) else cypher(hops)
+        val statement = if (engine.postgres) postgres(hops) else if (engine.sql) sql(hops) else cypher(hops)
         fun call(id: String): Pair<Long, Double> {
             val before = System.nanoTime()
             val paths = (engine.query(statement, mapOf("id" to id)).single() as Number).toLong()
