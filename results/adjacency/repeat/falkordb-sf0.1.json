@@ -1,0 +1,12 @@
+{
+  "engine" : "falkordb",
+  "scale" : 0.1,
+  "load" : {
+    "nodes" : 112150,
+    "edges" : 445374,
+    "schemaSeconds" : 0.020258584,
+    "nodeSeconds" : 0.902186958,
+    "edgeSeconds" : 3.988189291
+  },
+  "outcomes" : [ ]
+}

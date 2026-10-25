@@ -1,0 +1,67 @@
+== before start 2026-10-24T22:43:07Z
+ 8:43  up 5 days,  1:56, 5 users, load averages: 13.91 15.58 18.10
+other cpu 69.95% mem 2.177GiB / 15.6GiB io 11.9MB / 3.33GB
+other cpu 0.02% mem 37.18MiB / 15.6GiB io 131kB / 56.7MB
+other cpu 0.55% mem 67.46MiB / 15.6GiB io 0B / 0B
+other cpu 0.02% mem 46.53MiB / 15.6GiB io 8.19kB / 549kB
+other cpu 0.99% mem 744.9MiB / 15.6GiB io 32.8kB / 328MB
+other cpu 0.00% mem 6.348MiB / 15.6GiB io 1.29MB / 0B
+other cpu 0.09% mem 11.66MiB / 15.6GiB io 16.4kB / 0B
+other cpu 0.65% mem 527.9MiB / 15.6GiB io 187MB / 483MB
+other cpu 0.58% mem 447.4MiB / 15.6GiB io 309MB / 647MB
+other cpu 0.00% mem 19.2MiB / 4GiB io 7.9GB / 680MB
+other cpu 0.48% mem 277.2MiB / 15.6GiB io 21.2GB / 1.27GB
+falkordb: loading 336,450 nodes
+  loaded 300 Org
+  loaded 30,000 Person
+  loaded 6,000 Repo
+  loaded 150 Topic
+  loaded 75,000 Issue
+  loaded 225,000 Comment
+  loaded 38,885 MEMBER_OF
+  loaded 460,927 FOLLOWS
+  loaded 6,000 OWNED_BY
+  loaded 24,022 DEPENDS_ON
+  loaded 75,000 IN_REPO
+  loaded 75,000 OPENED_BY
+  loaded 60,027 ASSIGNED_TO
+  loaded 148,390 TAGGED
+  loaded 225,000 ON
+  loaded 225,000 WRITTEN_BY
+falkordb: 336,450 nodes in 2.7 s, 1,338,251 relationships in 14.6 s
+== before adjacency 2026-10-24T22:43:28Z
+ 8:43  up 5 days,  1:56, 5 users, load averages: 14.05 15.44 17.99
+gbadj-falkordb cpu 0.28% mem 438.4MiB / 4GiB io 12.4MB / 3.59MB
+other cpu 101.36% mem 2.294GiB / 15.6GiB io 11.9MB / 3.33GB
+other cpu 0.02% mem 85.84MiB / 15.6GiB io 197kB / 60.1MB
+other cpu 0.31% mem 67.45MiB / 15.6GiB io 0B / 0B
+other cpu 0.02% mem 46.78MiB / 15.6GiB io 8.19kB / 549kB
+other cpu 0.44% mem 808.6MiB / 15.6GiB io 81.9kB / 329MB
+other cpu 0.00% mem 6.348MiB / 15.6GiB io 1.29MB / 0B
+other cpu 0.00% mem 11.91MiB / 15.6GiB io 16.4kB / 0B
+other cpu 2.75% mem 528.1MiB / 15.6GiB io 187MB / 483MB
+other cpu 0.23% mem 448.8MiB / 15.6GiB io 310MB / 647MB
+other cpu 0.00% mem 20.07MiB / 4GiB io 7.9GB / 680MB
+other cpu 0.20% mem 278.7MiB / 15.6GiB io 21.2GB / 1.27GB
+falkordb: adjacency
+  round 1, count: 1.2 s
+  round 1, reach: 2.1 s
+  round 1, read: 1.7 s
+  round 2, count: 1.1 s
+  round 2, reach: 2.1 s
+  round 2, read: 1.9 s
+  round 3, count: 1.4 s
+  round 3, reach: 2.8 s
+  round 3, read: 1.8 s
+== after adjacency 2026-10-24T22:43:49Z
+ 8:43  up 5 days,  1:56, 5 users, load averages: 13.69 15.27 17.87
+other cpu 0.02% mem 33.88MiB / 15.6GiB io 10.9MB / 52.1MB
+other cpu 0.46% mem 76.02MiB / 15.6GiB io 135kB / 3.59MB
+other cpu 0.05% mem 101.5MiB / 15.6GiB io 27.2MB / 451kB
+other cpu 198.50% mem 400.6MiB / 15.6GiB io 63.2MB / 326MB
+other cpu 0.00% mem 12.38MiB / 15.6GiB io 803kB / 0B
+gbadj-falkordb cpu 0.48% mem 418MiB / 4GiB io 17.8MB / 3.59MB
+other cpu 0.36% mem 527.9MiB / 15.6GiB io 187MB / 483MB
+other cpu 0.30% mem 450.3MiB / 15.6GiB io 311MB / 647MB
+other cpu 0.00% mem 20.08MiB / 4GiB io 7.9GB / 680MB
+other cpu 0.38% mem 280.7MiB / 15.6GiB io 21.2GB / 1.27GB

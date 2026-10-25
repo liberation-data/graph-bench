@@ -1,0 +1,17 @@
+file 6176428032
+bench_edge|1261449216|4
+bench_edge_dst|1029222400|4
+bench_edge_src|1026088960|4
+bench_ix_IssuerepoKey_c0b4ad46|41373696|3
+bench_node|2217705472|4
+bench_schema|4096|1
+bench_uq_Commentid_ac686a7c|142479360|4
+bench_uq_Issueid_2d7e6dc2|45621248|3
+bench_uq_Orgid_8d442fd7|147456|2
+bench_uq_Personid_aa4b5586|17510400|3
+bench_uq_Repoid_a4753c49|3424256|3
+bench_uq_Topicid_cac9e1ac|12288|2
+sqlite_autoindex_bench_schema_1|4096|1
+sqlite_schema|4096|1
+sqlite_stat1|4096|1
+sqlite_stat4|28672|2

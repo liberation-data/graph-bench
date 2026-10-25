@@ -1,0 +1,56 @@
+== before start 2026-10-24T23:18:13Z
+ 9:18  up 5 days,  2:31, 5 users, load averages: 9.15 12.18 13.30
+other cpu 109.82% mem 1.989GiB / 15.6GiB io 12MB / 3.3GB
+other cpu 0.90% mem 558.8MiB / 15.6GiB io 8.19kB / 328MB
+other cpu 0.00% mem 2.848MiB / 15.6GiB io 0B / 0B
+other cpu 0.39% mem 523.3MiB / 15.6GiB io 189MB / 493MB
+other cpu 0.55% mem 429.4MiB / 15.6GiB io 321MB / 673MB
+other cpu 0.01% mem 7.77MiB / 4GiB io 7.9GB / 680MB
+other cpu 0.87% mem 242.1MiB / 15.6GiB io 21.2GB / 1.32GB
+sqlite: loading 3,363,500 nodes
+  loaded 3,000 Org
+  loaded 300,000 Person
+  loaded 60,000 Repo
+  loaded 500 Topic
+  loaded 750,000 Issue
+  loaded 2,250,000 Comment
+  loaded 390,098 MEMBER_OF
+  loaded 4,663,419 FOLLOWS
+  loaded 60,000 OWNED_BY
+  loaded 239,676 DEPENDS_ON
+  loaded 750,000 IN_REPO
+  loaded 750,000 OPENED_BY
+  loaded 600,046 ASSIGNED_TO
+  loaded 1,495,449 TAGGED
+  loaded 2,250,000 ON
+  loaded 2,250,000 WRITTEN_BY
+sqlite: 3,363,500 nodes in 15.1 s, 13,448,688 relationships in 69.3 s
+== before adjacency 2026-10-24T23:19:44Z
+ 9:19  up 5 days,  2:32, 5 users, load averages: 15.63 13.19 13.55
+other cpu 0.00% mem 14.88MiB / 15.6GiB io 16.4kB / 0B
+other cpu 0.53% mem 523.6MiB / 15.6GiB io 190MB / 493MB
+other cpu 0.83% mem 429.6MiB / 15.6GiB io 322MB / 673MB
+other cpu 0.01% mem 8.453MiB / 4GiB io 7.9GB / 680MB
+other cpu 0.70% mem 245.7MiB / 15.6GiB io 21.2GB / 1.32GB
+sqlite: adjacency
+  round 1, count: 2.2 s
+  round 1, reach: 4.3 s
+  round 1, read: 24.1 s
+  round 2, count: 2.0 s
+  round 2, reach: 4.0 s
+  round 2, read: 23.7 s
+  round 3, count: 1.8 s
+  round 3, reach: 3.8 s
+  round 3, read: 29.8 s
+== after adjacency 2026-10-24T23:21:35Z
+ 9:21  up 5 days,  2:34, 5 users, load averages: 17.15 13.57 13.60
+other cpu 0.14% mem 11.86MiB / 15.6GiB io 0B / 0B
+other cpu 0.46% mem 523.4MiB / 15.6GiB io 190MB / 493MB
+other cpu 0.47% mem 429.9MiB / 15.6GiB io 322MB / 673MB
+other cpu 0.00% mem 7.781MiB / 4GiB io 7.9GB / 680MB
+other cpu 0.39% mem 250.3MiB / 15.6GiB io 21.2GB / 1.32GB
+other cpu 6.38% mem 24.66MiB / 15.6GiB io 7.56MB / 6.39MB
+other cpu 14.24% mem 22.95MiB / 15.6GiB io 0B / 52.1MB
+other cpu 0.65% mem 78.02MiB / 15.6GiB io 0B / 0B
+other cpu 0.04% mem 84.68MiB / 15.6GiB io 8.19kB / 258kB
+other cpu 176.92% mem 158.6MiB / 15.6GiB io 0B / 271MB

@@ -1,0 +1,6 @@
+{
+  "engine" : "sqlite",
+  "scale" : 3.0,
+  "load" : null,
+  "outcomes" : [ ]
+}

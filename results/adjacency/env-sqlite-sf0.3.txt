@@ -1,0 +1,71 @@
+== before start 2026-10-24T22:41:24Z
+ 8:41  up 5 days,  1:54, 5 users, load averages: 14.52 16.04 18.57
+other cpu 0.02% mem 21.69MiB / 15.6GiB io 0B / 52.1MB
+other cpu 0.07% mem 80.27MiB / 15.6GiB io 12.3kB / 479kB
+other cpu 0.74% mem 75.15MiB / 15.6GiB io 0B / 3.59MB
+other cpu 170.17% mem 405.4MiB / 15.6GiB io 4.1kB / 274MB
+other cpu 0.00% mem 11.39MiB / 15.6GiB io 16.4kB / 0B
+other cpu 0.02% mem 27.08MiB / 15.6GiB io 1.99MB / 55.7MB
+other cpu 0.00% mem 5.215MiB / 15.6GiB io 0B / 0B
+other cpu 0.50% mem 527.9MiB / 15.6GiB io 187MB / 483MB
+other cpu 0.50% mem 446.8MiB / 15.6GiB io 308MB / 647MB
+other cpu 0.00% mem 19.14MiB / 4GiB io 7.9GB / 680MB
+other cpu 0.47% mem 271.4MiB / 15.6GiB io 21.2GB / 1.27GB
+sqlite: loading 336,450 nodes
+  loaded 300 Org
+  loaded 30,000 Person
+  loaded 6,000 Repo
+  loaded 150 Topic
+  loaded 75,000 Issue
+  loaded 225,000 Comment
+  loaded 38,885 MEMBER_OF
+  loaded 460,927 FOLLOWS
+  loaded 6,000 OWNED_BY
+  loaded 24,022 DEPENDS_ON
+  loaded 75,000 IN_REPO
+  loaded 75,000 OPENED_BY
+  loaded 60,027 ASSIGNED_TO
+  loaded 148,390 TAGGED
+  loaded 225,000 ON
+  loaded 225,000 WRITTEN_BY
+sqlite: 336,450 nodes in 1.5 s, 1,338,251 relationships in 6.0 s
+== before adjacency 2026-10-24T22:41:35Z
+ 8:41  up 5 days,  1:54, 5 users, load averages: 14.27 15.94 18.50
+other cpu 133.42% mem 1.992GiB / 15.6GiB io 11.9MB / 3.3GB
+other cpu 0.00% mem 3.051MiB / 15.6GiB io 0B / 0B
+other cpu 0.24% mem 22.19MiB / 15.6GiB io 0B / 52.1MB
+other cpu 0.05% mem 79.8MiB / 15.6GiB io 12.3kB / 508kB
+other cpu 0.60% mem 75.64MiB / 15.6GiB io 0B / 3.59MB
+other cpu 1.26% mem 527.3MiB / 15.6GiB io 4.1kB / 327MB
+other cpu 0.00% mem 11.39MiB / 15.6GiB io 16.4kB / 0B
+other cpu 0.59% mem 527.4MiB / 15.6GiB io 187MB / 483MB
+other cpu 0.90% mem 446.8MiB / 15.6GiB io 308MB / 647MB
+other cpu 0.03% mem 19.39MiB / 4GiB io 7.9GB / 680MB
+other cpu 0.43% mem 272.3MiB / 15.6GiB io 21.2GB / 1.27GB
+sqlite: adjacency
+  round 1, count: 1.7 s
+  round 1, reach: 3.6 s
+  round 1, read: 18.1 s
+  round 2, count: 1.7 s
+  round 2, reach: 7.3 s
+  round 2, read: 23.6 s
+  round 3, count: 1.6 s
+  round 3, reach: 3.6 s
+  round 3, read: 18.0 s
+== after adjacency 2026-10-24T22:43:05Z
+ 8:43  up 5 days,  1:56, 5 users, load averages: 14.34 15.69 18.16
+other cpu 189.70% mem 540.9MiB / 15.6GiB io 20.5kB / 326MB
+other cpu 0.07% mem 79.28MiB / 15.6GiB io 0B / 258kB
+other cpu 0.02% mem 22.19MiB / 15.6GiB io 0B / 52.1MB
+other cpu 0.55% mem 75.2MiB / 15.6GiB io 0B / 3.59MB
+other cpu 62.84% mem 2.129GiB / 15.6GiB io 11.9MB / 3.33GB
+other cpu 0.02% mem 37.48MiB / 15.6GiB io 131kB / 55.9MB
+other cpu 0.52% mem 68.45MiB / 15.6GiB io 0B / 0B
+other cpu 0.05% mem 46.76MiB / 15.6GiB io 8.19kB / 516kB
+other cpu 0.96% mem 746MiB / 15.6GiB io 32.8kB / 328MB
+other cpu 0.00% mem 6.348MiB / 15.6GiB io 1.29MB / 0B
+other cpu 0.00% mem 11.41MiB / 15.6GiB io 16.4kB / 0B
+other cpu 0.51% mem 527.9MiB / 15.6GiB io 187MB / 483MB
+other cpu 0.39% mem 448.5MiB / 15.6GiB io 309MB / 647MB
+other cpu 0.00% mem 19.43MiB / 4GiB io 7.9GB / 680MB
+other cpu 0.40% mem 277.4MiB / 15.6GiB io 21.2GB / 1.27GB
