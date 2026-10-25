@@ -33,7 +33,10 @@ class Engine(val name: String, val type: DatabaseType, val provider: ConnectionP
     /** Whether the SQL is Postgres's, which keeps a graph in Oracle's tables and reads it with joins, not SQL/PGQ. */
     val postgres: Boolean get() = type == DatabaseType.POSTGRES
 
-    /** Whether this is SQLite, a file opened in this process, which keeps a graph in the same tables and is read with joins too. */
+    /**
+     * Whether this is SQLite, a file opened in this process, which keeps a graph in the same tables and is read with joins too.
+     * By name, not [type]: the release Drivine is built against has no `DatabaseType.SQLITE` (see [open]).
+     */
     val sqlite: Boolean get() = name == "sqlite"
 
     fun execute(statement: String, parameters: Map<String, Any?> = emptyMap()) =

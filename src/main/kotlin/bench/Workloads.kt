@@ -264,6 +264,7 @@ object Hops {
 
     /** For each of [people] and each number of hops up to [upTo]: the paths counted, and the quickest of three calls in milliseconds. */
     fun measure(engine: Engine, people: List<String>, upTo: Int): List<List<Any>> = (1..upTo).flatMap { hops ->
+        check(!engine.sqlite) { "The hops phase is not written for SQLite: its walk is the adjacency phase" }
         val statement = if (engine.postgres) postgres(hops) else if (engine.sql) sql(hops) else cypher(hops)
         fun call(id: String): Pair<Long, Double> {
             val before = System.nanoTime()

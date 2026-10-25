@@ -353,7 +353,7 @@ index alone. On Neo4j a count reads each relationship already, and `reach` costs
 **The sizes.** The graph above at scale factors 0.1, 0.3, 1, 3, 10 and 30. The generator gives each
 person the same number of people to follow at every size ([`Data.kt`](src/main/kotlin/bench/Data.kt):
 between 1 and 61, drawn the same way whatever the size), and that is what the walk follows.
-Measured, a person follows 15.7 to 15.8 others at every size, the median 8, the most 60. What does
+Measured, a person follows 15.6 to 15.8 others at every size, the median 8, the most 60. What does
 grow is how many follow the most followed: whom a person follows is skewed to the first people made,
 so the most followed person has 1,164 followers at 0.1 and 26,252 at 30, as the square root of the
 graph. The walk never goes that way. The calls walk the same number of paths at every size, 7.5 to
@@ -371,7 +371,7 @@ a file opened in the harness's own process, on the host and not in a container, 
 and no container in them. Oracle was not run again: its loads are the slowest of the four, and at
 scale factor 30 Postgres's alone took five and a half hours.
 
-**How it was timed.** The server is restarted after the load, and every call is made once to warm
+**How it was timed.** The server is restarted after the load (FalkorDB's is not: it keeps its graph only in memory), and every call is made once to warm
 it. Then three rounds: in each, every person, each number of hops and each version, called three
 times. A call's time is the quickest of its three, as above, and the first of the three is kept as
 well, for what a call costs when it does not find everything in the cache. A line is fitted to each
@@ -396,7 +396,7 @@ brackets, the whole database:
 |---:|---:|---:|---:|---:|---:|
 | 0.1 | 112,150 | 445,374 | 0.02 (0.05) | 0.05 (0.11) | 0.06 |
 | 0.3 | 336,450 | 1,338,251 | 0.07 (0.19) | 0.14 (0.30) | 0.17 |
-| 1 | 1,121,500 | 4,482,439 | 0.19 (0.58) | 0.46 (0.99) | 0.60 |
+| 1 | 1,121,500 | 4,482,439 | 0.18 (0.58) | 0.46 (0.99) | 0.60 |
 | 3 | 3,363,500 | 13,448,688 | 0.54 (1.62) | 1.35 (2.95) | 1.82 |
 | 10 | 11,210,500 | 44,818,559 | 1.88 (5.61) | 4.49 (9.86) | 6.18 |
 | 30 | 33,630,500 | 134,509,246 | 5.20 (16.52) | 13.49 (29.69) | 18.86 |
@@ -410,7 +410,7 @@ time as the quickest.
 
 **Postgres** walks the FOLLOWS rows of the relationships' table, the part of their index over people,
 and, to read, the people. Its 1 GB buffer cache holds all of that up to scale factor 3: no call there
-read a block from outside it. At 10 it does not: a call found up to 7% of the blocks it needed
+read a block from outside it. At 10 it does not: the calls of a version found up to 7% of the blocks they needed
 outside the cache, and the container read 2.1 GB from disk. At 30, 8% of a count's blocks, 47% of a
 reach's and 16% of a read's, and the container read 427 GB from disk.
 
@@ -465,7 +465,7 @@ And from the first of each call's three:
 | 10 | **0.82** (0.80–0.84) | 2.85 = 0.45 + 2.41 | 1.05 = 0.09 + 0.96 |
 | 30 | 4.2 (4.0–4.5) | 34.9 = 11.4 + 23.5 | **2.9** = 0.1 + 2.8 |
 
-The SQL stores' intervals are within 5% of the figure in memory and within 20% out of it, and are left
+The SQL stores' intervals are within 7% of the figure in memory and within 21% out of it, and are left
 out. `python3 adjacency.py` prints them all.
 
 ### Reading it
@@ -510,7 +510,7 @@ grows to 35 µs a node against 4. Neo4j is the quicker when a query reads more n
 
 | scale | counting paths | Postgres, reading the node of each, quickest call | Postgres, first call | SQLite, quickest call |
 |---:|---:|---:|---:|---:|
-| 0.1 | never | 890 (870–910) | 1,010 (980–1,050) | 3,200 (3,100–3,300) |
+| 0.1 | never | 890 (860–910) | 1,010 (980–1,050) | 3,200 (3,100–3,300) |
 | 0.3 | never | 850 (820–880) | 840 (800–880) | 8,800 (7,600–10,900) |
 | 1 | never | 780 (750–800) | 800 (780–830) | 12,500 (10,500–14,400) |
 | 3 | never | 400 (380–420) | 330 (310–340) | never in this run |
@@ -526,7 +526,7 @@ noisiest of all.
 In part, and not the part one would guess. The fixed cost of a call is not the walk: it is the round
 trip, the protocol, and finding or making the plan. Postgres's is 0.16 to 0.18 ms at every size, and
 Neo4j's 0.57 to 0.91 ms, over Bolt, the driver's session, a transaction and the Cypher planner's
-cache. SQLite's, 0.025 ms, has no network and no server at all. FalkorDB's, 0.22 to 0.25 ms, is a
+cache. SQLite's, 0.025 ms (0.06 at 30), has no network and no server at all. FalkorDB's, 0.22 to 0.25 ms, is a
 server written in C and Rust, behind Redis's protocol, close to Postgres's. Most of the gap between
 Neo4j and Postgres on small queries is this, and it is not the language of the engine.
 
@@ -686,8 +686,8 @@ build/install/graph-bench/bin/graph-bench run --engine neo4j --sf 1 --phases loa
 The hop by hop measurement is a phase of its own, `--phases hops`, and writes each call to
 `results/hops-<engine>-sf<scale>.csv`.
 
-The walk at several sizes is `adjacency.sh`, which for each engine in turn loads the graph, writes
-down the store's size, restarts the server and runs the `adjacency` phase, recording the host's load
+The walk at several sizes is `adjacency.sh`, which for each engine in turn loads the graph, restarts
+the server, writes down the store's size and runs the `adjacency` phase, recording the host's load
 before and after. SQLite is one of its engines, and needs Drivine's main branch until the next
 release. Everything goes to `results/adjacency/`, and `adjacency.py` fits the lines:
 
