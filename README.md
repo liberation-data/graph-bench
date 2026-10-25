@@ -2,7 +2,7 @@
 
 **Using Drivine to compare the performance of Neo4j, FalkorDB, Oracle and Postgres.**
 
-*15 October 2026. Postgres added 22 October 2026.*
+*15 October 2026. Postgres added 22 October 2026. The walk at six sizes, and SQLite, added 25 October 2026.*
 
 [Drivine4j](https://github.com/liberation-data/drivine4j) is a graph mapping library for the JVM. You
 describe your domain as fragments (a node) and views (a node with what is related to it), and
@@ -47,6 +47,9 @@ engine.
 - **Neither SQL store has index-free adjacency, and it did not matter.** Walking relationships
   through an index cost Oracle and Postgres less for each path than Neo4j, out to 275,000 paths.
   What costs them is reading the nodes on the way. [The numbers are below.](#does-oracle-miss-index-free-adjacency)
+  Run again at six sizes, out to 33.6 million nodes and well out of the cache, the walk itself
+  never cost Postgres more than Neo4j; reading the nodes did, past a few hundred of them in memory and
+  about 30 out of it. [See when index-free adjacency pays.](#when-does-index-free-adjacency-pay)
 - **A benchmark is a good bug hunt.** FalkorDB 6 is a new engine, rewritten in Rust, and we met
   three rough edges in it, all reported and all with a small workaround. Oracle Free 23.26 has a
   sharper one, where a graph query can return a wrong answer or end the server process. On
@@ -311,7 +314,266 @@ about nodes, not about relationships.
 Three cautions. This is counting, the kindest case for an index. The graph fits in memory, and a
 B-tree over 4.5 million relationships is only a few levels deep; over billions, or colder, each
 probe costs more, and that is exactly where index-free adjacency is meant to earn its keep. And this
-is Neo4j Community, which does not have the faster runtime of the Enterprise edition.
+is Neo4j Community, which does not have the faster runtime of the Enterprise edition. The next
+section takes up the first two: the same walk at six sizes, in and out of the cache, and reading
+the nodes as it goes.
+
+## When does index-free adjacency pay?
+
+*25 October 2026.*
+
+The section above walks one graph, of 1.1 million nodes. The case for index-free adjacency is about
+size: following a pointer costs the same however big the graph is, and a probe of a B-tree costs
+more as the tree grows, O(1) against O(log n). It is also about memory: a graph engine is meant to
+win most clearly once the graph no longer fits in its cache. One size says nothing about either. So
+we ran the same walk at six sizes, from 112,150 nodes to 33.6 million, the largest well out of every
+engine's cache, and added two versions of it that read something of the node each path reaches.
+
+**The short of it.** Walking relationships, the SQL stores never paid for having no index-free
+adjacency, in memory or out of it: out of it, Postgres walked six times quicker than Neo4j. What
+they pay for is reading the nodes at the end of the walk. In memory Neo4j is the quicker once a
+query reads more than about 200 to 900 nodes, the fewer the larger the graph; out of memory, once it
+reads more than about 30.
+
+### What was run
+
+**The walk.** As above: from each of 150 people, follow FOLLOWS out for one to four hops. Three
+versions of it, each a statement of its own:
+
+- *count* counts the paths, as above. Nothing is read of any node but the person it starts from.
+- *reach* sums the internal ids of the nodes the paths end at: it has to know which node each
+  path reaches, and reads nothing of it.
+- *read* sums the `karma` of the person each path ends at: one node read for each path.
+
+`reach` is there because of how the SQL stores are indexed. Drivine's index over the relationships
+is over `(src, type)` and does not hold `dst`. A hop that goes on from a node has to read the
+relationship's row to learn where it goes, and only the last hop of a count is answered from the
+index alone. On Neo4j a count reads each relationship already, and `reach` costs nothing more.
+
+**The sizes.** The graph above at scale factors 0.1, 0.3, 1, 3, 10 and 30. The generator gives each
+person the same number of people to follow at every size ([`Data.kt`](src/main/kotlin/bench/Data.kt):
+between 1 and 61, drawn the same way whatever the size), and that is what the walk follows.
+Measured, a person follows 15.6 to 15.8 others at every size, the median 8, the most 60. What does
+grow is how many follow the most followed: whom a person follows is skewed to the first people made,
+so the most followed person has 1,164 followers at 0.1 and 26,252 at 30, as the square root of the
+graph. The walk never goes that way. The calls walk the same number of paths at every size, 7.5 to
+8.8 million four-hop paths over the 150 people, the largest call 230,000 to 275,000.
+
+**The engines.** Neo4j 2026.07.1 Community and Postgres 17, in the containers and with the limits
+above: 2 CPUs, 4 GB, a 2 GB page cache and a 1 GB heap for Neo4j, 1 GB of `shared_buffers` for
+Postgres. FalkorDB 6.0.0 too, up to scale factor 3: at 10 its graph would need about 8 GB of the 4.
+And SQLite 3.53, in which Drivine keeps a graph in the same two tables with the same indexes, read
+with the same joins as Postgres. SQLite is in Drivine's main branch and not yet released; every
+engine here was run through that branch at
+[b3da3d6](https://github.com/liberation-data/drivine4j/commit/b3da3d6). SQLite has no server: it is
+a file opened in the harness's own process, on the host and not in a container, with a page cache of
+1 GB of its own and the host's 32 GB of memory behind it. Its numbers have no network, no protocol
+and no container in them. Oracle was not run again: its loads are the slowest of the four, and at
+scale factor 30 Postgres's alone took five and a half hours.
+
+**How it was timed.** The server is restarted after the load (FalkorDB's is not: it keeps its graph only in memory), and every call is made once to warm
+it. Then three rounds: in each, every person, each number of hops and each version, called three
+times. A call's time is the quickest of its three, as above, and the first of the three is kept as
+well, for what a call costs when it does not find everything in the cache. A line is fitted to each
+engine's calls at each size: a fixed cost for a call, and a cost for each path. With calls from 1
+path to 275,000, and noise that grows with the call, it is fitted to each call's error relative to
+its time, so that the small calls set the fixed cost and the large ones the cost of a path, and one
+slow call moves neither much. The ranges in brackets are 95% intervals from resampling the 150
+people. They say how well one run fixes the line, not how much the next run would move it: for that,
+see the cautions at the end. The fit is [`adjacency.py`](adjacency.py), and every call is in
+[`results/adjacency/`](results/adjacency).
+
+All four engines count the same paths and sum the same karma on every call, but for Neo4j's few
+four-hop paths that come back over their first relationship, as above.
+
+### How big the stores are, and their caches
+
+On disk, in **gigabytes (GB)**, after the load. For Neo4j, its relationship and node stores and, in
+brackets, all of it; for Postgres, the relationships' table and the index a walk uses and, in
+brackets, the whole database:
+
+| scale | nodes | relationships | Neo4j (GB) | Postgres (GB) | SQLite (GB) |
+|---:|---:|---:|---:|---:|---:|
+| 0.1 | 112,150 | 445,374 | 0.02 (0.05) | 0.05 (0.11) | 0.06 |
+| 0.3 | 336,450 | 1,338,251 | 0.07 (0.19) | 0.14 (0.30) | 0.17 |
+| 1 | 1,121,500 | 4,482,439 | 0.18 (0.58) | 0.46 (0.99) | 0.60 |
+| 3 | 3,363,500 | 13,448,688 | 0.54 (1.62) | 1.35 (2.95) | 1.82 |
+| 10 | 11,210,500 | 44,818,559 | 1.88 (5.61) | 4.49 (9.86) | 6.18 |
+| 30 | 33,630,500 | 134,509,246 | 5.20 (16.52) | 13.49 (29.69) | 18.86 |
+
+**Neo4j** walks its relationship and node stores, and for `read` its property store too. They fit in
+its 2 GB page cache up to scale factor 3. At 10 the two stores come to 1.9 GB, and karma is in a
+property store of 1.1 GB more: a call's first time is about half as much again as its quickest. At
+30 they do not fit at all. The container read 354 GB from disk in the adjacency phase, and in every
+round, not only the first, half of the counting calls took more than five times as long the first
+time as the quickest.
+
+**Postgres** walks the FOLLOWS rows of the relationships' table, the part of their index over people,
+and, to read, the people. Its 1 GB buffer cache holds all of that up to scale factor 3: no call there
+read a block from outside it. At 10 it does not: the calls of a version found up to 7% of the blocks they needed
+outside the cache, and the container read 2.1 GB from disk. At 30, 8% of a count's blocks, 47% of a
+reach's and 16% of a read's, and the container read 427 GB from disk.
+
+**SQLite** is cached by the host, whose 32 GB is shared with everything else running on it. At 30
+its file is 19 GB, and its first calls cost twice its quickest, so some of it was likely read from
+disk; that was not measured.
+
+The B-tree a walk goes down, over the relationships by `src`, is three levels deep on Postgres from
+0.1 to 3 and four at 10 and 30; on SQLite, three up to 1 and four from 3 to 30.
+
+### What a path costs
+
+The quickest of three calls, in **microseconds (µs) for each path**, and the fixed cost of a call in
+**milliseconds (ms)**:
+
+| scale | Neo4j (µs) | Postgres (µs) | SQLite (µs) | FalkorDB (µs) | Neo4j fixed (ms) | Postgres fixed (ms) | SQLite fixed (ms) |
+|---:|---:|---:|---:|---:|---:|---:|---:|
+| 0.1 | 0.15 (0.14–0.15) | 0.120 (0.119–0.121) | 0.049 | **0.025** | 0.69 | 0.16 | **0.026** |
+| 0.3 | 0.28 (0.27–0.29) | 0.128 (0.126–0.129) | 0.053 | **0.026** | 0.91 | 0.17 | **0.025** |
+| 1 | 0.25 (0.25–0.26) | 0.139 (0.138–0.142) | 0.055 | **0.027** | 0.68 | 0.17 | **0.025** |
+| 3 | 0.28 (0.27–0.29) | 0.149 (0.147–0.152) | 0.059 | **0.027** | 0.63 | 0.17 | **0.024** |
+| 10 | 0.29 (0.28–0.30) | 0.176 (0.174–0.179) | **0.061** | - | 0.57 | 0.16 | **0.025** |
+| 30 | 0.38 (0.37–0.40) | 0.243 (0.232–0.252) | **0.178** | - | 0.62 | 0.18 | **0.060** |
+
+The same, from the first of each call's three, at the two sizes that do not fit:
+
+| scale | Neo4j (µs) | Postgres (µs) | SQLite (µs) |
+|---:|---:|---:|---:|
+| 10 | 0.45 (0.44–0.46) | 0.32 (0.31–0.32) | **0.10** |
+| 30 | 12.8 (12.5–13.1) | 2.07 (1.91–2.14) | **0.34** |
+
+### What reading a node costs
+
+What reading the node each path reaches adds to a path, in **microseconds (µs)**: the slope of `read`
+less the slope of `count`. For the SQL stores it is split in two: learning which node the path
+reaches (`reach`, the relationship's row), and then reading it (the node's key, its row and its JSON).
+The quickest of three calls:
+
+| scale | Neo4j (µs) | Postgres: reach + node (µs) | SQLite: reach + node (µs) | FalkorDB (µs) |
+|---:|---:|---:|---:|---:|
+| 0.1 | 0.20 (0.19–0.21) | 0.78 = 0.03 + 0.75 | 0.50 = 0.05 + 0.45 | **0.02** |
+| 0.3 | 0.25 (0.23–0.26) | 1.07 = 0.07 + 1.01 | 0.56 = 0.06 + 0.50 | **0.02** |
+| 1 | 0.34 (0.32–0.34) | 1.10 = 0.09 + 1.01 | 0.58 = 0.06 + 0.52 | **0.03** |
+| 3 | 0.45 (0.42–0.48) | 1.47 = 0.15 + 1.32 | 0.65 = 0.06 + 0.59 | **0.05** |
+| 10 | **0.54** (0.52–0.57) | 1.62 = 0.19 + 1.44 | 0.69 = 0.06 + 0.63 | - |
+| 30 | **0.58** (0.56–0.61) | 3.06 = 0.44 + 2.62 | 1.07 = 0.08 + 0.99 | - |
+
+And from the first of each call's three:
+
+| scale | Neo4j (µs) | Postgres: reach + node (µs) | SQLite: reach + node (µs) |
+|---:|---:|---:|---:|
+| 10 | **0.82** (0.80–0.84) | 2.85 = 0.45 + 2.41 | 1.05 = 0.09 + 0.96 |
+| 30 | 4.2 (4.0–4.5) | 34.9 = 11.4 + 23.5 | **2.9** = 0.1 + 2.8 |
+
+The SQL stores' intervals are within 7% of the figure in memory and within 21% out of it, and are left
+out. `python3 adjacency.py` prints them all.
+
+### Reading it
+
+**In memory, the B-tree never costs the SQL stores the walk.** From 112,150 nodes to 11.2 million,
+Postgres's cost for each path goes from 0.120 to 0.176 µs, and Neo4j's from 0.15 to 0.29. Postgres
+is the cheaper at every size, by about half from 1 up (at 0.1 the second run had the two within a
+tenth of each other), and SQLite cheaper again, at a fifth of Neo4j's. Neither line is flat. Postgres's grows by less than a tenth for each tripling of the graph
+up to 3, with its B-tree the same three levels deep, and by a fifth from 3 to 10, where the tree
+gains a level and the walk leaves the buffer cache. Neo4j's grows too. In this run it jumps from 0.1
+to 0.3 and is then about level; in the second, quieter run (see the cautions) it grows steadily, from
+0.12 to 0.22 µs between 0.1 and 3, more than Postgres's 0.109 to 0.144 over the same sizes. Neither
+the pointer nor the B-tree is flat in practice.
+
+That is what a B-tree should do. A walk goes down the tree once for each node it goes on from, and
+then reads that node's relationships along a leaf, side by side. A person follows 16 people on
+average, so one descent is shared by 16 paths, and a level more in the tree adds a sixteenth of a
+descent to each path. On Postgres an entry of the index takes 33 bytes, so a page holds about 250 of
+them: the tree is four levels deep from about 15 million relationships, and would be five from about
+4 billion. Most of the growth that is seen does not come from the depth, which does not change from
+0.1 to 3. It comes from the walk touching more memory as the graph grows, which costs Neo4j too.
+Counting paths, the lines do not cross at any size here, and nothing in their slopes says they would
+in memory at any size a laptop could hold.
+
+**Out of memory, the B-tree is the better layout for the walk.** At scale factor 30 both servers read
+from disk, and Neo4j's first calls cost 12.8 µs a path, nearly 30 times what they cost at 10, where
+Postgres's cost 2.07 µs, about 7 times. The median four-hop count took Neo4j 358 ms the first time
+and Postgres 59. The index keeps a node's relationships together, in the leaf that one descent
+finds, and a count reads a relationship's row only for the hops that go on. Neo4j keeps each node's
+relationships on a chain through its relationship store, and a person with fewer than 50 keeps them
+all on the one chain: those it follows, those it is followed by, its comments and its issues, each
+written when its type was loaded, far apart in the store. Following a pointer is O(1), but out of
+memory each one can be a read from disk, and a walk follows many.
+
+**Reading the nodes is where the crossover is.** To read a node, Postgres reads the relationship's row
+to learn which node it is, goes down a second B-tree, over the nodes' keys, to the node's row, and
+opens its JSON: 0.78 to 1.62 µs a node in memory, against 0.20 to 0.54 for Neo4j, whose relationship
+record says where its node is. Here a descent is shared by nothing: there is one for each node read.
+So a query on Postgres starts 0.4 to 0.7 ms ahead, the difference in fixed costs, and gives it back at
+about 1 µs for every node it reads. Out of memory each of those is a read from disk, and the gap
+grows to 35 µs a node against 4. Neo4j is the quicker when a query reads more nodes than:
+
+| scale | counting paths | Postgres, reading the node of each, quickest call | Postgres, first call | SQLite, quickest call |
+|---:|---:|---:|---:|---:|
+| 0.1 | never | 890 (860–910) | 1,010 (980–1,050) | 3,200 (3,100–3,300) |
+| 0.3 | never | 850 (820–880) | 840 (800–880) | 8,800 (7,600–10,900) |
+| 1 | never | 780 (750–800) | 800 (780–830) | 12,500 (10,500–14,400) |
+| 3 | never | 400 (380–420) | 330 (310–340) | never in this run |
+| 10 | never | 450 (440–460) | 230 (220–240) | never |
+| 30 | never | 180 (170–190) | **31** (25–38) | 2,000 (1,800–2,100) |
+
+SQLite's line for reading a node is as steep as Neo4j's or less from 3 to 10, and starts 0.6 ms
+lower, so the two never meet there. At 30 they do, at about 2,000 nodes, though that run was the
+noisiest of all.
+
+### Is it that the SQL stores are written in C?
+
+In part, and not the part one would guess. The fixed cost of a call is not the walk: it is the round
+trip, the protocol, and finding or making the plan. Postgres's is 0.16 to 0.18 ms at every size, and
+Neo4j's 0.57 to 0.91 ms, over Bolt, the driver's session, a transaction and the Cypher planner's
+cache. SQLite's, 0.025 ms (0.06 at 30), has no network and no server at all. FalkorDB's, 0.22 to 0.25 ms, is a
+server written in C and Rust, behind Redis's protocol, close to Postgres's. Most of the gap between
+Neo4j and Postgres on small queries is this, and it is not the language of the engine.
+
+The cost of a path is the walk, and there the language may tell. Postgres, through a B-tree, costs
+half of what Neo4j does through its pointers, and SQLite, through a B-tree too, a fifth. But Neo4j
+Community runs a walk in its slotted runtime, checks at each hop that no relationship is used twice
+in a path, and reads past every relationship of a person on its chain to find those it follows. The
+Enterprise edition's pipelined runtime is quicker, and was not run.
+
+FalkorDB is the counterpoint. It is native, written in C and Rust like a relational engine, and it
+keeps no chain of pointers: a hop is a product of sparse matrices. It costs 0.025 µs a path, a tenth
+of Neo4j and a fifth of Postgres, at every size it ran, and reading a node adds 0.02 to 0.05 µs. That
+is not index-free adjacency winning, nor C. It is a different way of keeping a graph, built to walk
+many paths at a time.
+
+### Cautions
+
+- **Two runs at most, on a busy host.** Other work was running throughout, with a load average of 5
+  to 36 on 12 cores, recorded before and after each engine's walk in `results/adjacency/env-*.txt`.
+  Scale factors 0.1 to 3 were run a second time, the same night, in `results/adjacency/repeat/`.
+  The second run was quieter and quicker: Neo4j's cost for each path 0.12 to 0.22 µs where the first
+  had 0.15 to 0.28, Postgres's 0.109 to 0.144 where it had 0.120 to 0.149, and the number of nodes
+  past which Neo4j reads quicker than Postgres 440 to 900 where it was 400 to 890. Neo4j moved the
+  most, its first run nearly twice its second at 0.3; the shape did not change. SQLite's crossover is the least steady, 2,200 to
+  3,900 nodes in the second run where the first had 3,200 to never, because its line for reading and
+  Neo4j's are nearly parallel. The intervals above do not include any of this.
+- **SQLite has advantages no server has.** It runs in the harness's process with no network, and its
+  file is cached by the host's 32 GB, not a container's 4. Its numbers say what a walk costs SQLite,
+  not what an application would see from SQLite as from a server. Its run at 30 was the noisiest of
+  all, the load average rising from 8 to 21.
+- **The first of three calls is not a cold call.** It is the first that round, after the warm pass and
+  the rounds before. Out of memory it is a mix of reads from disk and from the cache, and the mix
+  depends on how much of the walk the cache holds. Its numbers say which way and roughly how far, not
+  what one call on a cold server costs.
+- **This is one walk, of one relationship type.** Paths over relationships of many types, or out of
+  nodes with thousands of relationships, would weigh the costs differently. Neo4j groups the
+  relationships of a node with 50 or more by type, and a walk out of such nodes would read less.
+- **The node read is Drivine's layout as much as the store's.** On the SQL stores a node's properties
+  are a JSON document, `jsonb` on Postgres and text on SQLite, opened for each read, and the index
+  over the relationships does not hold `dst`. An index that held it would take away the `reach` part
+  of a read, 11.4 of the 34.9 µs a node out of memory on Postgres; a column for karma, much of the
+  rest. Neither was tried.
+- **The cache is small on purpose.** It is the cache, not the graph, that decides which side of the
+  line a store is on. A Neo4j with 32 GB of page cache would hold scale factor 30 as easily as this
+  one held 3, and so would a Postgres.
+- **A laptop's disk.** Out of memory every engine was reading from the host's SSD through Docker's
+  virtual machine. A server's disks, or a cloud volume, would cost each read differently.
 
 ## The bugs
 
@@ -379,8 +641,8 @@ Take the shape of these results and not the last decimal place.
 - **Oracle Free is not Oracle.** It is capped at 2 CPU threads and 2 GB of memory. The same
   statements on a licensed edition with real memory would behave differently, above all under
   concurrency.
-- **Small machines, a warm cache.** At this size the graph fits in memory on all four. Nothing
-  here says what happens when it does not.
+- **Small machines, a warm cache.** At this size the graph fits in memory on all four. Only the
+  walk was run on graphs that do not, [below](#when-does-index-free-adjacency-pay).
 - **The SQL is ours and untuned.** The SQL/PGQ is what a competent first attempt looks like, shaped
   to get around a bug, and Postgres's is plain joins. Someone who tunes Oracle or Postgres for a
   living would do better.
@@ -424,14 +686,30 @@ build/install/graph-bench/bin/graph-bench run --engine neo4j --sf 1 --phases loa
 The hop by hop measurement is a phase of its own, `--phases hops`, and writes each call to
 `results/hops-<engine>-sf<scale>.csv`.
 
+The walk at several sizes is `adjacency.sh`, which for each engine in turn loads the graph, restarts
+the server, writes down the store's size and runs the `adjacency` phase, recording the host's load
+before and after. SQLite is one of its engines, and needs Drivine's main branch until the next
+release. Everything goes to `results/adjacency/`, and `adjacency.py` fits the lines:
+
+```bash
+DRIVINE_SOURCE=../drivine4j ./adjacency.sh 3                 # Neo4j, Postgres and SQLite
+DRIVINE_SOURCE=../drivine4j ./adjacency.sh 1 neo4j falkordb
+python3 adjacency.py                                         # numpy; prints the tables
+```
+
+`BENCH_CONTAINER_PREFIX` and the `BENCH_*_PORT` variables move the containers off `run.sh`'s names
+and ports, for a host where those are taken.
+
 ### Where things are
 
 | | |
 |---|---|
 | [`Model.kt`](src/main/kotlin/bench/Model.kt) | the fragments and views |
 | [`Data.kt`](src/main/kotlin/bench/Data.kt) | the generator, and why FOLLOWS never runs both ways |
-| [`Load.kt`](src/main/kotlin/bench/Load.kt) | the indexes, and a loader for Cypher, one for Oracle's tables and one for Postgres's |
+| [`Load.kt`](src/main/kotlin/bench/Load.kt) | the indexes, and a loader for Cypher, one for Oracle's tables, one for Postgres's and one for SQLite's |
 | [`Workloads.kt`](src/main/kotlin/bench/Workloads.kt) | every workload, with the Cypher, SQL/PGQ and Postgres SQL side by side |
+| [`Adjacency.kt`](src/main/kotlin/bench/Adjacency.kt) | the walk at several sizes: counting, reaching and reading, on every engine |
+| [`adjacency.py`](adjacency.py) | the lines fitted to the walk's calls, and where they cross |
 | [`Main.kt`](src/main/kotlin/bench/Main.kt) | timing, the digest that checks the engines agree, the report |
 
 Two things about the data are deliberate. FOLLOWS never runs both ways between two people, and

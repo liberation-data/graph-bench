@@ -1,0 +1,12 @@
+{
+  "engine" : "neo4j",
+  "scale" : 1.0,
+  "load" : {
+    "nodes" : 1121500,
+    "edges" : 4482439,
+    "schemaSeconds" : 0.672095625,
+    "nodeSeconds" : 16.338869958,
+    "edgeSeconds" : 75.572913167
+  },
+  "outcomes" : [ ]
+}

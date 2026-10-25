@@ -1,0 +1,57 @@
+== before start 2026-10-25T12:46:36Z
+22:46  up 5 days, 15:59, 5 users, load averages: 12.34 17.56 17.49
+other cpu 90.76% mem 2.048GiB / 15.6GiB io 11.9MB / 3.33GB
+other cpu 0.02% mem 21.68MiB / 15.6GiB io 0B / 52.1MB
+other cpu 0.39% mem 67.48MiB / 15.6GiB io 0B / 0B
+other cpu 0.09% mem 46.88MiB / 15.6GiB io 7.02MB / 496kB
+other cpu 0.87% mem 422.8MiB / 15.6GiB io 4.1kB / 327MB
+other cpu 0.00% mem 3.344MiB / 15.6GiB io 627kB / 0B
+other cpu 0.37% mem 429.1MiB / 15.6GiB io 1.64GB / 1.72GB
+other cpu 0.34% mem 616.6MiB / 15.6GiB io 1.69GB / 1.77GB
+other cpu 0.01% mem 19.55MiB / 4GiB io 8.04GB / 693MB
+other cpu 0.37% mem 346.1MiB / 15.6GiB io 23.6GB / 3.05GB
+postgres: loading 112,150 nodes
+  loaded 100 Org
+  loaded 10,000 Person
+  loaded 2,000 Repo
+  loaded 50 Topic
+  loaded 25,000 Issue
+  loaded 75,000 Comment
+  loaded 12,865 MEMBER_OF
+  loaded 154,199 FOLLOWS
+  loaded 2,000 OWNED_BY
+  loaded 7,907 DEPENDS_ON
+  loaded 25,000 IN_REPO
+  loaded 25,000 OPENED_BY
+  loaded 19,836 ASSIGNED_TO
+  loaded 48,567 TAGGED
+  loaded 75,000 ON
+  loaded 75,000 WRITTEN_BY
+postgres: 112,150 nodes in 0.9 s, 445,374 relationships in 5.8 s
+== before adjacency 2026-10-25T13:02:38Z
+23:02  up 5 days, 16:15, 5 users, load averages: 12.76 17.36 17.42
+gbadj-postgres cpu 0.08% mem 86.88MiB / 4GiB io 274kB / 225kB
+other cpu 0.36% mem 429.1MiB / 15.6GiB io 1.64GB / 1.72GB
+other cpu 0.71% mem 616.6MiB / 15.6GiB io 1.69GB / 1.77GB
+other cpu 0.00% mem 19.55MiB / 4GiB io 8.04GB / 693MB
+other cpu 0.49% mem 346.6MiB / 15.6GiB io 23.6GB / 3.05GB
+postgres: adjacency
+  round 1, count: 3.5 s
+  round 1, reach: 4.6 s
+  round 1, read: 27.3 s
+  round 2, count: 3.8 s
+  round 2, reach: 5.1 s
+  round 2, read: 28.7 s
+  round 3, count: 3.4 s
+  round 3, reach: 4.4 s
+  round 3, read: 22.2 s
+== after adjacency 2026-10-25T13:05:17Z
+23:05  up 5 days, 16:18, 5 users, load averages: 11.46 15.94 16.92
+other cpu 5.08% mem 2.092GiB / 15.6GiB io 16.7MB / 3.4GB
+other cpu 2.45% mem 857.7MiB / 15.6GiB io 758kB / 330MB
+other cpu 0.00% mem 5.207MiB / 15.6GiB io 0B / 0B
+gbadj-postgres cpu 0.01% mem 95.88MiB / 4GiB io 614kB / 913kB
+other cpu 1.01% mem 429.7MiB / 15.6GiB io 1.64GB / 1.72GB
+other cpu 1.12% mem 617MiB / 15.6GiB io 1.69GB / 1.77GB
+other cpu 0.00% mem 20.21MiB / 4GiB io 8.04GB / 693MB
+other cpu 1.09% mem 347MiB / 15.6GiB io 23.6GB / 3.05GB

@@ -1,0 +1,17 @@
+file 57167872
+bench_edge|11341824|3
+bench_edge_dst|9293824|3
+bench_edge_src|9416704|3
+bench_ix_IssuerepoKey_c0b4ad46|339968|2
+bench_node|21696512|3
+bench_schema|4096|1
+bench_uq_Commentid_ac686a7c|1241088|3
+bench_uq_Issueid_2d7e6dc2|385024|2
+bench_uq_Orgid_8d442fd7|4096|1
+bench_uq_Personid_aa4b5586|147456|2
+bench_uq_Repoid_a4753c49|36864|2
+bench_uq_Topicid_cac9e1ac|4096|1
+sqlite_autoindex_bench_schema_1|4096|1
+sqlite_schema|4096|1
+sqlite_stat1|4096|1
+sqlite_stat4|24576|2

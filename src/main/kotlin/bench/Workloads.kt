@@ -24,8 +24,10 @@ class Raw(cypher: String, sql: String, postgres: String) {
     val sql = sql.trimIndent().replace("§start", "(SELECT nid FROM ${GRAPH}_node WHERE JSON_VALUE(props, '$.id') = §id)").replace('§', '$')
     val postgres = postgres.trimIndent().replace('§', '$')
 
-    fun on(engine: Engine, vararg parameters: Pair<String, Any?>): List<Any> =
-        engine.query(if (engine.postgres) postgres else if (engine.sql) sql else cypher, mapOf(*parameters))
+    fun on(engine: Engine, vararg parameters: Pair<String, Any?>): List<Any> {
+        check(!engine.sqlite) { "The traversals written by hand are not written for SQLite: it runs the load and adjacency phases" }
+        return engine.query(if (engine.postgres) postgres else if (engine.sql) sql else cypher, mapOf(*parameters))
+    }
 }
 
 /**
@@ -262,6 +264,7 @@ object Hops {
 
     /** For each of [people] and each number of hops up to [upTo]: the paths counted, and the quickest of three calls in milliseconds. */
     fun measure(engine: Engine, people: List<String>, upTo: Int): List<List<Any>> = (1..upTo).flatMap { hops ->
+        check(!engine.sqlite) { "The hops phase is not written for SQLite: its walk is the adjacency phase" }
         val statement = if (engine.postgres) postgres(hops) else if (engine.sql) sql(hops) else cypher(hops)
         fun call(id: String): Pair<Long, Double> {
             val before = System.nanoTime()

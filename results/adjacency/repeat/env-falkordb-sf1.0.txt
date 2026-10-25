@@ -1,0 +1,57 @@
+== before start 2026-10-25T14:02:21Z
+ 0:02  up 5 days, 17:15, 5 users, load averages: 10.50 16.14 16.13
+other cpu 2.56% mem 2.093GiB / 15.6GiB io 511MB / 3.4GB
+other cpu 0.00% mem 5.723MiB / 15.6GiB io 0B / 0B
+other cpu 0.48% mem 429.6MiB / 15.6GiB io 1.64GB / 1.72GB
+other cpu 0.85% mem 618.9MiB / 15.6GiB io 1.69GB / 1.77GB
+other cpu 0.00% mem 15.54MiB / 4GiB io 8.04GB / 693MB
+other cpu 0.50% mem 354.5MiB / 15.6GiB io 23.7GB / 3.06GB
+falkordb: loading 1,121,500 nodes
+  loaded 1,000 Org
+  loaded 100,000 Person
+  loaded 20,000 Repo
+  loaded 500 Topic
+  loaded 250,000 Issue
+  loaded 750,000 Comment
+  loaded 129,912 MEMBER_OF
+  loaded 1,555,013 FOLLOWS
+  loaded 20,000 OWNED_BY
+  loaded 79,738 DEPENDS_ON
+  loaded 250,000 IN_REPO
+  loaded 250,000 OPENED_BY
+  loaded 199,671 ASSIGNED_TO
+  loaded 498,105 TAGGED
+  loaded 750,000 ON
+  loaded 750,000 WRITTEN_BY
+falkordb: 1,121,500 nodes in 9.9 s, 4,482,439 relationships in 53.0 s
+== before adjacency 2026-10-25T14:11:52Z
+ 0:11  up 5 days, 17:25, 5 users, load averages: 10.62 15.02 15.71
+other cpu 0.62% mem 94.97MiB / 15.6GiB io 33.4MB / 0B
+other cpu 0.06% mem 79.04MiB / 15.6GiB io 45.1MB / 467kB
+other cpu 0.02% mem 47.37MiB / 15.6GiB io 27.6MB / 52.4MB
+other cpu 147.26% mem 426MiB / 15.6GiB io 166MB / 326MB
+other cpu 76.05% mem 1.981GiB / 15.6GiB io 141MB / 3.3GB
+other cpu 0.00% mem 13.18MiB / 15.6GiB io 1.9MB / 0B
+gbadj-falkordb cpu 0.53% mem 1.076GiB / 4GiB io 185MB / 3.59MB
+other cpu 0.50% mem 429.6MiB / 15.6GiB io 1.65GB / 1.72GB
+other cpu 0.61% mem 617.7MiB / 15.6GiB io 1.69GB / 1.77GB
+other cpu 0.03% mem 15.2MiB / 4GiB io 8.04GB / 693MB
+other cpu 1.92% mem 353.5MiB / 15.6GiB io 23.7GB / 3.06GB
+falkordb: adjacency
+  round 1, count: 1.2 s
+  round 1, reach: 2.2 s
+  round 1, read: 1.9 s
+  round 2, count: 1.2 s
+  round 2, reach: 2.4 s
+  round 2, read: 2.8 s
+  round 3, count: 1.6 s
+  round 3, reach: 2.5 s
+  round 3, read: 4.9 s
+== after adjacency 2026-10-25T14:28:51Z
+ 0:28  up 5 days, 17:42, 5 users, load averages: 25.35 17.70 16.63
+other cpu 0.21% mem 13.73MiB / 15.6GiB io 1.9MB / 0B
+gbadj-falkordb cpu 0.50% mem 1.04GiB / 4GiB io 185MB / 3.59MB
+other cpu 0.50% mem 429.2MiB / 15.6GiB io 1.65GB / 1.72GB
+other cpu 0.45% mem 617.7MiB / 15.6GiB io 1.69GB / 1.77GB
+other cpu 0.00% mem 14.95MiB / 4GiB io 8.04GB / 693MB
+other cpu 0.47% mem 353.6MiB / 15.6GiB io 23.7GB / 3.06GB

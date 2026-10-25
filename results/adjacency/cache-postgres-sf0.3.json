@@ -1,0 +1,289 @@
+[ {
+  "round" : 1,
+  "variant" : "count",
+  "seconds" : 4.158555,
+  "before" : {
+    "bench_edge" : {
+      "heap_hit" : 5415336,
+      "heap_read" : 10994,
+      "index_hit" : 13884233,
+      "index_read" : 3538
+    },
+    "bench_node" : {
+      "heap_hit" : 13897948,
+      "heap_read" : 5978,
+      "index_hit" : 35591821,
+      "index_read" : 191
+    }
+  },
+  "after" : {
+    "bench_edge" : {
+      "heap_hit" : 5544096,
+      "heap_read" : 10994,
+      "index_hit" : 19192910,
+      "index_read" : 3538
+    },
+    "bench_node" : {
+      "heap_hit" : 13899748,
+      "heap_read" : 5978,
+      "index_hit" : 35595421,
+      "index_read" : 191
+    }
+  }
+}, {
+  "round" : 1,
+  "variant" : "reach",
+  "seconds" : 8.088879459,
+  "before" : {
+    "bench_edge" : {
+      "heap_hit" : 5544096,
+      "heap_read" : 10994,
+      "index_hit" : 19192910,
+      "index_read" : 3538
+    },
+    "bench_node" : {
+      "heap_hit" : 13899748,
+      "heap_read" : 5978,
+      "index_hit" : 35595421,
+      "index_read" : 191
+    }
+  },
+  "after" : {
+    "bench_edge" : {
+      "heap_hit" : 7497480,
+      "heap_read" : 10994,
+      "index_hit" : 24501587,
+      "index_read" : 3538
+    },
+    "bench_node" : {
+      "heap_hit" : 13901548,
+      "heap_read" : 5978,
+      "index_hit" : 35599021,
+      "index_read" : 191
+    }
+  }
+}, {
+  "round" : 1,
+  "variant" : "read",
+  "seconds" : 36.416819833,
+  "before" : {
+    "bench_edge" : {
+      "heap_hit" : 7497480,
+      "heap_read" : 10994,
+      "index_hit" : 24501587,
+      "index_read" : 3538
+    },
+    "bench_node" : {
+      "heap_hit" : 13901548,
+      "heap_read" : 5978,
+      "index_hit" : 35599021,
+      "index_read" : 191
+    }
+  },
+  "after" : {
+    "bench_edge" : {
+      "heap_hit" : 9450864,
+      "heap_read" : 10994,
+      "index_hit" : 29810264,
+      "index_read" : 3538
+    },
+    "bench_node" : {
+      "heap_hit" : 39333568,
+      "heap_read" : 5978,
+      "index_hit" : 111893281,
+      "index_read" : 191
+    }
+  }
+}, {
+  "round" : 2,
+  "variant" : "count",
+  "seconds" : 3.596271208,
+  "before" : {
+    "bench_edge" : {
+      "heap_hit" : 9450864,
+      "heap_read" : 10994,
+      "index_hit" : 29810264,
+      "index_read" : 3538
+    },
+    "bench_node" : {
+      "heap_hit" : 39333568,
+      "heap_read" : 5978,
+      "index_hit" : 111893281,
+      "index_read" : 191
+    }
+  },
+  "after" : {
+    "bench_edge" : {
+      "heap_hit" : 9579624,
+      "heap_read" : 10994,
+      "index_hit" : 35118941,
+      "index_read" : 3538
+    },
+    "bench_node" : {
+      "heap_hit" : 39335368,
+      "heap_read" : 5978,
+      "index_hit" : 111896881,
+      "index_read" : 191
+    }
+  }
+}, {
+  "round" : 2,
+  "variant" : "reach",
+  "seconds" : 7.02315575,
+  "before" : {
+    "bench_edge" : {
+      "heap_hit" : 9579624,
+      "heap_read" : 10994,
+      "index_hit" : 35118941,
+      "index_read" : 3538
+    },
+    "bench_node" : {
+      "heap_hit" : 39335368,
+      "heap_read" : 5978,
+      "index_hit" : 111896881,
+      "index_read" : 191
+    }
+  },
+  "after" : {
+    "bench_edge" : {
+      "heap_hit" : 11533008,
+      "heap_read" : 10994,
+      "index_hit" : 40427618,
+      "index_read" : 3538
+    },
+    "bench_node" : {
+      "heap_hit" : 39337168,
+      "heap_read" : 5978,
+      "index_hit" : 111900481,
+      "index_read" : 191
+    }
+  }
+}, {
+  "round" : 2,
+  "variant" : "read",
+  "seconds" : 37.068732917,
+  "before" : {
+    "bench_edge" : {
+      "heap_hit" : 11533008,
+      "heap_read" : 10994,
+      "index_hit" : 40427618,
+      "index_read" : 3538
+    },
+    "bench_node" : {
+      "heap_hit" : 39337168,
+      "heap_read" : 5978,
+      "index_hit" : 111900481,
+      "index_read" : 191
+    }
+  },
+  "after" : {
+    "bench_edge" : {
+      "heap_hit" : 13486392,
+      "heap_read" : 10994,
+      "index_hit" : 45736295,
+      "index_read" : 3538
+    },
+    "bench_node" : {
+      "heap_hit" : 64769188,
+      "heap_read" : 5978,
+      "index_hit" : 188194741,
+      "index_read" : 191
+    }
+  }
+}, {
+  "round" : 3,
+  "variant" : "count",
+  "seconds" : 4.379598041,
+  "before" : {
+    "bench_edge" : {
+      "heap_hit" : 13486392,
+      "heap_read" : 10994,
+      "index_hit" : 45736295,
+      "index_read" : 3538
+    },
+    "bench_node" : {
+      "heap_hit" : 64769188,
+      "heap_read" : 5978,
+      "index_hit" : 188194741,
+      "index_read" : 191
+    }
+  },
+  "after" : {
+    "bench_edge" : {
+      "heap_hit" : 13615152,
+      "heap_read" : 10994,
+      "index_hit" : 51044972,
+      "index_read" : 3538
+    },
+    "bench_node" : {
+      "heap_hit" : 64770988,
+      "heap_read" : 5978,
+      "index_hit" : 188198341,
+      "index_read" : 191
+    }
+  }
+}, {
+  "round" : 3,
+  "variant" : "reach",
+  "seconds" : 6.151339042,
+  "before" : {
+    "bench_edge" : {
+      "heap_hit" : 13615152,
+      "heap_read" : 10994,
+      "index_hit" : 51044972,
+      "index_read" : 3538
+    },
+    "bench_node" : {
+      "heap_hit" : 64770988,
+      "heap_read" : 5978,
+      "index_hit" : 188198341,
+      "index_read" : 191
+    }
+  },
+  "after" : {
+    "bench_edge" : {
+      "heap_hit" : 15568536,
+      "heap_read" : 10994,
+      "index_hit" : 56353649,
+      "index_read" : 3538
+    },
+    "bench_node" : {
+      "heap_hit" : 64772788,
+      "heap_read" : 5978,
+      "index_hit" : 188201941,
+      "index_read" : 191
+    }
+  }
+}, {
+  "round" : 3,
+  "variant" : "read",
+  "seconds" : 31.773912,
+  "before" : {
+    "bench_edge" : {
+      "heap_hit" : 15568536,
+      "heap_read" : 10994,
+      "index_hit" : 56353649,
+      "index_read" : 3538
+    },
+    "bench_node" : {
+      "heap_hit" : 64772788,
+      "heap_read" : 5978,
+      "index_hit" : 188201941,
+      "index_read" : 191
+    }
+  },
+  "after" : {
+    "bench_edge" : {
+      "heap_hit" : 17521920,
+      "heap_read" : 10994,
+      "index_hit" : 61662326,
+      "index_read" : 3538
+    },
+    "bench_node" : {
+      "heap_hit" : 90204808,
+      "heap_read" : 5978,
+      "index_hit" : 264496201,
+      "index_read" : 191
+    }
+  }
+} ]

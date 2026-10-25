@@ -1,0 +1,58 @@
+== before start 2026-10-25T13:07:02Z
+23:07  up 5 days, 16:20, 5 users, load averages: 9.58 14.19 16.14
+other cpu 6.19% mem 2.102GiB / 15.6GiB io 23.7MB / 3.43GB
+other cpu 2.00% mem 856.8MiB / 15.6GiB io 758kB / 330MB
+other cpu 0.00% mem 5.207MiB / 15.6GiB io 0B / 0B
+other cpu 1.19% mem 429.4MiB / 15.6GiB io 1.64GB / 1.72GB
+other cpu 1.13% mem 616.7MiB / 15.6GiB io 1.69GB / 1.77GB
+other cpu 0.01% mem 19.97MiB / 4GiB io 8.04GB / 693MB
+other cpu 0.88% mem 346.1MiB / 15.6GiB io 23.6GB / 3.05GB
+neo4j: loading 336,450 nodes
+  loaded 300 Org
+  loaded 30,000 Person
+  loaded 6,000 Repo
+  loaded 150 Topic
+  loaded 75,000 Issue
+  loaded 225,000 Comment
+  loaded 38,885 MEMBER_OF
+  loaded 460,927 FOLLOWS
+  loaded 6,000 OWNED_BY
+  loaded 24,022 DEPENDS_ON
+  loaded 75,000 IN_REPO
+  loaded 75,000 OPENED_BY
+  loaded 60,027 ASSIGNED_TO
+  loaded 148,390 TAGGED
+  loaded 225,000 ON
+  loaded 225,000 WRITTEN_BY
+neo4j: 336,450 nodes in 6.3 s, 1,338,251 relationships in 17.0 s
+== before adjacency 2026-10-25T13:07:54Z
+23:07  up 5 days, 16:21, 5 users, load averages: 8.37 13.09 15.61
+gbadj-neo4j cpu 2.45% mem 1.295GiB / 4GiB io 129MB / 104MB
+other cpu 4.47% mem 2.072GiB / 15.6GiB io 27.8MB / 3.44GB
+other cpu 1.38% mem 854.8MiB / 15.6GiB io 758kB / 330MB
+other cpu 0.00% mem 5.207MiB / 15.6GiB io 0B / 0B
+other cpu 0.96% mem 429.2MiB / 15.6GiB io 1.64GB / 1.72GB
+other cpu 1.18% mem 617.2MiB / 15.6GiB io 1.69GB / 1.77GB
+other cpu 0.00% mem 19.55MiB / 4GiB io 8.04GB / 693MB
+other cpu 0.92% mem 346.6MiB / 15.6GiB io 23.6GB / 3.05GB
+neo4j: adjacency
+  round 1, count: 6.5 s
+  round 1, reach: 7.2 s
+  round 1, read: 10.1 s
+  round 2, count: 5.6 s
+  round 2, reach: 6.9 s
+  round 2, read: 10.0 s
+  round 3, count: 5.0 s
+  round 3, reach: 5.5 s
+  round 3, read: 9.5 s
+== after adjacency 2026-10-25T13:09:15Z
+23:09  up 5 days, 16:22, 5 users, load averages: 8.03 11.89 14.92
+other cpu 0.02% mem 473MiB / 15.6GiB io 147MB / 83.4MB
+gbadj-neo4j cpu 1.25% mem 1.414GiB / 4GiB io 129MB / 104MB
+other cpu 58.31% mem 2.364GiB / 15.6GiB io 65.4MB / 3.46GB
+other cpu 0.81% mem 1.14GiB / 15.6GiB io 819kB / 332MB
+other cpu 0.00% mem 5.207MiB / 15.6GiB io 0B / 0B
+other cpu 0.68% mem 430.4MiB / 15.6GiB io 1.64GB / 1.72GB
+other cpu 0.50% mem 617MiB / 15.6GiB io 1.69GB / 1.77GB
+other cpu 0.00% mem 20.45MiB / 4GiB io 8.04GB / 693MB
+other cpu 0.76% mem 347.1MiB / 15.6GiB io 23.6GB / 3.05GB
