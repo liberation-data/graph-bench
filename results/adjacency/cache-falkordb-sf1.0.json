@@ -1,0 +1,55 @@
+[ {
+  "round" : 1,
+  "variant" : "count",
+  "seconds" : 1.335748292,
+  "before" : { },
+  "after" : { }
+}, {
+  "round" : 1,
+  "variant" : "reach",
+  "seconds" : 2.282719792,
+  "before" : { },
+  "after" : { }
+}, {
+  "round" : 1,
+  "variant" : "read",
+  "seconds" : 2.054483833,
+  "before" : { },
+  "after" : { }
+}, {
+  "round" : 2,
+  "variant" : "count",
+  "seconds" : 1.199565084,
+  "before" : { },
+  "after" : { }
+}, {
+  "round" : 2,
+  "variant" : "reach",
+  "seconds" : 2.221160542,
+  "before" : { },
+  "after" : { }
+}, {
+  "round" : 2,
+  "variant" : "read",
+  "seconds" : 1.982236083,
+  "before" : { },
+  "after" : { }
+}, {
+  "round" : 3,
+  "variant" : "count",
+  "seconds" : 1.197321208,
+  "before" : { },
+  "after" : { }
+}, {
+  "round" : 3,
+  "variant" : "reach",
+  "seconds" : 2.2290165,
+  "before" : { },
+  "after" : { }
+}, {
+  "round" : 3,
+  "variant" : "read",
+  "seconds" : 2.158202209,
+  "before" : { },
+  "after" : { }
+} ]

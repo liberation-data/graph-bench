@@ -37,3 +37,5 @@ build/
 results/*
 !results/*-sf1.0.json
 !results/hops-*-sf1.0.csv
+# and the walk at several sizes
+!results/adjacency/

@@ -1,0 +1,289 @@
+[ {
+  "round" : 1,
+  "variant" : "count",
+  "seconds" : 3.485376833,
+  "before" : {
+    "bench_edge" : {
+      "heap_hit" : 2823332,
+      "heap_read" : 3660,
+      "index_hit" : 8504307,
+      "index_read" : 1178
+    },
+    "bench_node" : {
+      "heap_hit" : 11169919,
+      "heap_read" : 515,
+      "index_hit" : 21234247,
+      "index_read" : 90
+    }
+  },
+  "after" : {
+    "bench_edge" : {
+      "heap_hit" : 2963165,
+      "heap_read" : 3660,
+      "index_hit" : 14333580,
+      "index_read" : 1178
+    },
+    "bench_node" : {
+      "heap_hit" : 11171719,
+      "heap_read" : 515,
+      "index_hit" : 21237847,
+      "index_read" : 90
+    }
+  }
+}, {
+  "round" : 1,
+  "variant" : "reach",
+  "seconds" : 4.598608833,
+  "before" : {
+    "bench_edge" : {
+      "heap_hit" : 2963165,
+      "heap_read" : 3660,
+      "index_hit" : 14333580,
+      "index_read" : 1178
+    },
+    "bench_node" : {
+      "heap_hit" : 11171719,
+      "heap_read" : 515,
+      "index_hit" : 21237847,
+      "index_read" : 90
+    }
+  },
+  "after" : {
+    "bench_edge" : {
+      "heap_hit" : 5095958,
+      "heap_read" : 3660,
+      "index_hit" : 20162853,
+      "index_read" : 1178
+    },
+    "bench_node" : {
+      "heap_hit" : 11173519,
+      "heap_read" : 515,
+      "index_hit" : 21241447,
+      "index_read" : 90
+    }
+  }
+}, {
+  "round" : 1,
+  "variant" : "read",
+  "seconds" : 27.281336959,
+  "before" : {
+    "bench_edge" : {
+      "heap_hit" : 5095958,
+      "heap_read" : 3660,
+      "index_hit" : 20162853,
+      "index_read" : 1178
+    },
+    "bench_node" : {
+      "heap_hit" : 11173519,
+      "heap_read" : 515,
+      "index_hit" : 21241447,
+      "index_read" : 90
+    }
+  },
+  "after" : {
+    "bench_edge" : {
+      "heap_hit" : 7228751,
+      "heap_read" : 3660,
+      "index_hit" : 25992126,
+      "index_read" : 1178
+    },
+    "bench_node" : {
+      "heap_hit" : 39264547,
+      "heap_read" : 515,
+      "index_hit" : 77423503,
+      "index_read" : 90
+    }
+  }
+}, {
+  "round" : 2,
+  "variant" : "count",
+  "seconds" : 3.7566165,
+  "before" : {
+    "bench_edge" : {
+      "heap_hit" : 7228751,
+      "heap_read" : 3660,
+      "index_hit" : 25992126,
+      "index_read" : 1178
+    },
+    "bench_node" : {
+      "heap_hit" : 39264547,
+      "heap_read" : 515,
+      "index_hit" : 77423503,
+      "index_read" : 90
+    }
+  },
+  "after" : {
+    "bench_edge" : {
+      "heap_hit" : 7368584,
+      "heap_read" : 3660,
+      "index_hit" : 31821399,
+      "index_read" : 1178
+    },
+    "bench_node" : {
+      "heap_hit" : 39266347,
+      "heap_read" : 515,
+      "index_hit" : 77427103,
+      "index_read" : 90
+    }
+  }
+}, {
+  "round" : 2,
+  "variant" : "reach",
+  "seconds" : 5.082935042,
+  "before" : {
+    "bench_edge" : {
+      "heap_hit" : 7368584,
+      "heap_read" : 3660,
+      "index_hit" : 31821399,
+      "index_read" : 1178
+    },
+    "bench_node" : {
+      "heap_hit" : 39266347,
+      "heap_read" : 515,
+      "index_hit" : 77427103,
+      "index_read" : 90
+    }
+  },
+  "after" : {
+    "bench_edge" : {
+      "heap_hit" : 9501377,
+      "heap_read" : 3660,
+      "index_hit" : 37650672,
+      "index_read" : 1178
+    },
+    "bench_node" : {
+      "heap_hit" : 39268147,
+      "heap_read" : 515,
+      "index_hit" : 77430703,
+      "index_read" : 90
+    }
+  }
+}, {
+  "round" : 2,
+  "variant" : "read",
+  "seconds" : 28.72056725,
+  "before" : {
+    "bench_edge" : {
+      "heap_hit" : 9501377,
+      "heap_read" : 3660,
+      "index_hit" : 37650672,
+      "index_read" : 1178
+    },
+    "bench_node" : {
+      "heap_hit" : 39268147,
+      "heap_read" : 515,
+      "index_hit" : 77430703,
+      "index_read" : 90
+    }
+  },
+  "after" : {
+    "bench_edge" : {
+      "heap_hit" : 11634170,
+      "heap_read" : 3660,
+      "index_hit" : 43479945,
+      "index_read" : 1178
+    },
+    "bench_node" : {
+      "heap_hit" : 67359175,
+      "heap_read" : 515,
+      "index_hit" : 133612759,
+      "index_read" : 90
+    }
+  }
+}, {
+  "round" : 3,
+  "variant" : "count",
+  "seconds" : 3.431924208,
+  "before" : {
+    "bench_edge" : {
+      "heap_hit" : 11634170,
+      "heap_read" : 3660,
+      "index_hit" : 43479945,
+      "index_read" : 1178
+    },
+    "bench_node" : {
+      "heap_hit" : 67359175,
+      "heap_read" : 515,
+      "index_hit" : 133612759,
+      "index_read" : 90
+    }
+  },
+  "after" : {
+    "bench_edge" : {
+      "heap_hit" : 11774003,
+      "heap_read" : 3660,
+      "index_hit" : 49309218,
+      "index_read" : 1178
+    },
+    "bench_node" : {
+      "heap_hit" : 67360975,
+      "heap_read" : 515,
+      "index_hit" : 133616359,
+      "index_read" : 90
+    }
+  }
+}, {
+  "round" : 3,
+  "variant" : "reach",
+  "seconds" : 4.374359709,
+  "before" : {
+    "bench_edge" : {
+      "heap_hit" : 11774003,
+      "heap_read" : 3660,
+      "index_hit" : 49309218,
+      "index_read" : 1178
+    },
+    "bench_node" : {
+      "heap_hit" : 67360975,
+      "heap_read" : 515,
+      "index_hit" : 133616359,
+      "index_read" : 90
+    }
+  },
+  "after" : {
+    "bench_edge" : {
+      "heap_hit" : 13906796,
+      "heap_read" : 3660,
+      "index_hit" : 55138491,
+      "index_read" : 1178
+    },
+    "bench_node" : {
+      "heap_hit" : 67362775,
+      "heap_read" : 515,
+      "index_hit" : 133619959,
+      "index_read" : 90
+    }
+  }
+}, {
+  "round" : 3,
+  "variant" : "read",
+  "seconds" : 22.19174375,
+  "before" : {
+    "bench_edge" : {
+      "heap_hit" : 13906796,
+      "heap_read" : 3660,
+      "index_hit" : 55138491,
+      "index_read" : 1178
+    },
+    "bench_node" : {
+      "heap_hit" : 67362775,
+      "heap_read" : 515,
+      "index_hit" : 133619959,
+      "index_read" : 90
+    }
+  },
+  "after" : {
+    "bench_edge" : {
+      "heap_hit" : 16039589,
+      "heap_read" : 3660,
+      "index_hit" : 60967764,
+      "index_read" : 1178
+    },
+    "bench_node" : {
+      "heap_hit" : 95453803,
+      "heap_read" : 515,
+      "index_hit" : 189802015,
+      "index_read" : 90
+    }
+  }
+} ]

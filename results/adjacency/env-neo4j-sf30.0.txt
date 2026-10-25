@@ -1,0 +1,62 @@
+== before start 2026-10-25T01:04:44Z
+11:04  up 5 days,  4:17, 5 users, load averages: 6.54 10.38 11.88
+other cpu 0.02% mem 376.1MiB / 15.6GiB io 160kB / 136MB
+other cpu 138.38% mem 1.306GiB / 15.6GiB io 90.1kB / 359MB
+other cpu 0.32% mem 207.8MiB / 15.6GiB io 213kB / 9.3MB
+other cpu 0.38% mem 103.6MiB / 15.6GiB io 0B / 233kB
+other cpu 0.27% mem 1.07GiB / 15.6GiB io 275MB / 179MB
+other cpu 0.00% mem 5.211MiB / 15.6GiB io 0B / 0B
+other cpu 0.24% mem 455.2MiB / 15.6GiB io 468MB / 714MB
+other cpu 0.35% mem 590.2MiB / 15.6GiB io 675MB / 867MB
+other cpu 0.00% mem 28.98MiB / 4GiB io 7.91GB / 682MB
+other cpu 0.25% mem 242MiB / 15.6GiB io 21.5GB / 1.53GB
+neo4j: loading 33,630,500 nodes
+  loaded 30,000 Org
+  loaded 3,000,000 Person
+  loaded 600,000 Repo
+  loaded 500 Topic
+  loaded 7,500,000 Issue
+  loaded 22,500,000 Comment
+  loaded 3,901,624 MEMBER_OF
+  loaded 46,655,259 FOLLOWS
+  loaded 600,000 OWNED_BY
+  loaded 2,402,392 DEPENDS_ON
+  loaded 7,500,000 IN_REPO
+  loaded 7,500,000 OPENED_BY
+  loaded 6,001,886 ASSIGNED_TO
+  loaded 14,948,085 TAGGED
+  loaded 22,500,000 ON
+  loaded 22,500,000 WRITTEN_BY
+neo4j: 33,630,500 nodes in 452.8 s, 134,509,246 relationships in 3513.6 s
+== before adjacency 2026-10-25T02:15:17Z
+12:15  up 5 days,  5:28, 5 users, load averages: 8.86 8.88 10.23
+other cpu 148.56% mem 495.6MiB / 15.6GiB io 193MB / 326MB
+other cpu 0.00% mem 5.184MiB / 15.6GiB io 0B / 0B
+other cpu 0.81% mem 568.3MiB / 15.6GiB io 319MB / 403MB
+other cpu 0.00% mem 39.11MiB / 15.6GiB io 67.7MB / 45.3MB
+gbadj-neo4j cpu 0.50% mem 3.325GiB / 4GiB io 28.4GB / 14.1GB
+other cpu 0.37% mem 420MiB / 15.6GiB io 605MB / 882MB
+other cpu 0.41% mem 520.8MiB / 15.6GiB io 848MB / 1.06GB
+other cpu 0.00% mem 30.25MiB / 4GiB io 7.97GB / 684MB
+other cpu 0.36% mem 212.7MiB / 15.6GiB io 21.8GB / 1.85GB
+neo4j: adjacency
+  round 1, count: 227.8 s
+  round 1, reach: 293.4 s
+  round 1, read: 327.9 s
+  round 2, count: 130.6 s
+  round 2, reach: 133.7 s
+  round 2, read: 210.3 s
+  round 3, count: 128.7 s
+  round 3, reach: 219.8 s
+  round 3, read: 228.3 s
+== after adjacency 2026-10-25T02:58:01Z
+12:58  up 5 days,  6:11, 5 users, load averages: 6.23 5.60 7.13
+other cpu 0.05% mem 71.52MiB / 15.6GiB io 22.6MB / 56.5MB
+other cpu 102.08% mem 2.825GiB / 15.6GiB io 1.61GB / 3.33GB
+other cpu 0.42% mem 882.4MiB / 15.6GiB io 266MB / 328MB
+other cpu 0.00% mem 5.445MiB / 15.6GiB io 0B / 0B
+gbadj-neo4j cpu 0.67% mem 3.281GiB / 4GiB io 382GB / 15.1GB
+other cpu 0.24% mem 421.6MiB / 15.6GiB io 704MB / 961MB
+other cpu 0.23% mem 395.9MiB / 15.6GiB io 892MB / 1.21GB
+other cpu 0.00% mem 20.98MiB / 4GiB io 7.98GB / 685MB
+other cpu 0.22% mem 180.5MiB / 15.6GiB io 22GB / 1.96GB

@@ -1,0 +1,25 @@
+bench_edge r 905011200
+bench_edge_dst i 208912384
+bench_edge_eid_seq S 8192
+bench_edge_pkey i 302088192
+bench_edge_src i 447275008
+bench_ix_issuerepokey_c0b4ad46 i 9027584
+bench_node r 835371008
+bench_node_labels i 7979008
+bench_node_nid_seq S 8192
+bench_node_pkey i 75563008
+bench_schema r 8192
+bench_schema_pkey i 16384
+bench_uq_commentid_ac686a7c i 106856448
+bench_uq_issueid_2d7e6dc2 i 29212672
+bench_uq_orgid_8d442fd7 i 122880
+bench_uq_personid_aa4b5586 i 11673600
+bench_uq_repoid_a4753c49 i 2351104
+bench_uq_topicid_cac9e1ac i 40960
+database d 2950166195
+CREATE EXTENSION
+levels below the root of bench_edge_src 2
+levels below the root of bench_node_pkey 2
+levels below the root of bench_uq_personid_aa4b5586 2
+FOLLOWS out of a person: mean, median, p90, p99, max 15.80 {8,44,59,60}
+FOLLOWS into a person: mean, median, p90, p99, max 15.55 {12,26,79,7957}
