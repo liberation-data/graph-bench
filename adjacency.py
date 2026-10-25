@@ -4,6 +4,7 @@ cost of each path walked, and the cost of reading the node at the end of each pa
 
     python3 adjacency.py                 # every results/adjacency/hops-*.csv
     python3 adjacency.py --json fits.json
+    python3 adjacency.py --dir results/adjacency/repeat   # the second run
 
 A call's time is taken to be  fixed + per_path * paths  when it counts paths, a line of its own
 when it also finds which node each path reaches (`reach`), and another when it reads that node
@@ -97,12 +98,12 @@ def fits(calls, column, people, rng, resamples):
 def crossover(sql, graph):
     """
     How many paths a call must walk for [graph]'s line to drop below [sql]'s: where
-    a_s + b_s p = a_g + b_g p. Infinite where the SQL store's line is the lower at every size,
-    and zero where it is the higher at every size.
+    a_s + b_s p = a_g + b_g p. Infinite where the SQL store's line is the lower at every size, or
+    becomes the lower as calls grow, and zero where it is the higher at every size.
     """
     (a_s, b_s), (a_g, b_g) = sql, graph
     if b_s <= b_g:
-        return float("inf") if a_s <= a_g else 0.0
+        return 0.0 if b_s == b_g and a_s > a_g else float("inf")
     return max(0.0, (a_g - a_s) / (b_s - b_g))
 
 
@@ -164,6 +165,8 @@ def main():
             cells = []
             for v in ("count", "read"):
                 at = crossover(point[v], graph[0][v])
+                # Resample i of each engine drew the same people, as each file's generator starts from SEED
+                # and the people are the same: the two lines are set against each other on the same people.
                 samples = np.array([crossover(b[v], g[v]) for b, g in zip(boot, graph[1])])
                 # Sorted, not np.percentile, which makes nothing of an infinite sample.
                 ordered = np.sort(samples)

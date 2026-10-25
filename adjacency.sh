@@ -1,7 +1,8 @@
 #!/bin/bash
 # The hop by hop walk at one scale factor, for the question of when index-free adjacency pays: see
 # "When does index-free adjacency pay?" in the README. For each engine in turn, in a fresh container
-# with run.sh's limits: load the graph, write down the store's size, then run the adjacency phase.
+# with run.sh's limits: load the graph, restart the server, write down the store's size, then run the
+# adjacency phase.
 #
 #   ./adjacency.sh <scale factor> [engine ...]       # neo4j postgres sqlite by default
 #
@@ -38,6 +39,8 @@ restart() {
     case $1 in
         neo4j) until docker exec "$PREFIX-neo4j" cypher-shell -u neo4j -p benchbench "RETURN 1" >/dev/null 2>&1; do sleep 2; done ;;
         postgres) until docker exec "$PREFIX-postgres" pg_isready -U bench -d bench >/dev/null 2>&1; do sleep 1; done ;;
+        # The log keeps the first start's line: ready again is the second time it says so.
+        oracle) until [ "$(docker logs "$PREFIX-oracle" 2>&1 | grep -c "DATABASE IS READY TO USE")" -ge 2 ]; do sleep 3; done ;;
     esac
 }
 
@@ -55,9 +58,10 @@ sizes() {
             FROM (SELECT count(*) AS n FROM bench_edge WHERE type = 'FOLLOWS' GROUP BY src) o;
             SELECT 'FOLLOWS into a person: mean, median, p90, p99, max', round(avg(n), 2), percentile_disc(ARRAY[0.5, 0.9, 0.99, 1]) WITHIN GROUP (ORDER BY n)
             FROM (SELECT count(*) AS n FROM bench_edge WHERE type = 'FOLLOWS' GROUP BY dst) i;" ;;
-        sqlite) echo "file $(wc -c < "build/sqlite/bench-sf$SF.db")"
+        sqlite) db=${BENCH_SQLITE_PATH:-build/sqlite/bench-sf$SF.db}
+            echo "file $(wc -c < "$db")"
             # The depth of each b-tree is the number of steps in the path dbstat gives its deepest page.
-            sqlite3 "build/sqlite/bench-sf$SF.db" "SELECT name, SUM(pgsize), MAX(length(path) - length(replace(path, '/', ''))) FROM dbstat GROUP BY name ORDER BY name" ;;
+            sqlite3 "$db" "SELECT name, SUM(pgsize), MAX(length(path) - length(replace(path, '/', ''))) FROM dbstat GROUP BY name ORDER BY name" ;;
         falkordb) docker exec "$PREFIX-falkordb" redis-cli GRAPH.MEMORY USAGE bench
             docker exec "$PREFIX-falkordb" redis-cli INFO memory | grep used_memory: ;;
     esac
