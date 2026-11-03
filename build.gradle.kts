@@ -9,7 +9,8 @@ plugins {
 group = "bench"
 version = "0.1.0"
 
-val drivineVersion = "0.1.6"
+// The Drivine to build against: this one, or another to compare with it, as `-PdrivineVersion=0.2.0` (run.sh: DRIVINE_VERSION).
+val drivineVersion = (findProperty("drivineVersion") as String?) ?: "0.4.1"
 
 repositories {
     mavenCentral()
