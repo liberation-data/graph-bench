@@ -28,7 +28,56 @@ data class Outcome(
 
 data class LoadOutcome(val nodes: Long, val edges: Long, val schemaSeconds: Double, val nodeSeconds: Double, val edgeSeconds: Double)
 
-data class Results(val engine: String, val scale: Double, val load: LoadOutcome?, val outcomes: List<Outcome>)
+/**
+ * What a run was made on and against, so two runs are compared knowing what differs between them: when it ended, the
+ * machine and the JVM it ran on, the engine's image (by tag and by id) and the limits its container was given, the
+ * Drivine it was built against, and this harness's own commit. What `run.sh` knows it passes in the environment; a
+ * run started some other way leaves those out.
+ */
+data class RunDetails(
+    val at: String,
+    val machine: String,
+    val jvm: String,
+    val drivine: String?,
+    val bench: String?,
+    val image: String?,
+    val imageId: String?,
+    val limits: String?,
+) {
+    companion object {
+        fun now(): RunDetails {
+            val env = System.getenv()
+            return RunDetails(
+                at = java.time.Instant.now().truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString(),
+                machine = machine(),
+                jvm = "${System.getProperty("java.vm.name")} ${System.getProperty("java.version")}",
+                drivine = env["GBENCH_DRIVINE"]?.takeIf { it.isNotBlank() },
+                bench = env["GBENCH_COMMIT"]?.takeIf { it.isNotBlank() },
+                image = env["GBENCH_IMAGE"]?.takeIf { it.isNotBlank() },
+                imageId = env["GBENCH_IMAGE_ID"]?.takeIf { it.isNotBlank() },
+                limits = env["GBENCH_LIMITS"]?.takeIf { it.isNotBlank() },
+            )
+        }
+
+        /** "Apple M2 Max, 12 cores, 64 GB, Mac OS X 26.1 aarch64": the processor, as the system names it, and the rest. */
+        private fun machine(): String {
+            val os = System.getProperty("os.name")
+            val processor = runCatching {
+                when {
+                    os.startsWith("Mac") -> ProcessBuilder("sysctl", "-n", "machdep.cpu.brand_string").start().inputStream.bufferedReader().readText().trim()
+                    else -> File("/proc/cpuinfo").readLines().firstOrNull { it.startsWith("model name") }?.substringAfter(":")?.trim()
+                }
+            }.getOrNull()?.takeIf { it.isNotBlank() } ?: System.getProperty("os.arch")
+            val memory = (java.lang.management.ManagementFactory.getOperatingSystemMXBean() as? com.sun.management.OperatingSystemMXBean)
+                ?.totalMemorySize?.let { "%d GB".format(Math.round(it / 1024.0 / 1024 / 1024)) }
+            val cores = "${Runtime.getRuntime().availableProcessors()} cores"
+            return listOfNotNull(processor, cores, memory, "$os ${System.getProperty("os.version")} ${System.getProperty("os.arch")}").joinToString(", ")
+        }
+    }
+}
+
+/** A run's results, as written to `results/<engine>-sf<scale>.json`. Files from before `run` was kept have none. */
+data class Results(val engine: String, val scale: Double, val load: LoadOutcome?, val outcomes: List<Outcome>, val run: RunDetails? = null)
 
 private val json: ObjectMapper = jacksonObjectMapper().enable(SerializationFeature.INDENT_OUTPUT)
 
@@ -109,7 +158,13 @@ private fun show(o: Outcome) = println(
     ),
 )
 
-private fun file(engine: String, scale: Double) = File("results/$engine-sf$scale.json")
+/**
+ * Where results are kept: `results/`, or another folder named by GBENCH_RESULTS, so runs of two Drivine versions, or on
+ * two machines, sit side by side rather than over each other.
+ */
+private val resultsDir: String get() = System.getenv("GBENCH_RESULTS")?.takeIf { it.isNotBlank() } ?: "results"
+
+private fun file(engine: String, scale: Double) = File("$resultsDir/$engine-sf$scale.json")
 
 private fun run(engineName: String, factor: Double, phases: Set<String>) {
     val data = Dataset(Scale(factor))
@@ -150,14 +205,15 @@ private fun run(engineName: String, factor: Double, phases: Set<String>) {
             // Once over everything first: the server has then compiled what it runs and holds the graph in memory.
             Hops.measure(engine, workloads.walkers, 4)
             val rows = Hops.measure(engine, workloads.walkers, 4)
-            File("results/hops-$engineName-sf$factor.csv").writeText("hops,person,paths,ms\n" + rows.joinToString("\n") { it.joinToString(",") } + "\n")
+            File("$resultsDir/hops-$engineName-sf$factor.csv").writeText("hops,person,paths,ms\n" + rows.joinToString("\n") { it.joinToString(",") } + "\n")
             for ((hops, of) in rows.groupBy { it[0] }) {
                 val paths = of.map { (it[2] as Long).toDouble() }.sorted()
                 val millis = of.map { it[3] as Double }.sorted()
                 println("  %d hops: median %,.0f paths, %.2f ms; largest %,.0f paths, %.2f ms".format(hops, percentile(paths, 0.5), percentile(millis, 0.5), paths.last(), millis.last()))
             }
         }
-        file(engineName, factor).apply { parentFile.mkdirs() }.writeText(json.writeValueAsString(Results(engineName, factor, load, outcomes.values.toList())))
+        file(engineName, factor).apply { parentFile.mkdirs() }
+            .writeText(json.writeValueAsString(Results(engineName, factor, load, outcomes.values.toList(), RunDetails.now())))
     }
 }
 
@@ -166,6 +222,20 @@ private fun report(factor: Double) {
     val results = engines.mapNotNull { name -> file(name, factor).takeIf { it.exists() }?.let { json.readValue<Results>(it) } }
     if (results.isEmpty()) return println("No results for scale $factor")
     val names = results.map { it.engine }
+    println("## Runs\n")
+    println("| engine | ended | machine | image | Drivine | bench |")
+    println("|---|---|---|---|---|---|")
+    for (r in results) {
+        val run = r.run
+        println("| ${r.engine} | ${run?.at ?: "-"} | ${run?.machine ?: "-"} | ${run?.image ?: "-"} | ${run?.drivine ?: "-"} | ${run?.bench ?: "-"} |")
+    }
+    // Numbers from two machines, or with limits that differ, say as much about the machines as the engines.
+    val machines = results.mapNotNull { it.run?.machine }.distinct()
+    val limits = results.mapNotNull { it.run?.limits }.distinct()
+    if (machines.size > 1) println("\nThese runs were made on ${machines.size} machines: their numbers don't compare as they would on one.")
+    if (limits.size > 1) println("\nThese runs' containers had different limits: ${limits.joinToString(" and ")}.")
+    if (results.any { it.run == null }) println("\nSome results were written before runs kept their details: what they were made on isn't known.")
+    println()
     println("## Load\n")
     println("| | " + names.joinToString(" | ") + " |")
     println("|---|" + names.joinToString("") { "---:|" })
