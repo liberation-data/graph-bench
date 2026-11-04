@@ -6,16 +6,21 @@
 #
 #   ./adjacency.sh <scale factor> [engine ...]       # neo4j postgres sqlite by default
 #
-# Everything goes to results/adjacency/ (or GBENCH_RESULTS): the calls, the engine's cache counters, the sizes of the
-# store, and the host's load and containers before and after, since other work on the host moves
-# the numbers. SQLite is a file under build/sqlite/, opened by the harness itself, with no container.
+# Everything goes to a folder of the run's own, as run.sh's results do: the one GBENCH_RESULTS names, or
+# results/adjacency/. The calls, the engine's cache counters, the sizes of the store, the run details
+# (RunDetails, see containers.sh), and the host's load and containers before and after, since other work
+# on the host moves the numbers. The runs behind the README are results/adjacency-m2max/ and
+# results/adjacency-m2max-repeat/. SQLite is a file under build/sqlite/, opened by the harness itself, with
+# no container.
+#
+# DRIVINE_SOURCE and DRIVINE_VERSION build against another Drivine, as for run.sh.
 set -euo pipefail
 cd "$(dirname "$0")"
 # The scale factor as the harness writes it in a file's name: 1.0, 0.3.
 SF=$(awk -v s="${1:-1}" 'BEGIN { if (s == int(s)) printf "%.1f", s; else print s + 0 }'); shift || true
 ENGINES=${*:-neo4j postgres sqlite}
 source ./containers.sh
-# Where everything goes: results/adjacency/, or the directory GBENCH_RESULTS names, for a second run.
+# Where everything goes: the folder GBENCH_RESULTS names, a run's own, or results/adjacency/.
 OUT=${GBENCH_RESULTS:-results/adjacency}
 mkdir -p "$OUT"
 bench=build/install/graph-bench/bin/graph-bench
@@ -67,7 +72,7 @@ sizes() {
     esac
 }
 
-./gradlew --console=plain -q ${DRIVINE_SOURCE:+--include-build "$DRIVINE_SOURCE"} installDist 2>&1 | grep -E "^e: |FAILED" || true
+./gradlew --console=plain -q ${DRIVINE_SOURCE:+--include-build "$DRIVINE_SOURCE"} ${DRIVINE_VERSION:+-PdrivineVersion=$DRIVINE_VERSION} installDist 2>&1 | grep -E "^e: |FAILED" || true
 for engine in $ENGINES; do
     log="$OUT/env-$engine-sf$SF.txt"
     host "before start" > "$log"

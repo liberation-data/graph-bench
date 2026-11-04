@@ -2,9 +2,10 @@
 Fits the calls of the adjacency phase: for each engine and scale factor, the fixed cost of a call, the
 cost of each path walked, and the cost of reading the node at the end of each path.
 
-    python3 adjacency.py                 # every results/adjacency/hops-*.csv
+    python3 adjacency.py                 # every results/adjacency-m2max/hops-*.csv, the run behind the README
     python3 adjacency.py --json fits.json
-    python3 adjacency.py --dir results/adjacency/repeat   # the second run
+    python3 adjacency.py --dir results/adjacency-m2max-repeat   # the second run
+    python3 adjacency.py --dir results/adjacency                # a run of adjacency.sh's own
 
 A call's time is taken to be  fixed + per_path * paths  when it counts paths, a line of its own
 when it also finds which node each path reaches (`reach`), and another when it reads that node
@@ -109,7 +110,7 @@ def crossover(sql, graph):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--dir", default="results/adjacency")
+    parser.add_argument("--dir", default="results/adjacency-m2max")
     parser.add_argument("--json")
     parser.add_argument("--resamples", type=int, default=1000)
     args = parser.parse_args()

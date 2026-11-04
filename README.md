@@ -363,8 +363,8 @@ graph. The walk never goes that way. The calls walk the same number of paths at 
 above: 2 CPUs, 4 GB, a 2 GB page cache and a 1 GB heap for Neo4j, 1 GB of `shared_buffers` for
 Postgres. FalkorDB 6.0.0 too, up to scale factor 3: at 10 its graph would need about 8 GB of the 4.
 And SQLite 3.53, in which Drivine keeps a graph in the same two tables with the same indexes, read
-with the same joins as Postgres. SQLite is in Drivine's main branch and not yet released; every
-engine here was run through that branch at
+with the same joins as Postgres. SQLite was in Drivine's main branch and not yet released when this
+was run (it is released since, in 0.4.1); every engine here was run through that branch at
 [b3da3d6](https://github.com/liberation-data/drivine4j/commit/b3da3d6). SQLite has no server: it is
 a file opened in the harness's own process, on the host and not in a container, with a page cache of
 1 GB of its own and the host's 32 GB of memory behind it. Its numbers have no network, no protocol
@@ -381,7 +381,7 @@ its time, so that the small calls set the fixed cost and the large ones the cost
 slow call moves neither much. The ranges in brackets are 95% intervals from resampling the 150
 people. They say how well one run fixes the line, not how much the next run would move it: for that,
 see the cautions at the end. The fit is [`adjacency.py`](adjacency.py), and every call is in
-[`results/adjacency/`](results/adjacency).
+[`results/adjacency-m2max/`](results/adjacency-m2max).
 
 All four engines count the same paths and sum the same karma on every call, but for Neo4j's few
 four-hop paths that come back over their first relationship, as above.
@@ -545,8 +545,8 @@ many paths at a time.
 ### Cautions
 
 - **Two runs at most, on a busy host.** Other work was running throughout, with a load average of 5
-  to 36 on 12 cores, recorded before and after each engine's walk in `results/adjacency/env-*.txt`.
-  Scale factors 0.1 to 3 were run a second time, the same night, in `results/adjacency/repeat/`.
+  to 36 on 12 cores, recorded before and after each engine's walk in the `env-*.txt` files of [`results/adjacency-m2max/`](results/adjacency-m2max).
+  Scale factors 0.1 to 3 were run a second time, the same night, in [`results/adjacency-m2max-repeat/`](results/adjacency-m2max-repeat).
   The second run was quieter and quicker: Neo4j's cost for each path 0.12 to 0.22 µs where the first
   had 0.15 to 0.28, Postgres's 0.109 to 0.144 where it had 0.120 to 0.149, and the number of nodes
   past which Neo4j reads quicker than Postgres 440 to 900 where it was 400 to 890. Neo4j moved the
@@ -688,13 +688,16 @@ The hop by hop measurement is a phase of its own, `--phases hops`, and writes ea
 
 The walk at several sizes is `adjacency.sh`, which for each engine in turn loads the graph, restarts
 the server, writes down the store's size and runs the `adjacency` phase, recording the host's load
-before and after. SQLite is one of its engines, and needs Drivine's main branch until the next
-release. Everything goes to `results/adjacency/`, and `adjacency.py` fits the lines:
+before and after. SQLite is one of its engines. A run's results go to a folder of its own, as
+`run.sh`'s do: the one `GBENCH_RESULTS` names, or `results/adjacency/`. The two runs above are
+[`results/adjacency-m2max/`](results/adjacency-m2max) and
+[`results/adjacency-m2max-repeat/`](results/adjacency-m2max-repeat). `adjacency.py` fits the lines:
 
 ```bash
-DRIVINE_SOURCE=../drivine4j ./adjacency.sh 3                 # Neo4j, Postgres and SQLite
-DRIVINE_SOURCE=../drivine4j ./adjacency.sh 1 neo4j falkordb
-python3 adjacency.py                                         # numpy; prints the tables
+./adjacency.sh 3                                             # Neo4j, Postgres and SQLite
+GBENCH_RESULTS=results/m1-adjacency ./adjacency.sh 1 neo4j falkordb
+python3 adjacency.py                                         # numpy; the tables above, from results/adjacency-m2max/
+python3 adjacency.py --dir results/m1-adjacency              # another run's
 ```
 
 `BENCH_CONTAINER_PREFIX` and the `BENCH_*_PORT` variables move the containers off `run.sh`'s names

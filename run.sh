@@ -12,26 +12,9 @@ set -euo pipefail
 cd "$(dirname "$0")"
 SF=${1:-1}; shift || true
 ENGINES=${*:-neo4j falkordb oracle postgres}
-# What each run is made with, kept beside its numbers in results/ (RunDetails): this harness's commit, the Drivine
-# built against (the released version, or the commit of the source checkout), and the containers' limits.
-# A copy without its git history (as a run on another machine is given) says its commit in .bench-commit, written
-# where the history is: `git rev-parse --short HEAD > .bench-commit`.
-commit_of() {
-    if git -C "$1" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-        git -C "$1" rev-parse --short HEAD | tr -d '\n'; git -C "$1" diff --quiet HEAD || printf -- '-dirty'
-    elif [ -f "$1/.bench-commit" ]; then tr -d '\n' < "$1/.bench-commit"
-    fi
-}
-export GBENCH_COMMIT; GBENCH_COMMIT=$(commit_of .)
 export GBENCH_RESULTS=${GBENCH_RESULTS:-results}
 mkdir -p "$GBENCH_RESULTS"
-export GBENCH_DRIVINE
-if [ -n "${DRIVINE_SOURCE:-}" ]; then GBENCH_DRIVINE="source $(commit_of "$DRIVINE_SOURCE")"
-elif [ -n "${DRIVINE_VERSION:-}" ]; then GBENCH_DRIVINE=$DRIVINE_VERSION
-else GBENCH_DRIVINE=$(sed -n 's/^val drivineVersion = .*?: "\(.*\)"/\1/p' build.gradle.kts); fi
-export GBENCH_LIMITS="2 CPUs, 4 GB"
-export GBENCH_IMAGE GBENCH_IMAGE_ID
-
+# The run details (RunDetails) kept beside the numbers: see containers.sh.
 source ./containers.sh
 
 ./gradlew --console=plain -q ${DRIVINE_SOURCE:+--include-build "$DRIVINE_SOURCE"} ${DRIVINE_VERSION:+-PdrivineVersion=$DRIVINE_VERSION} installDist 2>&1 | grep -E "^e: |FAILED" || true

@@ -6,12 +6,28 @@
 PREFIX=${BENCH_CONTAINER_PREFIX:-gbench}
 LIMITS="--cpus 2 --memory 4g"
 
-# The image each engine is run from, and its id once started, for the run details (RunDetails) run.sh records.
-export GBENCH_IMAGE GBENCH_IMAGE_ID
+# What each run is made with, kept beside its numbers (RunDetails), for run.sh and adjacency.sh alike: this harness's
+# commit, the Drivine built against (the released version, or the commit of the source checkout), the image each
+# engine is run from and its id once started, and the containers' limits.
+# A copy without its git history (as a run on another machine is given) says its commit in .bench-commit, written
+# where the history is: `git rev-parse --short HEAD > .bench-commit`.
+commit_of() {
+    if git -C "$1" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+        git -C "$1" rev-parse --short HEAD | tr -d '\n'; git -C "$1" diff --quiet HEAD || printf -- '-dirty'
+    elif [ -f "$1/.bench-commit" ]; then tr -d '\n' < "$1/.bench-commit"
+    fi
+}
+export GBENCH_COMMIT; GBENCH_COMMIT=$(commit_of .)
+export GBENCH_DRIVINE
+if [ -n "${DRIVINE_SOURCE:-}" ]; then GBENCH_DRIVINE="source $(commit_of "$DRIVINE_SOURCE")"
+elif [ -n "${DRIVINE_VERSION:-}" ]; then GBENCH_DRIVINE=$DRIVINE_VERSION
+else GBENCH_DRIVINE=$(sed -n 's/^val drivineVersion = .*?: "\(.*\)"/\1/p' build.gradle.kts); fi
+export GBENCH_IMAGE GBENCH_IMAGE_ID GBENCH_LIMITS
 
 start() {
     docker rm -f "$PREFIX-$1" >/dev/null 2>&1 || true
     GBENCH_IMAGE=
+    GBENCH_LIMITS="2 CPUs, 4 GB"
     case $1 in
         neo4j)
             GBENCH_IMAGE=neo4j:2026.07.1
@@ -37,7 +53,7 @@ start() {
                 -c shared_buffers=1GB -c effective_cache_size=3GB -c maintenance_work_mem=256MB -c work_mem=32MB >/dev/null
             # The image starts a server to set itself up and stops it: ready is the second time it says so.
             until [ "$(docker logs $PREFIX-postgres 2>&1 | grep -c "ready to accept connections")" -ge 2 ]; do sleep 1; done ;;
-        sqlite) ;; # a file, opened by the harness itself
+        sqlite) GBENCH_LIMITS="none: a file, opened in the harness's own process" ;;
     esac
     # The tag says what was asked for; the id, what was run, as a tag like :latest moves.
     GBENCH_IMAGE_ID=$([ -n "$GBENCH_IMAGE" ] && docker image inspect --format '{{.Id}}' "$GBENCH_IMAGE" 2>/dev/null || true)

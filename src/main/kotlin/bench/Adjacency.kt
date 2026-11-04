@@ -114,8 +114,8 @@ object Adjacency {
     }
 
     /**
-     * Runs the rounds and writes `hops-<engine>-sf<scale>.csv`, `cache-` and `profile-` to `results/adjacency/`,
-     * or to the directory `GBENCH_RESULTS` names, as `adjacency.sh` does.
+     * Runs the rounds and writes `hops-<engine>-sf<scale>.csv`, `cache-` and `profile-` to the folder `GBENCH_RESULTS`
+     * names, a run's own, as `adjacency.sh` does, or to `results/adjacency/`.
      */
     fun run(engine: Engine, people: List<String>, factor: Double, rounds: Int = 3, upTo: Int = 4) {
         val statements = variants.associateWith { v -> (1..upTo).associateWith { statement(engine, it, v) } }
