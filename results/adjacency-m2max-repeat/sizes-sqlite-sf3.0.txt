@@ -1,0 +1,17 @@
+file 1819508736
+bench_edge|373276672|3
+bench_edge_dst|300789760|4
+bench_edge_src|298786816|4
+bench_ix_IssuerepoKey_c0b4ad46|11890688|3
+bench_node|662736896|3
+bench_schema|4096|1
+bench_uq_Commentid_ac686a7c|40939520|3
+bench_uq_Issueid_2d7e6dc2|13123584|3
+bench_uq_Orgid_8d442fd7|49152|2
+bench_uq_Personid_aa4b5586|5148672|3
+bench_uq_Repoid_a4753c49|991232|3
+bench_uq_Topicid_cac9e1ac|12288|2
+sqlite_autoindex_bench_schema_1|4096|1
+sqlite_schema|4096|1
+sqlite_stat1|4096|1
+sqlite_stat4|24576|2

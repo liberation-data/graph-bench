@@ -38,3 +38,6 @@ results/*
 !results/*-sf1.0.json
 !results/hops-*-sf1.0.csv
 .bench-commit
+# and the two runs of the walk at several sizes behind the README, each in a folder of its own
+!results/adjacency-m2max/
+!results/adjacency-m2max-repeat/

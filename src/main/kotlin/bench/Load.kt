@@ -10,7 +10,7 @@ import javax.sql.DataSource
 /**
  * Fills an engine with the [Dataset], by the quickest means the engine has that an application could
  * use: batches of rows in Cypher for the graph engines, JDBC batches into the graph's tables for
- * Oracle, and `COPY` into the same tables for Postgres. The paths differ, so load times say what a
+ * Oracle and SQLite, and `COPY` into the same tables for Postgres. The paths differ, so load times say what a
  * bulk load costs on each and are not a like for like comparison of one statement.
  */
 object Load {
@@ -41,7 +41,12 @@ object Load {
 
     fun run(engine: Engine, data: Dataset): Report {
         val (_, schemaSeconds) = timed { schema(engine, data) }
-        val loader = if (engine.postgres) PostgresLoader(engine) else if (engine.sql) OracleLoader(engine) else CypherLoader(engine)
+        val loader = when {
+            engine.postgres -> PostgresLoader(engine)
+            engine.sqlite -> SqliteLoader(engine)
+            engine.sql -> OracleLoader(engine)
+            else -> CypherLoader(engine)
+        }
         val (nodes, nodeSeconds) = timed {
             data.labels.sumOf { label ->
                 loader.nodes(label, data.nodes(label)).also { println("  loaded %,d %s".format(it, label)) }
@@ -253,6 +258,92 @@ object Load {
          */
         override fun finish() {
             run("DROP TABLE ${GRAPH}_load_map, ${GRAPH}_load_stage", "VACUUM ANALYZE ${GRAPH}_node", "VACUUM ANALYZE ${GRAPH}_edge")
+        }
+    }
+
+    /**
+     * Rows into the tables Drivine keeps a graph in on SQLite, the same tables again, with labels and
+     * properties as JSON text: JDBC batches, a transaction to each, which is the quickest way into SQLite
+     * from the JVM. A relationship row names its nodes by `nid`, so the pairs of ids go to a staging table
+     * and are joined to a table of id to `nid`, as on Oracle and Postgres.
+     */
+    private class SqliteLoader(engine: Engine) : Loader {
+        @Suppress("UNCHECKED_CAST")
+        private val dataSource = (engine.provider as NativeDriverSource<DataSource>).nativeDriver
+        private val json = ObjectMapper()
+        private val batch = 20_000
+
+        private fun run(vararg statements: String) = dataSource.connection.use { c ->
+            c.createStatement().use { s -> statements.forEach { s.execute(it) } }
+            if (!c.autoCommit) c.commit()
+        }
+
+        /** Rows of [insert], each bound by [bind], committed a batch at a time. */
+        private fun <T> batches(insert: String, rows: Sequence<T>, bind: (java.sql.PreparedStatement, T) -> Unit): Long {
+            var count = 0L
+            dataSource.connection.use { c ->
+                c.createStatement().use { it.execute(SQLITE_CACHE) }
+                c.autoCommit = false
+                c.prepareStatement(insert).use { statement ->
+                    rows.chunked(batch).forEach { chunk ->
+                        for (row in chunk) {
+                            bind(statement, row)
+                            statement.addBatch()
+                        }
+                        statement.executeBatch()
+                        c.commit()
+                        count += chunk.size
+                    }
+                }
+                c.autoCommit = true
+            }
+            return count
+        }
+
+        override fun nodes(label: String, rows: Sequence<Map<String, Any>>): Long {
+            val labels = json.writeValueAsString(listOf(label))
+            return batches("INSERT INTO ${GRAPH}_node (labels, props) VALUES (?, ?)", rows) { s, row ->
+                s.setString(1, labels)
+                s.setString(2, json.writeValueAsString(row))
+            }
+        }
+
+        override fun beforeEdges() {
+            run(
+                "DROP TABLE IF EXISTS ${GRAPH}_load_map",
+                "DROP TABLE IF EXISTS ${GRAPH}_load_stage",
+                "CREATE TABLE ${GRAPH}_load_map (id TEXT PRIMARY KEY, nid INTEGER NOT NULL) WITHOUT ROWID",
+                "CREATE TABLE ${GRAPH}_load_stage (s TEXT NOT NULL, d TEXT NOT NULL)",
+                "INSERT INTO ${GRAPH}_load_map (id, nid) SELECT props ->> '$.id', nid FROM ${GRAPH}_node",
+            )
+        }
+
+        override fun edges(set: EdgeSet): Long {
+            val count = batches("INSERT INTO ${GRAPH}_load_stage (s, d) VALUES (?, ?)", set.pairs) { s, (src, dst) ->
+                s.setString(1, src)
+                s.setString(2, dst)
+            }
+            dataSource.connection.use { c ->
+                c.createStatement().use { it.execute(SQLITE_CACHE) }
+                c.prepareStatement(
+                    """
+                    INSERT INTO ${GRAPH}_edge (src, dst, type)
+                    SELECT s.nid, d.nid, ? FROM ${GRAPH}_load_stage st
+                    JOIN ${GRAPH}_load_map s ON s.id = st.s JOIN ${GRAPH}_load_map d ON d.id = st.d
+                    """.trimIndent(),
+                ).use { move ->
+                    move.setString(1, set.type)
+                    val moved = move.executeUpdate()
+                    check(moved.toLong() == count) { "${set.type}: $count pairs gave $moved relationships" }
+                }
+            }
+            run("DELETE FROM ${GRAPH}_load_stage")
+            return count
+        }
+
+        /** The staging tables go, and SQLite's planner is given statistics, as Postgres's and Oracle's are. */
+        override fun finish() {
+            run("DROP TABLE ${GRAPH}_load_map", "DROP TABLE ${GRAPH}_load_stage", "ANALYZE")
         }
     }
 }

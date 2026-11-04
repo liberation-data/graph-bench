@@ -30,6 +30,7 @@ dependencies {
     implementation("redis.clients:jedis:8.0.1")
     implementation("com.oracle.database.jdbc:ojdbc11")
     implementation("org.postgresql:postgresql")
+    implementation("org.xerial:sqlite-jdbc:3.53.2.1")
     implementation("com.zaxxer:HikariCP")
     runtimeOnly("ch.qos.logback:logback-classic")
 }

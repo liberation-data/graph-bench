@@ -1,0 +1,395 @@
+{
+  "$comment": "Drivine model file: this module's fragments, relationship fragments and views, written by the build. Drivine Studio reads it to browse the model and query the data. Keep it in source control: the build rewrites it when the model changes, and CI checks that it is current. Format: https://github.com/liberation-data/drivine-cypher-spec/tree/main/model",
+  "format": "drivine-model/1",
+  "generator": {
+    "library": "drivine4j",
+    "version": "0.4.1",
+    "language": "kotlin"
+  },
+  "module": "gb-adj",
+  "fragments": [
+    {
+      "id": "bench.Comment",
+      "name": "Comment",
+      "labels": [
+        "Comment"
+      ],
+      "nodeId": "id",
+      "properties": [
+        {
+          "name": "body",
+          "stored": "body",
+          "type": "string",
+          "nullable": false,
+          "source": "kotlin.String"
+        },
+        {
+          "name": "createdAt",
+          "stored": "createdAt",
+          "type": "int",
+          "nullable": false,
+          "source": "kotlin.Long"
+        },
+        {
+          "name": "id",
+          "stored": "id",
+          "type": "string",
+          "nullable": false,
+          "source": "kotlin.String"
+        }
+      ]
+    },
+    {
+      "id": "bench.Issue",
+      "name": "Issue",
+      "labels": [
+        "Issue"
+      ],
+      "nodeId": "id",
+      "properties": [
+        {
+          "name": "createdAt",
+          "stored": "createdAt",
+          "type": "int",
+          "nullable": false,
+          "source": "kotlin.Long"
+        },
+        {
+          "name": "id",
+          "stored": "id",
+          "type": "string",
+          "nullable": false,
+          "source": "kotlin.String"
+        },
+        {
+          "name": "priority",
+          "stored": "priority",
+          "type": "int",
+          "nullable": false,
+          "source": "kotlin.Int"
+        },
+        {
+          "name": "repoKey",
+          "stored": "repoKey",
+          "type": "string",
+          "nullable": false,
+          "source": "kotlin.String"
+        },
+        {
+          "name": "state",
+          "stored": "state",
+          "type": "string",
+          "nullable": false,
+          "source": "kotlin.String"
+        },
+        {
+          "name": "title",
+          "stored": "title",
+          "type": "string",
+          "nullable": false,
+          "source": "kotlin.String"
+        }
+      ]
+    },
+    {
+      "id": "bench.Org",
+      "name": "Org",
+      "labels": [
+        "Org"
+      ],
+      "nodeId": "id",
+      "properties": [
+        {
+          "name": "country",
+          "stored": "country",
+          "type": "string",
+          "nullable": false,
+          "source": "kotlin.String"
+        },
+        {
+          "name": "id",
+          "stored": "id",
+          "type": "string",
+          "nullable": false,
+          "source": "kotlin.String"
+        },
+        {
+          "name": "name",
+          "stored": "name",
+          "type": "string",
+          "nullable": false,
+          "source": "kotlin.String"
+        }
+      ]
+    },
+    {
+      "id": "bench.Person",
+      "name": "Person",
+      "labels": [
+        "Person"
+      ],
+      "nodeId": "id",
+      "properties": [
+        {
+          "name": "email",
+          "stored": "email",
+          "type": "string",
+          "nullable": false,
+          "source": "kotlin.String"
+        },
+        {
+          "name": "id",
+          "stored": "id",
+          "type": "string",
+          "nullable": false,
+          "source": "kotlin.String"
+        },
+        {
+          "name": "karma",
+          "stored": "karma",
+          "type": "int",
+          "nullable": false,
+          "source": "kotlin.Int"
+        },
+        {
+          "name": "name",
+          "stored": "name",
+          "type": "string",
+          "nullable": false,
+          "source": "kotlin.String"
+        }
+      ]
+    },
+    {
+      "id": "bench.Repo",
+      "name": "Repo",
+      "labels": [
+        "Repo"
+      ],
+      "nodeId": "id",
+      "properties": [
+        {
+          "name": "id",
+          "stored": "id",
+          "type": "string",
+          "nullable": false,
+          "source": "kotlin.String"
+        },
+        {
+          "name": "language",
+          "stored": "language",
+          "type": "string",
+          "nullable": false,
+          "source": "kotlin.String"
+        },
+        {
+          "name": "name",
+          "stored": "name",
+          "type": "string",
+          "nullable": false,
+          "source": "kotlin.String"
+        },
+        {
+          "name": "stars",
+          "stored": "stars",
+          "type": "int",
+          "nullable": false,
+          "source": "kotlin.Int"
+        }
+      ]
+    },
+    {
+      "id": "bench.Topic",
+      "name": "Topic",
+      "labels": [
+        "Topic"
+      ],
+      "nodeId": "id",
+      "properties": [
+        {
+          "name": "id",
+          "stored": "id",
+          "type": "string",
+          "nullable": false,
+          "source": "kotlin.String"
+        },
+        {
+          "name": "name",
+          "stored": "name",
+          "type": "string",
+          "nullable": false,
+          "source": "kotlin.String"
+        }
+      ]
+    }
+  ],
+  "relationshipFragments": [],
+  "views": [
+    {
+      "id": "bench.CommentWithAuthor",
+      "name": "CommentWithAuthor",
+      "root": {
+        "field": "comment",
+        "fragment": "bench.Comment"
+      },
+      "relationships": [
+        {
+          "field": "author",
+          "type": "WRITTEN_BY",
+          "direction": "OUTGOING",
+          "target": "bench.Person",
+          "many": false,
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "bench.IssueComments",
+      "name": "IssueComments",
+      "root": {
+        "field": "issue",
+        "fragment": "bench.Issue"
+      },
+      "relationships": [
+        {
+          "field": "comments",
+          "type": "ON",
+          "direction": "INCOMING",
+          "target": "bench.Comment",
+          "many": true,
+          "required": false
+        }
+      ]
+    },
+    {
+      "id": "bench.IssueDetail",
+      "name": "IssueDetail",
+      "root": {
+        "field": "issue",
+        "fragment": "bench.Issue"
+      },
+      "relationships": [
+        {
+          "field": "assignees",
+          "type": "ASSIGNED_TO",
+          "direction": "OUTGOING",
+          "target": "bench.Person",
+          "many": true,
+          "required": false
+        },
+        {
+          "field": "author",
+          "type": "OPENED_BY",
+          "direction": "OUTGOING",
+          "target": "bench.Person",
+          "many": false,
+          "required": true
+        },
+        {
+          "field": "comments",
+          "type": "ON",
+          "direction": "INCOMING",
+          "target": "bench.Comment",
+          "many": true,
+          "required": false
+        },
+        {
+          "field": "repo",
+          "type": "IN_REPO",
+          "direction": "OUTGOING",
+          "target": "bench.Repo",
+          "many": false,
+          "required": true
+        },
+        {
+          "field": "topics",
+          "type": "TAGGED",
+          "direction": "OUTGOING",
+          "target": "bench.Topic",
+          "many": true,
+          "required": false
+        }
+      ]
+    },
+    {
+      "id": "bench.IssueThread",
+      "name": "IssueThread",
+      "root": {
+        "field": "issue",
+        "fragment": "bench.Issue"
+      },
+      "relationships": [
+        {
+          "field": "comments",
+          "type": "ON",
+          "direction": "INCOMING",
+          "target": "bench.CommentWithAuthor",
+          "many": true,
+          "required": false
+        }
+      ]
+    },
+    {
+      "id": "bench.PersonReach",
+      "name": "PersonReach",
+      "root": {
+        "field": "person",
+        "fragment": "bench.Person"
+      },
+      "relationships": [
+        {
+          "field": "orgs",
+          "target": "bench.Org",
+          "many": true,
+          "required": false,
+          "readOnly": true,
+          "path": [
+            {
+              "type": "FOLLOWS",
+              "direction": "OUTGOING",
+              "label": "Person"
+            },
+            {
+              "type": "MEMBER_OF",
+              "direction": "OUTGOING"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bench.RepoOverview",
+      "name": "RepoOverview",
+      "root": {
+        "field": "repo",
+        "fragment": "bench.Repo"
+      },
+      "relationships": [
+        {
+          "field": "dependencies",
+          "type": "DEPENDS_ON",
+          "direction": "OUTGOING",
+          "target": "bench.Repo",
+          "many": true,
+          "required": false
+        },
+        {
+          "field": "owner",
+          "type": "OWNED_BY",
+          "direction": "OUTGOING",
+          "target": "bench.Org",
+          "many": false,
+          "required": true
+        }
+      ],
+      "aggregates": [
+        {
+          "field": "issueCount",
+          "function": "COUNT",
+          "type": "IN_REPO",
+          "direction": "INCOMING"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+== before start 2026-10-25T16:13:17Z
+ 2:13  up 5 days, 19:26, 5 users, load averages: 6.25 7.87 10.82
+other cpu 44.68% mem 53.41MiB / 15.6GiB io 1.42MB / 54.7MB
+other cpu 0.65% mem 907.7MiB / 15.6GiB io 21.1MB / 330MB
+other cpu 0.00% mem 6.465MiB / 15.6GiB io 1.33MB / 0B
+other cpu 0.34% mem 407.3MiB / 15.6GiB io 112MB / 328MB
+other cpu 0.26% mem 395.2MiB / 15.6GiB io 1.65GB / 1.74GB
+other cpu 0.38% mem 529.5MiB / 15.6GiB io 1.74GB / 1.85GB
+other cpu 0.00% mem 14.48MiB / 4GiB io 8.08GB / 694MB
+other cpu 0.23% mem 278.9MiB / 15.6GiB io 23.7GB / 3.12GB
+sqlite: the graph is loaded already
+== before adjacency 2026-10-25T16:13:24Z
+ 2:13  up 5 days, 19:26, 5 users, load averages: 6.63 7.92 10.82
+other cpu 37.33% mem 91.27MiB / 15.6GiB io 4.85MB / 79.8MB
+other cpu 2.03% mem 908MiB / 15.6GiB io 21.1MB / 330MB
+other cpu 0.00% mem 6.465MiB / 15.6GiB io 1.33MB / 0B
+other cpu 0.48% mem 407.6MiB / 15.6GiB io 112MB / 328MB
+other cpu 0.77% mem 395.5MiB / 15.6GiB io 1.65GB / 1.74GB
+other cpu 0.77% mem 529.8MiB / 15.6GiB io 1.74GB / 1.85GB
+other cpu 0.00% mem 14.48MiB / 4GiB io 8.08GB / 694MB
+other cpu 0.73% mem 278.9MiB / 15.6GiB io 23.7GB / 3.12GB
+sqlite: adjacency
+  round 1, count: 1.9 s
+  round 1, reach: 3.7 s
+  round 1, read: 22.1 s
+  round 2, count: 3.1 s
+  round 2, reach: 3.6 s
+  round 2, read: 20.6 s
+  round 3, count: 1.8 s
+  round 3, reach: 3.8 s
+  round 3, read: 21.3 s
+== after adjacency 2026-10-25T16:30:29Z
+ 2:30  up 5 days, 19:43, 5 users, load averages: 13.07 9.50 11.11
+other cpu 0.57% mem 448.4MiB / 15.6GiB io 164MB / 328MB
+other cpu 0.28% mem 396MiB / 15.6GiB io 1.65GB / 1.74GB
+other cpu 0.45% mem 530.1MiB / 15.6GiB io 1.74GB / 1.85GB
+other cpu 0.00% mem 14.48MiB / 4GiB io 8.08GB / 694MB
+other cpu 0.34% mem 279MiB / 15.6GiB io 23.7GB / 3.12GB
+other cpu 0.00% mem 6.953MiB / 15.6GiB io 786kB / 0B
+other cpu 216.15% mem 221.6MiB / 15.6GiB io 157MB / 272MB

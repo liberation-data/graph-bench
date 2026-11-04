@@ -1,0 +1,12 @@
+{
+  "engine" : "postgres",
+  "scale" : 0.1,
+  "load" : {
+    "nodes" : 112150,
+    "edges" : 445374,
+    "schemaSeconds" : 0.156733542,
+    "nodeSeconds" : 0.928301333,
+    "edgeSeconds" : 5.126884042
+  },
+  "outcomes" : [ ]
+}

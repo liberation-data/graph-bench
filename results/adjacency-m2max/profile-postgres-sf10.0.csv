@@ -1,0 +1,1801 @@
+variant,hops,person,hits,misses,plan
+count,1,p643771,5,7,Aggregate Index Scan Index Only Scan
+count,1,p916435,8,1,Aggregate Index Scan Index Only Scan
+count,1,p725824,10,2,Aggregate Index Scan Index Only Scan
+count,1,p248578,10,1,Aggregate Index Scan Index Only Scan
+count,1,p596138,7,3,Aggregate Index Scan Index Only Scan
+count,1,p384394,11,2,Aggregate Index Scan Index Only Scan
+count,1,p315331,7,2,Aggregate Index Scan Index Only Scan
+count,1,p47550,7,2,Aggregate Index Scan Index Only Scan
+count,1,p37147,8,1,Aggregate Index Scan Index Only Scan
+count,1,p129780,11,2,Aggregate Index Scan Index Only Scan
+count,1,p106380,12,1,Aggregate Index Scan Index Only Scan
+count,1,p459693,9,1,Aggregate Index Scan Index Only Scan
+count,1,p200676,7,1,Aggregate Index Scan Index Only Scan
+count,1,p674294,11,1,Aggregate Index Scan Index Only Scan
+count,1,p839927,8,1,Aggregate Index Scan Index Only Scan
+count,1,p782055,11,2,Aggregate Index Scan Index Only Scan
+count,1,p187296,12,1,Aggregate Index Scan Index Only Scan
+count,1,p805034,11,2,Aggregate Index Scan Index Only Scan
+count,1,p279609,9,1,Aggregate Index Scan Index Only Scan
+count,1,p943079,10,3,Aggregate Index Scan Index Only Scan
+count,1,p930884,10,2,Aggregate Index Scan Index Only Scan
+count,1,p229919,11,2,Aggregate Index Scan Index Only Scan
+count,1,p246085,8,1,Aggregate Index Scan Index Only Scan
+count,1,p543769,10,3,Aggregate Index Scan Index Only Scan
+count,1,p969584,7,2,Aggregate Index Scan Index Only Scan
+count,1,p880872,11,2,Aggregate Index Scan Index Only Scan
+count,1,p310865,8,1,Aggregate Index Scan Index Only Scan
+count,1,p627504,11,2,Aggregate Index Scan Index Only Scan
+count,1,p484113,8,2,Aggregate Index Scan Index Only Scan
+count,1,p816641,7,2,Aggregate Index Scan Index Only Scan
+count,1,p359572,7,2,Aggregate Index Scan Index Only Scan
+count,1,p106236,8,1,Aggregate Index Scan Index Only Scan
+count,1,p190140,8,1,Aggregate Index Scan Index Only Scan
+count,1,p312994,7,2,Aggregate Index Scan Index Only Scan
+count,1,p53694,12,1,Aggregate Index Scan Index Only Scan
+count,1,p933849,8,2,Aggregate Index Scan Index Only Scan
+count,1,p171576,7,2,Aggregate Index Scan Index Only Scan
+count,1,p976646,9,1,Aggregate Index Scan Index Only Scan
+count,1,p939966,9,2,Aggregate Index Scan Index Only Scan
+count,1,p554135,11,1,Aggregate Index Scan Index Only Scan
+count,1,p30788,11,1,Aggregate Index Scan Index Only Scan
+count,1,p972884,11,2,Aggregate Index Scan Index Only Scan
+count,1,p68138,11,2,Aggregate Index Scan Index Only Scan
+count,1,p738669,9,2,Aggregate Index Scan Index Only Scan
+count,1,p926210,7,2,Aggregate Index Scan Index Only Scan
+count,1,p275672,7,2,Aggregate Index Scan Index Only Scan
+count,1,p262995,9,1,Aggregate Index Scan Index Only Scan
+count,1,p155618,12,1,Aggregate Index Scan Index Only Scan
+count,1,p243220,7,2,Aggregate Index Scan Index Only Scan
+count,1,p538509,11,1,Aggregate Index Scan Index Only Scan
+count,1,p413998,11,2,Aggregate Index Scan Index Only Scan
+count,1,p565512,10,1,Aggregate Index Scan Index Only Scan
+count,1,p157112,10,1,Aggregate Index Scan Index Only Scan
+count,1,p60238,12,1,Aggregate Index Scan Index Only Scan
+count,1,p365735,10,1,Aggregate Index Scan Index Only Scan
+count,1,p609254,10,2,Aggregate Index Scan Index Only Scan
+count,1,p985158,12,1,Aggregate Index Scan Index Only Scan
+count,1,p441093,12,1,Aggregate Index Scan Index Only Scan
+count,1,p132191,12,1,Aggregate Index Scan Index Only Scan
+count,1,p327051,9,2,Aggregate Index Scan Index Only Scan
+count,1,p634490,11,1,Aggregate Index Scan Index Only Scan
+count,1,p453305,12,1,Aggregate Index Scan Index Only Scan
+count,1,p26285,8,1,Aggregate Index Scan Index Only Scan
+count,1,p619098,8,1,Aggregate Index Scan Index Only Scan
+count,1,p575789,7,2,Aggregate Index Scan Index Only Scan
+count,1,p225801,10,2,Aggregate Index Scan Index Only Scan
+count,1,p799097,7,2,Aggregate Index Scan Index Only Scan
+count,1,p209682,9,2,Aggregate Index Scan Index Only Scan
+count,1,p369475,11,2,Aggregate Index Scan Index Only Scan
+count,1,p384792,11,1,Aggregate Index Scan Index Only Scan
+count,1,p592423,11,1,Aggregate Index Scan Index Only Scan
+count,1,p88051,9,1,Aggregate Index Scan Index Only Scan
+count,1,p562469,11,2,Aggregate Index Scan Index Only Scan
+count,1,p188620,11,2,Aggregate Index Scan Index Only Scan
+count,1,p73769,12,1,Aggregate Index Scan Index Only Scan
+count,1,p513647,11,2,Aggregate Index Scan Index Only Scan
+count,1,p600769,8,1,Aggregate Index Scan Index Only Scan
+count,1,p483449,11,2,Aggregate Index Scan Index Only Scan
+count,1,p82680,12,1,Aggregate Index Scan Index Only Scan
+count,1,p906855,9,2,Aggregate Index Scan Index Only Scan
+count,1,p624551,10,1,Aggregate Index Scan Index Only Scan
+count,1,p197561,10,1,Aggregate Index Scan Index Only Scan
+count,1,p570965,11,2,Aggregate Index Scan Index Only Scan
+count,1,p649305,11,1,Aggregate Index Scan Index Only Scan
+count,1,p251423,7,1,Aggregate Index Scan Index Only Scan
+count,1,p745489,12,1,Aggregate Index Scan Index Only Scan
+count,1,p192974,11,1,Aggregate Index Scan Index Only Scan
+count,1,p185643,12,1,Aggregate Index Scan Index Only Scan
+count,1,p433864,11,2,Aggregate Index Scan Index Only Scan
+count,1,p383437,10,2,Aggregate Index Scan Index Only Scan
+count,1,p542172,7,2,Aggregate Index Scan Index Only Scan
+count,1,p589622,11,2,Aggregate Index Scan Index Only Scan
+count,1,p488551,11,2,Aggregate Index Scan Index Only Scan
+count,1,p738241,11,2,Aggregate Index Scan Index Only Scan
+count,1,p640226,11,1,Aggregate Index Scan Index Only Scan
+count,1,p313360,8,1,Aggregate Index Scan Index Only Scan
+count,1,p189093,9,1,Aggregate Index Scan Index Only Scan
+count,1,p971774,8,1,Aggregate Index Scan Index Only Scan
+count,1,p817802,11,2,Aggregate Index Scan Index Only Scan
+count,1,p917044,8,2,Aggregate Index Scan Index Only Scan
+count,1,p580365,11,2,Aggregate Index Scan Index Only Scan
+count,1,p116875,10,1,Aggregate Index Scan Index Only Scan
+count,1,p884232,7,2,Aggregate Index Scan Index Only Scan
+count,1,p906367,7,2,Aggregate Index Scan Index Only Scan
+count,1,p462089,11,2,Aggregate Index Scan Index Only Scan
+count,1,p454690,12,1,Aggregate Index Scan Index Only Scan
+count,1,p822832,11,1,Aggregate Index Scan Index Only Scan
+count,1,p530670,9,1,Aggregate Index Scan Index Only Scan
+count,1,p676735,12,1,Aggregate Index Scan Index Only Scan
+count,1,p667509,9,2,Aggregate Index Scan Index Only Scan
+count,1,p524946,11,2,Aggregate Index Scan Index Only Scan
+count,1,p206872,9,1,Aggregate Index Scan Index Only Scan
+count,1,p954617,12,1,Aggregate Index Scan Index Only Scan
+count,1,p471664,11,2,Aggregate Index Scan Index Only Scan
+count,1,p267170,11,1,Aggregate Index Scan Index Only Scan
+count,1,p229232,12,1,Aggregate Index Scan Index Only Scan
+count,1,p910217,11,1,Aggregate Index Scan Index Only Scan
+count,1,p759262,11,2,Aggregate Index Scan Index Only Scan
+count,1,p968132,9,1,Aggregate Index Scan Index Only Scan
+count,1,p864809,12,1,Aggregate Index Scan Index Only Scan
+count,1,p407259,11,2,Aggregate Index Scan Index Only Scan
+count,1,p138982,12,1,Aggregate Index Scan Index Only Scan
+count,1,p964435,10,2,Aggregate Index Scan Index Only Scan
+count,1,p705532,8,2,Aggregate Index Scan Index Only Scan
+count,1,p447367,9,1,Aggregate Index Scan Index Only Scan
+count,1,p422213,8,1,Aggregate Index Scan Index Only Scan
+count,1,p855739,8,1,Aggregate Index Scan Index Only Scan
+count,1,p49593,8,1,Aggregate Index Scan Index Only Scan
+count,1,p796966,12,1,Aggregate Index Scan Index Only Scan
+count,1,p368946,9,1,Aggregate Index Scan Index Only Scan
+count,1,p368571,11,2,Aggregate Index Scan Index Only Scan
+count,1,p936905,7,2,Aggregate Index Scan Index Only Scan
+count,1,p980891,12,1,Aggregate Index Scan Index Only Scan
+count,1,p993707,8,1,Aggregate Index Scan Index Only Scan
+count,1,p718539,7,2,Aggregate Index Scan Index Only Scan
+count,1,p653630,8,1,Aggregate Index Scan Index Only Scan
+count,1,p14379,12,1,Aggregate Index Scan Index Only Scan
+count,1,p706181,10,2,Aggregate Index Scan Index Only Scan
+count,1,p363419,9,2,Aggregate Index Scan Index Only Scan
+count,1,p48968,11,1,Aggregate Index Scan Index Only Scan
+count,1,p820753,10,2,Aggregate Index Scan Index Only Scan
+count,1,p858985,9,1,Aggregate Index Scan Index Only Scan
+count,1,p629339,11,1,Aggregate Index Scan Index Only Scan
+count,1,p110296,12,1,Aggregate Index Scan Index Only Scan
+count,1,p23722,13,0,Aggregate Index Scan Index Only Scan
+count,1,p77590,13,0,Aggregate Index Scan Index Only Scan
+count,1,p74436,13,0,Aggregate Index Scan Index Only Scan
+count,1,p909268,10,0,Aggregate Index Scan Index Only Scan
+count,1,p281609,11,0,Aggregate Index Scan Index Only Scan
+count,1,p774916,9,0,Aggregate Index Scan Index Only Scan
+count,2,p643771,67,5,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p916435,13,1,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p725824,106,8,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p248578,30,3,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p596138,23,1,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p384394,332,15,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p315331,18,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p47550,13,1,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p37147,17,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p129780,107,4,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p106380,227,11,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p459693,36,1,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p200676,8,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p674294,100,4,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p839927,15,1,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p782055,68,12,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p187296,87,4,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p805034,175,15,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p279609,24,1,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p943079,84,9,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p930884,47,2,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p229919,394,30,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p246085,18,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p543769,138,11,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p969584,17,1,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p880872,75,4,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p310865,13,1,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p627504,64,2,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p484113,33,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p816641,14,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p359572,18,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p106236,16,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p190140,14,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p312994,14,1,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p53694,94,7,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p933849,22,3,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p171576,18,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p976646,21,2,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p939966,46,3,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p554135,43,1,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p30788,63,2,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p972884,109,5,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p68138,242,3,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p738669,40,1,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p926210,17,1,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p275672,17,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p262995,23,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p155618,146,8,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p243220,18,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p538509,175,15,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p413998,321,22,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p565512,32,2,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p157112,35,1,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p60238,123,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p365735,30,2,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p609254,320,23,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p985158,153,9,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p441093,184,6,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p132191,392,14,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p327051,37,1,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p634490,175,9,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p453305,376,25,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p26285,18,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p619098,17,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p575789,26,1,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p225801,194,10,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p799097,14,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p209682,30,1,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p369475,89,3,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p384792,218,6,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p592423,121,9,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p88051,21,1,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p562469,350,14,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p188620,174,5,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p73769,227,8,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p513647,204,19,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p600769,18,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p483449,134,3,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p82680,394,21,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p906855,40,2,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p624551,40,4,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p197561,46,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p570965,86,3,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p649305,108,6,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p251423,8,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p745489,250,15,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p192974,80,4,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p185643,374,18,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p433864,135,8,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p383437,98,6,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p542172,13,1,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p589622,184,10,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p488551,181,17,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p738241,102,3,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p640226,137,8,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p313360,18,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p189093,43,6,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p971774,14,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p817802,241,13,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p917044,26,1,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p580365,253,15,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p116875,63,5,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p884232,17,1,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p906367,14,1,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p462089,252,17,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p454690,118,9,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p822832,170,12,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p530670,28,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p676735,151,9,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p667509,44,2,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p524946,115,12,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p206872,45,5,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p954617,187,9,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p471664,155,11,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p267170,43,4,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p229232,209,13,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p910217,57,4,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p759262,246,12,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p968132,35,1,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p864809,301,18,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p407259,172,12,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p138982,221,7,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p964435,78,8,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p705532,24,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p447367,28,2,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p422213,16,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p855739,18,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p49593,17,1,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p796966,99,4,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p368946,24,1,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p368571,116,6,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p936905,16,1,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p980891,202,19,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p993707,14,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p718539,18,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p653630,37,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p14379,174,5,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p706181,361,18,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p363419,48,3,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p48968,56,1,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p820753,187,10,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p858985,22,2,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p629339,50,3,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p110296,257,3,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p23722,103,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p77590,412,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p74436,177,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p909268,24,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p281609,34,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,2,p774916,21,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p643771,621,33,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p916435,23,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p725824,1825,81,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p248578,326,14,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p596138,203,9,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p384394,5233,230,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p315331,326,16,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p47550,29,3,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p37147,71,5,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p129780,1090,76,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p106380,4003,195,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p459693,414,33,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p200676,8,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p674294,1006,70,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p839927,61,1,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p782055,468,24,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p187296,1246,68,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p805034,2494,112,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p279609,136,13,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p943079,1171,51,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p930884,218,11,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p229919,7952,376,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p246085,429,10,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p543769,2159,102,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p969584,276,9,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p880872,923,39,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p310865,23,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p627504,689,31,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p484113,437,21,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p816641,21,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p359572,110,3,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p106236,44,1,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p190140,22,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p312994,32,1,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p53694,1637,88,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p933849,396,16,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p171576,112,5,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p976646,85,3,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p939966,448,26,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p554135,617,22,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p30788,834,35,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p972884,1165,66,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p68138,3584,159,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p738669,152,8,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p926210,403,23,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p275672,154,11,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p262995,115,3,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p155618,1866,118,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p243220,259,16,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p538509,3311,143,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p413998,4721,228,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p565512,382,24,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p157112,400,21,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p60238,1472,57,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p365735,259,14,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p609254,5584,250,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p985158,2657,115,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p441093,2693,111,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p132191,5917,262,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p327051,285,11,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p634490,2993,131,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p453305,6125,295,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p26285,204,6,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p619098,76,4,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p575789,411,19,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p225801,1945,106,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p799097,23,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p209682,285,11,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p369475,1514,82,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p384792,4373,195,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p592423,2431,115,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p88051,286,22,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p562469,6083,255,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p188620,2214,105,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p73769,3290,151,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p513647,3665,173,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p600769,157,6,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p483449,1844,63,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p82680,7171,322,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p906855,395,17,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p624551,243,18,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p197561,798,24,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p570965,1539,68,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p649305,1373,52,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p251423,8,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p745489,3342,138,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p192974,803,28,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p185643,7150,339,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p433864,2545,98,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p383437,1432,56,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p542172,19,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p589622,3510,146,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p488551,3099,140,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p738241,1278,44,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p640226,2242,92,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p313360,158,5,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p189093,369,14,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p971774,22,1,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p817802,4483,190,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p917044,679,28,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p580365,3779,140,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p116875,911,54,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p884232,364,13,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p906367,33,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p462089,4177,145,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p454690,2104,69,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p822832,3022,102,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p530670,469,26,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p676735,2363,85,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p667509,938,39,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p524946,1557,42,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p206872,536,31,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p954617,3316,107,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p471664,1770,85,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p267170,1149,33,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p229232,3682,126,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p910217,782,21,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p759262,4169,179,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p968132,564,16,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p864809,4220,137,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p407259,2649,106,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p138982,3487,109,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p964435,930,34,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p705532,163,4,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p447367,273,12,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p422213,37,2,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p855739,374,4,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p49593,341,14,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p796966,1257,31,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p368946,367,12,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p368571,1641,52,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p936905,113,4,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p980891,3266,118,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p993707,19,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p718539,225,6,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p653630,342,21,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p14379,2187,69,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p706181,5357,187,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p363419,747,23,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p48968,1022,33,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p820753,2597,82,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p858985,390,13,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p629339,514,14,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p110296,4334,106,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p23722,1436,18,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p77590,6108,20,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p74436,2565,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p909268,397,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p281609,77,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,3,p774916,61,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p643771,10223,350,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p916435,161,2,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p725824,29635,962,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p248578,4125,155,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p596138,2533,63,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p384394,82627,2497,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p315331,4610,121,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p47550,335,16,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p37147,668,30,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p129780,17892,510,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p106380,62863,1747,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p459693,6048,165,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p200676,8,0,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p674294,16570,487,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p839927,758,24,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p782055,5479,144,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p187296,20429,481,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p805034,39038,979,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p279609,1808,56,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p943079,18878,439,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p930884,2858,56,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p229919,119291,2630,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p246085,7055,182,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p543769,32397,701,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p969584,4978,79,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p880872,13982,288,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p310865,288,7,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p627504,12127,268,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p484113,7379,175,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p816641,42,1,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p359572,1889,49,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p106236,410,11,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p190140,127,5,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p312994,739,28,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p53694,25428,526,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p933849,5954,156,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p171576,1272,15,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p976646,921,27,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p939966,6613,119,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p554135,9013,176,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p30788,15594,271,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p972884,18429,361,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p68138,54904,1215,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p738669,3076,65,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p926210,6251,152,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p275672,2190,58,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p262995,1438,31,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p155618,28256,593,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p243220,3618,90,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p538509,54399,1110,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p413998,71237,1374,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p565512,7658,123,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p157112,5589,100,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p60238,20889,443,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p365735,4530,86,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p609254,95089,1921,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p985158,39132,725,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p441093,45990,814,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p132191,101815,1839,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p327051,3547,41,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p634490,47801,857,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p453305,101457,1790,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p26285,2718,31,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p619098,957,26,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p575789,6822,125,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p225801,30956,558,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p799097,287,9,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p209682,4931,69,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p369475,25011,435,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p384792,74321,1208,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p592423,40822,723,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p88051,5029,83,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p562469,96851,1673,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p188620,35690,681,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p73769,54552,877,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p513647,57302,1139,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p600769,2319,45,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p483449,29962,463,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p82680,112628,2111,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p906855,5369,113,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p624551,3005,54,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p197561,12288,181,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p570965,25184,484,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p649305,20950,404,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p251423,7,1,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p745489,49462,803,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p192974,11790,233,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p185643,111605,2030,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p433864,42538,637,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p383437,20726,325,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p542172,23,1,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p589622,56915,818,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p488551,50300,796,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p738241,19166,317,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p640226,37795,655,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p313360,2326,47,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p189093,4977,97,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p971774,234,13,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p817802,70887,1253,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p917044,10684,186,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p580365,58309,869,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p116875,16065,273,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p884232,6950,104,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p906367,494,1,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p462089,68845,1031,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p454690,33897,557,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p822832,46615,756,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p530670,7162,161,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p676735,36159,567,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p667509,15073,255,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p524946,24749,402,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p206872,8621,111,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p954617,54906,784,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p471664,26257,449,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p267170,17966,252,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p229232,63085,898,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p910217,12215,183,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p759262,65143,1038,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p968132,8632,135,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p864809,68511,1138,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p407259,44017,707,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p138982,57525,920,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p964435,12316,247,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p705532,2460,54,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p447367,4795,85,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p422213,801,5,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p855739,6855,90,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p49593,5893,67,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p796966,18701,286,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p368946,6918,89,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p368571,26173,416,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p936905,2115,37,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p980891,53178,893,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p993707,26,1,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p718539,3048,61,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p653630,5371,88,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p14379,36222,528,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p706181,85870,1256,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p363419,11874,156,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p48968,16744,237,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p820753,39067,555,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p858985,6033,83,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p629339,7295,152,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p110296,68373,979,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p23722,22550,308,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p77590,97278,1166,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p74436,39776,316,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p909268,5983,47,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p281609,668,11,Aggregate Index Scan Nested Loop Index Only Scan
+count,4,p774916,799,1,Aggregate Index Scan Nested Loop Index Only Scan
+reach,1,p643771,15,1,Aggregate Index Scan
+reach,1,p916435,8,1,Aggregate Index Scan
+reach,1,p725824,16,2,Aggregate Index Scan
+reach,1,p248578,10,1,Aggregate Index Scan
+reach,1,p596138,9,1,Aggregate Index Scan
+reach,1,p384394,21,1,Aggregate Index Scan
+reach,1,p315331,8,1,Aggregate Index Scan
+reach,1,p47550,8,1,Aggregate Index Scan
+reach,1,p37147,8,1,Aggregate Index Scan
+reach,1,p129780,18,1,Aggregate Index Scan
+reach,1,p106380,21,1,Aggregate Index Scan
+reach,1,p459693,9,2,Aggregate Index Scan
+reach,1,p200676,7,1,Aggregate Index Scan
+reach,1,p674294,13,3,Aggregate Index Scan
+reach,1,p839927,8,1,Aggregate Index Scan
+reach,1,p782055,13,3,Aggregate Index Scan
+reach,1,p187296,14,1,Aggregate Index Scan
+reach,1,p805034,19,3,Aggregate Index Scan
+reach,1,p279609,9,1,Aggregate Index Scan
+reach,1,p943079,15,2,Aggregate Index Scan
+reach,1,p930884,11,2,Aggregate Index Scan
+reach,1,p229919,24,2,Aggregate Index Scan
+reach,1,p246085,8,1,Aggregate Index Scan
+reach,1,p543769,13,7,Aggregate Index Scan
+reach,1,p969584,8,1,Aggregate Index Scan
+reach,1,p880872,13,3,Aggregate Index Scan
+reach,1,p310865,8,1,Aggregate Index Scan
+reach,1,p627504,14,1,Aggregate Index Scan
+reach,1,p484113,10,1,Aggregate Index Scan
+reach,1,p816641,8,1,Aggregate Index Scan
+reach,1,p359572,8,1,Aggregate Index Scan
+reach,1,p106236,8,1,Aggregate Index Scan
+reach,1,p190140,8,1,Aggregate Index Scan
+reach,1,p312994,8,1,Aggregate Index Scan
+reach,1,p53694,15,2,Aggregate Index Scan
+reach,1,p933849,9,1,Aggregate Index Scan
+reach,1,p171576,8,1,Aggregate Index Scan
+reach,1,p976646,7,3,Aggregate Index Scan
+reach,1,p939966,9,3,Aggregate Index Scan
+reach,1,p554135,9,3,Aggregate Index Scan
+reach,1,p30788,13,1,Aggregate Index Scan
+reach,1,p972884,16,1,Aggregate Index Scan
+reach,1,p68138,22,1,Aggregate Index Scan
+reach,1,p738669,10,1,Aggregate Index Scan
+reach,1,p926210,8,1,Aggregate Index Scan
+reach,1,p275672,8,1,Aggregate Index Scan
+reach,1,p262995,9,1,Aggregate Index Scan
+reach,1,p155618,17,2,Aggregate Index Scan
+reach,1,p243220,8,1,Aggregate Index Scan
+reach,1,p538509,13,6,Aggregate Index Scan
+reach,1,p413998,23,1,Aggregate Index Scan
+reach,1,p565512,10,1,Aggregate Index Scan
+reach,1,p157112,11,1,Aggregate Index Scan
+reach,1,p60238,16,1,Aggregate Index Scan
+reach,1,p365735,8,3,Aggregate Index Scan
+reach,1,p609254,10,13,Aggregate Index Scan
+reach,1,p985158,17,3,Aggregate Index Scan
+reach,1,p441093,18,5,Aggregate Index Scan
+reach,1,p132191,21,1,Aggregate Index Scan
+reach,1,p327051,11,1,Aggregate Index Scan
+reach,1,p634490,12,8,Aggregate Index Scan
+reach,1,p453305,22,1,Aggregate Index Scan
+reach,1,p26285,8,1,Aggregate Index Scan
+reach,1,p619098,8,1,Aggregate Index Scan
+reach,1,p575789,7,3,Aggregate Index Scan
+reach,1,p225801,19,2,Aggregate Index Scan
+reach,1,p799097,8,1,Aggregate Index Scan
+reach,1,p209682,10,1,Aggregate Index Scan
+reach,1,p369475,13,2,Aggregate Index Scan
+reach,1,p384792,20,1,Aggregate Index Scan
+reach,1,p592423,18,1,Aggregate Index Scan
+reach,1,p88051,9,1,Aggregate Index Scan
+reach,1,p562469,23,1,Aggregate Index Scan
+reach,1,p188620,20,1,Aggregate Index Scan
+reach,1,p73769,19,1,Aggregate Index Scan
+reach,1,p513647,19,1,Aggregate Index Scan
+reach,1,p600769,8,1,Aggregate Index Scan
+reach,1,p483449,18,1,Aggregate Index Scan
+reach,1,p82680,23,1,Aggregate Index Scan
+reach,1,p906855,11,1,Aggregate Index Scan
+reach,1,p624551,12,1,Aggregate Index Scan
+reach,1,p197561,11,1,Aggregate Index Scan
+reach,1,p570965,16,0,Aggregate Index Scan
+reach,1,p649305,17,1,Aggregate Index Scan
+reach,1,p251423,8,0,Aggregate Index Scan
+reach,1,p745489,22,0,Aggregate Index Scan
+reach,1,p192974,17,0,Aggregate Index Scan
+reach,1,p185643,23,0,Aggregate Index Scan
+reach,1,p433864,19,0,Aggregate Index Scan
+reach,1,p383437,17,0,Aggregate Index Scan
+reach,1,p542172,9,0,Aggregate Index Scan
+reach,1,p589622,22,0,Aggregate Index Scan
+reach,1,p488551,20,0,Aggregate Index Scan
+reach,1,p738241,16,0,Aggregate Index Scan
+reach,1,p640226,18,0,Aggregate Index Scan
+reach,1,p313360,9,0,Aggregate Index Scan
+reach,1,p189093,12,0,Aggregate Index Scan
+reach,1,p971774,9,0,Aggregate Index Scan
+reach,1,p817802,21,0,Aggregate Index Scan
+reach,1,p917044,10,0,Aggregate Index Scan
+reach,1,p580365,23,0,Aggregate Index Scan
+reach,1,p116875,13,0,Aggregate Index Scan
+reach,1,p884232,9,0,Aggregate Index Scan
+reach,1,p906367,9,0,Aggregate Index Scan
+reach,1,p462089,24,0,Aggregate Index Scan
+reach,1,p454690,18,0,Aggregate Index Scan
+reach,1,p822832,22,0,Aggregate Index Scan
+reach,1,p530670,10,0,Aggregate Index Scan
+reach,1,p676735,19,0,Aggregate Index Scan
+reach,1,p667509,11,0,Aggregate Index Scan
+reach,1,p524946,19,0,Aggregate Index Scan
+reach,1,p206872,12,0,Aggregate Index Scan
+reach,1,p954617,19,0,Aggregate Index Scan
+reach,1,p471664,21,0,Aggregate Index Scan
+reach,1,p267170,12,0,Aggregate Index Scan
+reach,1,p229232,22,0,Aggregate Index Scan
+reach,1,p910217,14,0,Aggregate Index Scan
+reach,1,p759262,22,0,Aggregate Index Scan
+reach,1,p968132,10,0,Aggregate Index Scan
+reach,1,p864809,23,0,Aggregate Index Scan
+reach,1,p407259,21,0,Aggregate Index Scan
+reach,1,p138982,22,0,Aggregate Index Scan
+reach,1,p964435,17,0,Aggregate Index Scan
+reach,1,p705532,10,0,Aggregate Index Scan
+reach,1,p447367,11,0,Aggregate Index Scan
+reach,1,p422213,9,0,Aggregate Index Scan
+reach,1,p855739,9,0,Aggregate Index Scan
+reach,1,p49593,9,0,Aggregate Index Scan
+reach,1,p796966,18,0,Aggregate Index Scan
+reach,1,p368946,10,0,Aggregate Index Scan
+reach,1,p368571,18,0,Aggregate Index Scan
+reach,1,p936905,9,0,Aggregate Index Scan
+reach,1,p980891,22,0,Aggregate Index Scan
+reach,1,p993707,9,0,Aggregate Index Scan
+reach,1,p718539,9,0,Aggregate Index Scan
+reach,1,p653630,10,0,Aggregate Index Scan
+reach,1,p14379,21,0,Aggregate Index Scan
+reach,1,p706181,23,0,Aggregate Index Scan
+reach,1,p363419,13,0,Aggregate Index Scan
+reach,1,p48968,13,0,Aggregate Index Scan
+reach,1,p820753,22,0,Aggregate Index Scan
+reach,1,p858985,10,0,Aggregate Index Scan
+reach,1,p629339,14,0,Aggregate Index Scan
+reach,1,p110296,20,0,Aggregate Index Scan
+reach,1,p23722,17,0,Aggregate Index Scan
+reach,1,p77590,24,0,Aggregate Index Scan
+reach,1,p74436,21,0,Aggregate Index Scan
+reach,1,p909268,10,0,Aggregate Index Scan
+reach,1,p281609,12,0,Aggregate Index Scan
+reach,1,p774916,10,0,Aggregate Index Scan
+reach,2,p643771,92,7,Aggregate Index Scan Nested Loop
+reach,2,p916435,14,0,Aggregate Index Scan Nested Loop
+reach,2,p725824,175,12,Aggregate Index Scan Nested Loop
+reach,2,p248578,43,1,Aggregate Index Scan Nested Loop
+reach,2,p596138,33,0,Aggregate Index Scan Nested Loop
+reach,2,p384394,494,29,Aggregate Index Scan Nested Loop
+reach,2,p315331,28,0,Aggregate Index Scan Nested Loop
+reach,2,p47550,13,2,Aggregate Index Scan Nested Loop
+reach,2,p37147,14,4,Aggregate Index Scan Nested Loop
+reach,2,p129780,138,16,Aggregate Index Scan Nested Loop
+reach,2,p106380,349,25,Aggregate Index Scan Nested Loop
+reach,2,p459693,50,8,Aggregate Index Scan Nested Loop
+reach,2,p200676,8,0,Aggregate Index Scan Nested Loop
+reach,2,p674294,115,23,Aggregate Index Scan Nested Loop
+reach,2,p839927,18,0,Aggregate Index Scan Nested Loop
+reach,2,p782055,98,2,Aggregate Index Scan Nested Loop
+reach,2,p187296,123,8,Aggregate Index Scan Nested Loop
+reach,2,p805034,263,14,Aggregate Index Scan Nested Loop
+reach,2,p279609,23,6,Aggregate Index Scan Nested Loop
+reach,2,p943079,128,9,Aggregate Index Scan Nested Loop
+reach,2,p930884,53,4,Aggregate Index Scan Nested Loop
+reach,2,p229919,668,33,Aggregate Index Scan Nested Loop
+reach,2,p246085,30,0,Aggregate Index Scan Nested Loop
+reach,2,p543769,207,14,Aggregate Index Scan Nested Loop
+reach,2,p969584,28,0,Aggregate Index Scan Nested Loop
+reach,2,p880872,110,4,Aggregate Index Scan Nested Loop
+reach,2,p310865,13,1,Aggregate Index Scan Nested Loop
+reach,2,p627504,85,5,Aggregate Index Scan Nested Loop
+reach,2,p484113,47,0,Aggregate Index Scan Nested Loop
+reach,2,p816641,14,0,Aggregate Index Scan Nested Loop
+reach,2,p359572,22,0,Aggregate Index Scan Nested Loop
+reach,2,p106236,14,3,Aggregate Index Scan Nested Loop
+reach,2,p190140,14,0,Aggregate Index Scan Nested Loop
+reach,2,p312994,14,1,Aggregate Index Scan Nested Loop
+reach,2,p53694,143,9,Aggregate Index Scan Nested Loop
+reach,2,p933849,38,0,Aggregate Index Scan Nested Loop
+reach,2,p171576,21,2,Aggregate Index Scan Nested Loop
+reach,2,p976646,26,0,Aggregate Index Scan Nested Loop
+reach,2,p939966,51,15,Aggregate Index Scan Nested Loop
+reach,2,p554135,65,0,Aggregate Index Scan Nested Loop
+reach,2,p30788,90,1,Aggregate Index Scan Nested Loop
+reach,2,p972884,152,3,Aggregate Index Scan Nested Loop
+reach,2,p68138,343,33,Aggregate Index Scan Nested Loop
+reach,2,p738669,39,4,Aggregate Index Scan Nested Loop
+reach,2,p926210,30,0,Aggregate Index Scan Nested Loop
+reach,2,p275672,23,0,Aggregate Index Scan Nested Loop
+reach,2,p262995,28,0,Aggregate Index Scan Nested Loop
+reach,2,p155618,195,34,Aggregate Index Scan Nested Loop
+reach,2,p243220,25,3,Aggregate Index Scan Nested Loop
+reach,2,p538509,270,25,Aggregate Index Scan Nested Loop
+reach,2,p413998,449,60,Aggregate Index Scan Nested Loop
+reach,2,p565512,41,3,Aggregate Index Scan Nested Loop
+reach,2,p157112,48,0,Aggregate Index Scan Nested Loop
+reach,2,p60238,173,0,Aggregate Index Scan Nested Loop
+reach,2,p365735,35,5,Aggregate Index Scan Nested Loop
+reach,2,p609254,491,25,Aggregate Index Scan Nested Loop
+reach,2,p985158,240,16,Aggregate Index Scan Nested Loop
+reach,2,p441093,260,19,Aggregate Index Scan Nested Loop
+reach,2,p132191,552,59,Aggregate Index Scan Nested Loop
+reach,2,p327051,47,0,Aggregate Index Scan Nested Loop
+reach,2,p634490,281,22,Aggregate Index Scan Nested Loop
+reach,2,p453305,593,29,Aggregate Index Scan Nested Loop
+reach,2,p26285,25,0,Aggregate Index Scan Nested Loop
+reach,2,p619098,19,1,Aggregate Index Scan Nested Loop
+reach,2,p575789,44,0,Aggregate Index Scan Nested Loop
+reach,2,p225801,276,8,Aggregate Index Scan Nested Loop
+reach,2,p799097,14,0,Aggregate Index Scan Nested Loop
+reach,2,p209682,43,0,Aggregate Index Scan Nested Loop
+reach,2,p369475,139,3,Aggregate Index Scan Nested Loop
+reach,2,p384792,371,9,Aggregate Index Scan Nested Loop
+reach,2,p592423,203,11,Aggregate Index Scan Nested Loop
+reach,2,p88051,32,0,Aggregate Index Scan Nested Loop
+reach,2,p562469,554,14,Aggregate Index Scan Nested Loop
+reach,2,p188620,249,3,Aggregate Index Scan Nested Loop
+reach,2,p73769,346,4,Aggregate Index Scan Nested Loop
+reach,2,p513647,332,12,Aggregate Index Scan Nested Loop
+reach,2,p600769,24,0,Aggregate Index Scan Nested Loop
+reach,2,p483449,203,0,Aggregate Index Scan Nested Loop
+reach,2,p82680,661,4,Aggregate Index Scan Nested Loop
+reach,2,p906855,60,1,Aggregate Index Scan Nested Loop
+reach,2,p624551,53,0,Aggregate Index Scan Nested Loop
+reach,2,p197561,71,0,Aggregate Index Scan Nested Loop
+reach,2,p570965,144,0,Aggregate Index Scan Nested Loop
+reach,2,p649305,153,1,Aggregate Index Scan Nested Loop
+reach,2,p251423,8,0,Aggregate Index Scan Nested Loop
+reach,2,p745489,386,1,Aggregate Index Scan Nested Loop
+reach,2,p192974,116,0,Aggregate Index Scan Nested Loop
+reach,2,p185643,643,2,Aggregate Index Scan Nested Loop
+reach,2,p433864,237,0,Aggregate Index Scan Nested Loop
+reach,2,p383437,153,0,Aggregate Index Scan Nested Loop
+reach,2,p542172,14,0,Aggregate Index Scan Nested Loop
+reach,2,p589622,299,0,Aggregate Index Scan Nested Loop
+reach,2,p488551,308,0,Aggregate Index Scan Nested Loop
+reach,2,p738241,158,0,Aggregate Index Scan Nested Loop
+reach,2,p640226,228,0,Aggregate Index Scan Nested Loop
+reach,2,p313360,26,0,Aggregate Index Scan Nested Loop
+reach,2,p189093,63,0,Aggregate Index Scan Nested Loop
+reach,2,p971774,14,0,Aggregate Index Scan Nested Loop
+reach,2,p817802,402,0,Aggregate Index Scan Nested Loop
+reach,2,p917044,47,0,Aggregate Index Scan Nested Loop
+reach,2,p580365,395,0,Aggregate Index Scan Nested Loop
+reach,2,p116875,100,0,Aggregate Index Scan Nested Loop
+reach,2,p884232,29,0,Aggregate Index Scan Nested Loop
+reach,2,p906367,15,0,Aggregate Index Scan Nested Loop
+reach,2,p462089,406,0,Aggregate Index Scan Nested Loop
+reach,2,p454690,202,0,Aggregate Index Scan Nested Loop
+reach,2,p822832,278,0,Aggregate Index Scan Nested Loop
+reach,2,p530670,45,0,Aggregate Index Scan Nested Loop
+reach,2,p676735,235,0,Aggregate Index Scan Nested Loop
+reach,2,p667509,79,0,Aggregate Index Scan Nested Loop
+reach,2,p524946,177,0,Aggregate Index Scan Nested Loop
+reach,2,p206872,71,0,Aggregate Index Scan Nested Loop
+reach,2,p954617,314,0,Aggregate Index Scan Nested Loop
+reach,2,p471664,224,0,Aggregate Index Scan Nested Loop
+reach,2,p267170,87,0,Aggregate Index Scan Nested Loop
+reach,2,p229232,345,0,Aggregate Index Scan Nested Loop
+reach,2,p910217,90,0,Aggregate Index Scan Nested Loop
+reach,2,p759262,408,0,Aggregate Index Scan Nested Loop
+reach,2,p968132,59,0,Aggregate Index Scan Nested Loop
+reach,2,p864809,468,0,Aggregate Index Scan Nested Loop
+reach,2,p407259,270,0,Aggregate Index Scan Nested Loop
+reach,2,p138982,339,0,Aggregate Index Scan Nested Loop
+reach,2,p964435,117,0,Aggregate Index Scan Nested Loop
+reach,2,p705532,32,0,Aggregate Index Scan Nested Loop
+reach,2,p447367,38,0,Aggregate Index Scan Nested Loop
+reach,2,p422213,16,0,Aggregate Index Scan Nested Loop
+reach,2,p855739,29,0,Aggregate Index Scan Nested Loop
+reach,2,p49593,29,0,Aggregate Index Scan Nested Loop
+reach,2,p796966,150,0,Aggregate Index Scan Nested Loop
+reach,2,p368946,35,0,Aggregate Index Scan Nested Loop
+reach,2,p368571,175,0,Aggregate Index Scan Nested Loop
+reach,2,p936905,22,0,Aggregate Index Scan Nested Loop
+reach,2,p980891,339,0,Aggregate Index Scan Nested Loop
+reach,2,p993707,14,0,Aggregate Index Scan Nested Loop
+reach,2,p718539,26,0,Aggregate Index Scan Nested Loop
+reach,2,p653630,51,0,Aggregate Index Scan Nested Loop
+reach,2,p14379,254,0,Aggregate Index Scan Nested Loop
+reach,2,p706181,575,0,Aggregate Index Scan Nested Loop
+reach,2,p363419,83,0,Aggregate Index Scan Nested Loop
+reach,2,p48968,88,0,Aggregate Index Scan Nested Loop
+reach,2,p820753,282,0,Aggregate Index Scan Nested Loop
+reach,2,p858985,34,0,Aggregate Index Scan Nested Loop
+reach,2,p629339,71,0,Aggregate Index Scan Nested Loop
+reach,2,p110296,405,0,Aggregate Index Scan Nested Loop
+reach,2,p23722,150,0,Aggregate Index Scan Nested Loop
+reach,2,p77590,620,0,Aggregate Index Scan Nested Loop
+reach,2,p74436,264,0,Aggregate Index Scan Nested Loop
+reach,2,p909268,36,0,Aggregate Index Scan Nested Loop
+reach,2,p281609,34,0,Aggregate Index Scan Nested Loop
+reach,2,p774916,23,0,Aggregate Index Scan Nested Loop
+reach,3,p643771,851,150,Aggregate Index Scan Nested Loop
+reach,3,p916435,29,0,Aggregate Index Scan Nested Loop
+reach,3,p725824,2504,401,Aggregate Index Scan Nested Loop
+reach,3,p248578,452,45,Aggregate Index Scan Nested Loop
+reach,3,p596138,287,17,Aggregate Index Scan Nested Loop
+reach,3,p384394,7339,932,Aggregate Index Scan Nested Loop
+reach,3,p315331,442,55,Aggregate Index Scan Nested Loop
+reach,3,p47550,29,14,Aggregate Index Scan Nested Loop
+reach,3,p37147,87,12,Aggregate Index Scan Nested Loop
+reach,3,p129780,1587,186,Aggregate Index Scan Nested Loop
+reach,3,p106380,5672,721,Aggregate Index Scan Nested Loop
+reach,3,p459693,576,77,Aggregate Index Scan Nested Loop
+reach,3,p200676,8,0,Aggregate Index Scan Nested Loop
+reach,3,p674294,1403,226,Aggregate Index Scan Nested Loop
+reach,3,p839927,83,2,Aggregate Index Scan Nested Loop
+reach,3,p782055,595,99,Aggregate Index Scan Nested Loop
+reach,3,p187296,1824,229,Aggregate Index Scan Nested Loop
+reach,3,p805034,3497,453,Aggregate Index Scan Nested Loop
+reach,3,p279609,193,19,Aggregate Index Scan Nested Loop
+reach,3,p943079,1651,211,Aggregate Index Scan Nested Loop
+reach,3,p930884,309,25,Aggregate Index Scan Nested Loop
+reach,3,p229919,11060,1383,Aggregate Index Scan Nested Loop
+reach,3,p246085,581,89,Aggregate Index Scan Nested Loop
+reach,3,p543769,3017,378,Aggregate Index Scan Nested Loop
+reach,3,p969584,415,35,Aggregate Index Scan Nested Loop
+reach,3,p880872,1275,159,Aggregate Index Scan Nested Loop
+reach,3,p310865,34,0,Aggregate Index Scan Nested Loop
+reach,3,p627504,970,150,Aggregate Index Scan Nested Loop
+reach,3,p484113,591,107,Aggregate Index Scan Nested Loop
+reach,3,p816641,21,0,Aggregate Index Scan Nested Loop
+reach,3,p359572,162,18,Aggregate Index Scan Nested Loop
+reach,3,p106236,47,12,Aggregate Index Scan Nested Loop
+reach,3,p190140,26,0,Aggregate Index Scan Nested Loop
+reach,3,p312994,41,14,Aggregate Index Scan Nested Loop
+reach,3,p53694,2350,287,Aggregate Index Scan Nested Loop
+reach,3,p933849,535,94,Aggregate Index Scan Nested Loop
+reach,3,p171576,151,17,Aggregate Index Scan Nested Loop
+reach,3,p976646,106,13,Aggregate Index Scan Nested Loop
+reach,3,p939966,603,90,Aggregate Index Scan Nested Loop
+reach,3,p554135,836,106,Aggregate Index Scan Nested Loop
+reach,3,p30788,1211,154,Aggregate Index Scan Nested Loop
+reach,3,p972884,1683,196,Aggregate Index Scan Nested Loop
+reach,3,p68138,4975,718,Aggregate Index Scan Nested Loop
+reach,3,p738669,212,46,Aggregate Index Scan Nested Loop
+reach,3,p926210,572,74,Aggregate Index Scan Nested Loop
+reach,3,p275672,219,24,Aggregate Index Scan Nested Loop
+reach,3,p262995,165,7,Aggregate Index Scan Nested Loop
+reach,3,p155618,2728,261,Aggregate Index Scan Nested Loop
+reach,3,p243220,367,44,Aggregate Index Scan Nested Loop
+reach,3,p538509,4850,495,Aggregate Index Scan Nested Loop
+reach,3,p413998,6749,599,Aggregate Index Scan Nested Loop
+reach,3,p565512,622,44,Aggregate Index Scan Nested Loop
+reach,3,p157112,557,49,Aggregate Index Scan Nested Loop
+reach,3,p60238,2056,193,Aggregate Index Scan Nested Loop
+reach,3,p365735,383,44,Aggregate Index Scan Nested Loop
+reach,3,p609254,8203,867,Aggregate Index Scan Nested Loop
+reach,3,p985158,3823,277,Aggregate Index Scan Nested Loop
+reach,3,p441093,3977,416,Aggregate Index Scan Nested Loop
+reach,3,p132191,8810,811,Aggregate Index Scan Nested Loop
+reach,3,p327051,396,15,Aggregate Index Scan Nested Loop
+reach,3,p634490,4445,344,Aggregate Index Scan Nested Loop
+reach,3,p453305,9007,842,Aggregate Index Scan Nested Loop
+reach,3,p26285,276,21,Aggregate Index Scan Nested Loop
+reach,3,p619098,98,12,Aggregate Index Scan Nested Loop
+reach,3,p575789,591,77,Aggregate Index Scan Nested Loop
+reach,3,p225801,2818,285,Aggregate Index Scan Nested Loop
+reach,3,p799097,27,5,Aggregate Index Scan Nested Loop
+reach,3,p209682,426,25,Aggregate Index Scan Nested Loop
+reach,3,p369475,2277,190,Aggregate Index Scan Nested Loop
+reach,3,p384792,6497,607,Aggregate Index Scan Nested Loop
+reach,3,p592423,3549,365,Aggregate Index Scan Nested Loop
+reach,3,p88051,450,28,Aggregate Index Scan Nested Loop
+reach,3,p562469,8865,776,Aggregate Index Scan Nested Loop
+reach,3,p188620,3372,168,Aggregate Index Scan Nested Loop
+reach,3,p73769,5233,61,Aggregate Index Scan Nested Loop
+reach,3,p513647,5731,53,Aggregate Index Scan Nested Loop
+reach,3,p600769,235,2,Aggregate Index Scan Nested Loop
+reach,3,p483449,2892,49,Aggregate Index Scan Nested Loop
+reach,3,p82680,11278,127,Aggregate Index Scan Nested Loop
+reach,3,p906855,568,10,Aggregate Index Scan Nested Loop
+reach,3,p624551,362,0,Aggregate Index Scan Nested Loop
+reach,3,p197561,1234,10,Aggregate Index Scan Nested Loop
+reach,3,p570965,2449,35,Aggregate Index Scan Nested Loop
+reach,3,p649305,2088,31,Aggregate Index Scan Nested Loop
+reach,3,p251423,8,0,Aggregate Index Scan Nested Loop
+reach,3,p745489,5108,57,Aggregate Index Scan Nested Loop
+reach,3,p192974,1218,7,Aggregate Index Scan Nested Loop
+reach,3,p185643,11233,94,Aggregate Index Scan Nested Loop
+reach,3,p433864,4039,23,Aggregate Index Scan Nested Loop
+reach,3,p383437,2155,18,Aggregate Index Scan Nested Loop
+reach,3,p542172,19,0,Aggregate Index Scan Nested Loop
+reach,3,p589622,5570,36,Aggregate Index Scan Nested Loop
+reach,3,p488551,4921,31,Aggregate Index Scan Nested Loop
+reach,3,p738241,1973,16,Aggregate Index Scan Nested Loop
+reach,3,p640226,3605,22,Aggregate Index Scan Nested Loop
+reach,3,p313360,241,1,Aggregate Index Scan Nested Loop
+reach,3,p189093,552,2,Aggregate Index Scan Nested Loop
+reach,3,p971774,31,0,Aggregate Index Scan Nested Loop
+reach,3,p817802,7060,33,Aggregate Index Scan Nested Loop
+reach,3,p917044,1086,2,Aggregate Index Scan Nested Loop
+reach,3,p580365,5888,20,Aggregate Index Scan Nested Loop
+reach,3,p116875,1519,6,Aggregate Index Scan Nested Loop
+reach,3,p884232,611,2,Aggregate Index Scan Nested Loop
+reach,3,p906367,47,0,Aggregate Index Scan Nested Loop
+reach,3,p462089,6600,12,Aggregate Index Scan Nested Loop
+reach,3,p454690,3321,8,Aggregate Index Scan Nested Loop
+reach,3,p822832,4675,9,Aggregate Index Scan Nested Loop
+reach,3,p530670,754,0,Aggregate Index Scan Nested Loop
+reach,3,p676735,3658,4,Aggregate Index Scan Nested Loop
+reach,3,p667509,1498,0,Aggregate Index Scan Nested Loop
+reach,3,p524946,2411,0,Aggregate Index Scan Nested Loop
+reach,3,p206872,855,0,Aggregate Index Scan Nested Loop
+reach,3,p954617,5299,0,Aggregate Index Scan Nested Loop
+reach,3,p471664,2758,0,Aggregate Index Scan Nested Loop
+reach,3,p267170,1799,0,Aggregate Index Scan Nested Loop
+reach,3,p229232,5899,0,Aggregate Index Scan Nested Loop
+reach,3,p910217,1208,0,Aggregate Index Scan Nested Loop
+reach,3,p759262,6588,0,Aggregate Index Scan Nested Loop
+reach,3,p968132,874,0,Aggregate Index Scan Nested Loop
+reach,3,p864809,6713,0,Aggregate Index Scan Nested Loop
+reach,3,p407259,4275,0,Aggregate Index Scan Nested Loop
+reach,3,p138982,5555,0,Aggregate Index Scan Nested Loop
+reach,3,p964435,1416,0,Aggregate Index Scan Nested Loop
+reach,3,p705532,248,0,Aggregate Index Scan Nested Loop
+reach,3,p447367,455,0,Aggregate Index Scan Nested Loop
+reach,3,p422213,62,0,Aggregate Index Scan Nested Loop
+reach,3,p855739,609,0,Aggregate Index Scan Nested Loop
+reach,3,p49593,534,0,Aggregate Index Scan Nested Loop
+reach,3,p796966,1913,0,Aggregate Index Scan Nested Loop
+reach,3,p368946,613,0,Aggregate Index Scan Nested Loop
+reach,3,p368571,2577,0,Aggregate Index Scan Nested Loop
+reach,3,p936905,189,0,Aggregate Index Scan Nested Loop
+reach,3,p980891,5212,0,Aggregate Index Scan Nested Loop
+reach,3,p993707,19,0,Aggregate Index Scan Nested Loop
+reach,3,p718539,338,0,Aggregate Index Scan Nested Loop
+reach,3,p653630,533,0,Aggregate Index Scan Nested Loop
+reach,3,p14379,3503,0,Aggregate Index Scan Nested Loop
+reach,3,p706181,8428,0,Aggregate Index Scan Nested Loop
+reach,3,p363419,1145,0,Aggregate Index Scan Nested Loop
+reach,3,p48968,1636,0,Aggregate Index Scan Nested Loop
+reach,3,p820753,4004,0,Aggregate Index Scan Nested Loop
+reach,3,p858985,605,0,Aggregate Index Scan Nested Loop
+reach,3,p629339,791,0,Aggregate Index Scan Nested Loop
+reach,3,p110296,6704,0,Aggregate Index Scan Nested Loop
+reach,3,p23722,2229,0,Aggregate Index Scan Nested Loop
+reach,3,p77590,9411,0,Aggregate Index Scan Nested Loop
+reach,3,p74436,3861,0,Aggregate Index Scan Nested Loop
+reach,3,p909268,606,0,Aggregate Index Scan Nested Loop
+reach,3,p281609,99,0,Aggregate Index Scan Nested Loop
+reach,3,p774916,89,0,Aggregate Index Scan Nested Loop
+reach,4,p643771,14653,1497,Aggregate Index Scan Nested Loop
+reach,4,p916435,218,12,Aggregate Index Scan Nested Loop
+reach,4,p725824,42758,4045,Aggregate Index Scan Nested Loop
+reach,4,p248578,5874,590,Aggregate Index Scan Nested Loop
+reach,4,p596138,3559,366,Aggregate Index Scan Nested Loop
+reach,4,p384394,118167,11043,Aggregate Index Scan Nested Loop
+reach,4,p315331,6633,568,Aggregate Index Scan Nested Loop
+reach,4,p47550,456,31,Aggregate Index Scan Nested Loop
+reach,4,p37147,937,111,Aggregate Index Scan Nested Loop
+reach,4,p129780,25718,2347,Aggregate Index Scan Nested Loop
+reach,4,p106380,90254,8295,Aggregate Index Scan Nested Loop
+reach,4,p459693,8621,908,Aggregate Index Scan Nested Loop
+reach,4,p200676,8,0,Aggregate Index Scan Nested Loop
+reach,4,p674294,23759,2231,Aggregate Index Scan Nested Loop
+reach,4,p839927,1078,85,Aggregate Index Scan Nested Loop
+reach,4,p782055,7965,641,Aggregate Index Scan Nested Loop
+reach,4,p187296,29243,2334,Aggregate Index Scan Nested Loop
+reach,4,p805034,55719,5243,Aggregate Index Scan Nested Loop
+reach,4,p279609,2559,220,Aggregate Index Scan Nested Loop
+reach,4,p943079,27159,2449,Aggregate Index Scan Nested Loop
+reach,4,p930884,4149,360,Aggregate Index Scan Nested Loop
+reach,4,p229919,170610,14978,Aggregate Index Scan Nested Loop
+reach,4,p246085,10135,916,Aggregate Index Scan Nested Loop
+reach,4,p543769,46595,3945,Aggregate Index Scan Nested Loop
+reach,4,p969584,7120,600,Aggregate Index Scan Nested Loop
+reach,4,p880872,20065,1700,Aggregate Index Scan Nested Loop
+reach,4,p310865,402,28,Aggregate Index Scan Nested Loop
+reach,4,p627504,17456,1573,Aggregate Index Scan Nested Loop
+reach,4,p484113,10491,977,Aggregate Index Scan Nested Loop
+reach,4,p816641,52,4,Aggregate Index Scan Nested Loop
+reach,4,p359572,2708,254,Aggregate Index Scan Nested Loop
+reach,4,p106236,569,54,Aggregate Index Scan Nested Loop
+reach,4,p190140,164,31,Aggregate Index Scan Nested Loop
+reach,4,p312994,1094,109,Aggregate Index Scan Nested Loop
+reach,4,p53694,36411,3039,Aggregate Index Scan Nested Loop
+reach,4,p933849,8467,802,Aggregate Index Scan Nested Loop
+reach,4,p171576,1765,130,Aggregate Index Scan Nested Loop
+reach,4,p976646,1353,64,Aggregate Index Scan Nested Loop
+reach,4,p939966,9367,894,Aggregate Index Scan Nested Loop
+reach,4,p554135,12929,1147,Aggregate Index Scan Nested Loop
+reach,4,p30788,22761,1878,Aggregate Index Scan Nested Loop
+reach,4,p972884,26371,2301,Aggregate Index Scan Nested Loop
+reach,4,p68138,78778,6528,Aggregate Index Scan Nested Loop
+reach,4,p738669,4412,287,Aggregate Index Scan Nested Loop
+reach,4,p926210,8969,706,Aggregate Index Scan Nested Loop
+reach,4,p275672,3196,207,Aggregate Index Scan Nested Loop
+reach,4,p262995,2074,155,Aggregate Index Scan Nested Loop
+reach,4,p155618,40534,3142,Aggregate Index Scan Nested Loop
+reach,4,p243220,5232,399,Aggregate Index Scan Nested Loop
+reach,4,p538509,77902,6535,Aggregate Index Scan Nested Loop
+reach,4,p413998,102460,7920,Aggregate Index Scan Nested Loop
+reach,4,p565512,11107,824,Aggregate Index Scan Nested Loop
+reach,4,p157112,7970,642,Aggregate Index Scan Nested Loop
+reach,4,p60238,30128,2222,Aggregate Index Scan Nested Loop
+reach,4,p365735,6563,506,Aggregate Index Scan Nested Loop
+reach,4,p609254,137104,10721,Aggregate Index Scan Nested Loop
+reach,4,p985158,56368,4228,Aggregate Index Scan Nested Loop
+reach,4,p441093,66230,5198,Aggregate Index Scan Nested Loop
+reach,4,p132191,146919,11281,Aggregate Index Scan Nested Loop
+reach,4,p327051,4987,293,Aggregate Index Scan Nested Loop
+reach,4,p634490,68644,5454,Aggregate Index Scan Nested Loop
+reach,4,p453305,146378,11353,Aggregate Index Scan Nested Loop
+reach,4,p26285,3947,280,Aggregate Index Scan Nested Loop
+reach,4,p619098,1361,130,Aggregate Index Scan Nested Loop
+reach,4,p575789,9750,721,Aggregate Index Scan Nested Loop
+reach,4,p225801,44974,3552,Aggregate Index Scan Nested Loop
+reach,4,p799097,418,20,Aggregate Index Scan Nested Loop
+reach,4,p209682,7111,477,Aggregate Index Scan Nested Loop
+reach,4,p369475,36056,2846,Aggregate Index Scan Nested Loop
+reach,4,p384792,106789,8313,Aggregate Index Scan Nested Loop
+reach,4,p592423,58744,4515,Aggregate Index Scan Nested Loop
+reach,4,p88051,7268,555,Aggregate Index Scan Nested Loop
+reach,4,p562469,139320,10758,Aggregate Index Scan Nested Loop
+reach,4,p188620,51319,3846,Aggregate Index Scan Nested Loop
+reach,4,p73769,78035,6024,Aggregate Index Scan Nested Loop
+reach,4,p513647,81958,6567,Aggregate Index Scan Nested Loop
+reach,4,p600769,3367,215,Aggregate Index Scan Nested Loop
+reach,4,p483449,43408,3230,Aggregate Index Scan Nested Loop
+reach,4,p82680,162050,12198,Aggregate Index Scan Nested Loop
+reach,4,p906855,7556,633,Aggregate Index Scan Nested Loop
+reach,4,p624551,4329,269,Aggregate Index Scan Nested Loop
+reach,4,p197561,17642,1305,Aggregate Index Scan Nested Loop
+reach,4,p570965,36643,2590,Aggregate Index Scan Nested Loop
+reach,4,p649305,30032,2271,Aggregate Index Scan Nested Loop
+reach,4,p251423,6,2,Aggregate Index Scan Nested Loop
+reach,4,p745489,70529,5863,Aggregate Index Scan Nested Loop
+reach,4,p192974,16764,1220,Aggregate Index Scan Nested Loop
+reach,4,p185643,160676,12480,Aggregate Index Scan Nested Loop
+reach,4,p433864,61152,4801,Aggregate Index Scan Nested Loop
+reach,4,p383437,29625,2261,Aggregate Index Scan Nested Loop
+reach,4,p542172,21,3,Aggregate Index Scan Nested Loop
+reach,4,p589622,81374,6153,Aggregate Index Scan Nested Loop
+reach,4,p488551,72461,5477,Aggregate Index Scan Nested Loop
+reach,4,p738241,27524,2031,Aggregate Index Scan Nested Loop
+reach,4,p640226,54322,3958,Aggregate Index Scan Nested Loop
+reach,4,p313360,3294,263,Aggregate Index Scan Nested Loop
+reach,4,p189093,7117,582,Aggregate Index Scan Nested Loop
+reach,4,p971774,357,10,Aggregate Index Scan Nested Loop
+reach,4,p817802,101720,7855,Aggregate Index Scan Nested Loop
+reach,4,p917044,15361,1118,Aggregate Index Scan Nested Loop
+reach,4,p580365,83535,6261,Aggregate Index Scan Nested Loop
+reach,4,p116875,23087,1753,Aggregate Index Scan Nested Loop
+reach,4,p884232,9967,752,Aggregate Index Scan Nested Loop
+reach,4,p906367,696,38,Aggregate Index Scan Nested Loop
+reach,4,p462089,98969,7467,Aggregate Index Scan Nested Loop
+reach,4,p454690,48352,3657,Aggregate Index Scan Nested Loop
+reach,4,p822832,66782,5127,Aggregate Index Scan Nested Loop
+reach,4,p530670,10432,789,Aggregate Index Scan Nested Loop
+reach,4,p676735,51744,4054,Aggregate Index Scan Nested Loop
+reach,4,p667509,21553,1704,Aggregate Index Scan Nested Loop
+reach,4,p524946,35518,2760,Aggregate Index Scan Nested Loop
+reach,4,p206872,12409,944,Aggregate Index Scan Nested Loop
+reach,4,p954617,78467,6400,Aggregate Index Scan Nested Loop
+reach,4,p471664,37732,2766,Aggregate Index Scan Nested Loop
+reach,4,p267170,25688,1981,Aggregate Index Scan Nested Loop
+reach,4,p229232,91165,6633,Aggregate Index Scan Nested Loop
+reach,4,p910217,17519,1291,Aggregate Index Scan Nested Loop
+reach,4,p759262,93400,7179,Aggregate Index Scan Nested Loop
+reach,4,p968132,12302,934,Aggregate Index Scan Nested Loop
+reach,4,p864809,98543,7448,Aggregate Index Scan Nested Loop
+reach,4,p407259,63264,4749,Aggregate Index Scan Nested Loop
+reach,4,p138982,82456,6331,Aggregate Index Scan Nested Loop
+reach,4,p964435,17581,1321,Aggregate Index Scan Nested Loop
+reach,4,p705532,3576,234,Aggregate Index Scan Nested Loop
+reach,4,p447367,7044,463,Aggregate Index Scan Nested Loop
+reach,4,p422213,1173,96,Aggregate Index Scan Nested Loop
+reach,4,p855739,9906,705,Aggregate Index Scan Nested Loop
+reach,4,p49593,8499,587,Aggregate Index Scan Nested Loop
+reach,4,p796966,26690,1982,Aggregate Index Scan Nested Loop
+reach,4,p368946,10001,697,Aggregate Index Scan Nested Loop
+reach,4,p368571,37360,3017,Aggregate Index Scan Nested Loop
+reach,4,p936905,2994,235,Aggregate Index Scan Nested Loop
+reach,4,p980891,76377,5588,Aggregate Index Scan Nested Loop
+reach,4,p993707,22,6,Aggregate Index Scan Nested Loop
+reach,4,p718539,4302,336,Aggregate Index Scan Nested Loop
+reach,4,p653630,7677,670,Aggregate Index Scan Nested Loop
+reach,4,p14379,51877,3758,Aggregate Index Scan Nested Loop
+reach,4,p706181,123392,9195,Aggregate Index Scan Nested Loop
+reach,4,p363419,17014,1272,Aggregate Index Scan Nested Loop
+reach,4,p48968,23767,1892,Aggregate Index Scan Nested Loop
+reach,4,p820753,56282,4147,Aggregate Index Scan Nested Loop
+reach,4,p858985,8806,605,Aggregate Index Scan Nested Loop
+reach,4,p629339,10526,784,Aggregate Index Scan Nested Loop
+reach,4,p110296,98148,7409,Aggregate Index Scan Nested Loop
+reach,4,p23722,32281,2436,Aggregate Index Scan Nested Loop
+reach,4,p77590,140202,10541,Aggregate Index Scan Nested Loop
+reach,4,p74436,57377,4364,Aggregate Index Scan Nested Loop
+reach,4,p909268,8584,638,Aggregate Index Scan Nested Loop
+reach,4,p281609,924,91,Aggregate Index Scan Nested Loop
+reach,4,p774916,1092,96,Aggregate Index Scan Nested Loop
+read,1,p643771,25,27,Aggregate Index Scan Nested Loop
+read,1,p916435,8,5,Aggregate Index Scan Nested Loop
+read,1,p725824,37,33,Aggregate Index Scan Nested Loop
+read,1,p248578,14,9,Aggregate Index Scan Nested Loop
+read,1,p596138,11,7,Aggregate Index Scan Nested Loop
+read,1,p384394,109,93,Aggregate Index Scan Nested Loop
+read,1,p315331,8,5,Aggregate Index Scan Nested Loop
+read,1,p47550,8,5,Aggregate Index Scan Nested Loop
+read,1,p37147,9,4,Aggregate Index Scan Nested Loop
+read,1,p129780,44,27,Aggregate Index Scan Nested Loop
+read,1,p106380,84,54,Aggregate Index Scan Nested Loop
+read,1,p459693,15,8,Aggregate Index Scan Nested Loop
+read,1,p200676,6,2,Aggregate Index Scan Nested Loop
+read,1,p674294,40,28,Aggregate Index Scan Nested Loop
+read,1,p839927,9,4,Aggregate Index Scan Nested Loop
+read,1,p782055,30,26,Aggregate Index Scan Nested Loop
+read,1,p187296,39,20,Aggregate Index Scan Nested Loop
+read,1,p805034,68,50,Aggregate Index Scan Nested Loop
+read,1,p279609,12,6,Aggregate Index Scan Nested Loop
+read,1,p943079,29,32,Aggregate Index Scan Nested Loop
+read,1,p930884,22,15,Aggregate Index Scan Nested Loop
+read,1,p229919,143,103,Aggregate Index Scan Nested Loop
+read,1,p246085,10,3,Aggregate Index Scan Nested Loop
+read,1,p543769,52,36,Aggregate Index Scan Nested Loop
+read,1,p969584,8,5,Aggregate Index Scan Nested Loop
+read,1,p880872,33,19,Aggregate Index Scan Nested Loop
+read,1,p310865,9,4,Aggregate Index Scan Nested Loop
+read,1,p627504,29,18,Aggregate Index Scan Nested Loop
+read,1,p484113,16,7,Aggregate Index Scan Nested Loop
+read,1,p816641,9,4,Aggregate Index Scan Nested Loop
+read,1,p359572,8,5,Aggregate Index Scan Nested Loop
+read,1,p106236,9,4,Aggregate Index Scan Nested Loop
+read,1,p190140,9,4,Aggregate Index Scan Nested Loop
+read,1,p312994,9,4,Aggregate Index Scan Nested Loop
+read,1,p53694,41,24,Aggregate Index Scan Nested Loop
+read,1,p933849,9,9,Aggregate Index Scan Nested Loop
+read,1,p171576,8,5,Aggregate Index Scan Nested Loop
+read,1,p976646,11,7,Aggregate Index Scan Nested Loop
+read,1,p939966,18,14,Aggregate Index Scan Nested Loop
+read,1,p554135,18,10,Aggregate Index Scan Nested Loop
+read,1,p30788,28,14,Aggregate Index Scan Nested Loop
+read,1,p972884,42,31,Aggregate Index Scan Nested Loop
+read,1,p68138,92,55,Aggregate Index Scan Nested Loop
+read,1,p738669,19,12,Aggregate Index Scan Nested Loop
+read,1,p926210,7,6,Aggregate Index Scan Nested Loop
+read,1,p275672,9,4,Aggregate Index Scan Nested Loop
+read,1,p262995,14,4,Aggregate Index Scan Nested Loop
+read,1,p155618,58,37,Aggregate Index Scan Nested Loop
+read,1,p243220,11,2,Aggregate Index Scan Nested Loop
+read,1,p538509,64,43,Aggregate Index Scan Nested Loop
+read,1,p413998,117,87,Aggregate Index Scan Nested Loop
+read,1,p565512,18,9,Aggregate Index Scan Nested Loop
+read,1,p157112,19,9,Aggregate Index Scan Nested Loop
+read,1,p60238,46,31,Aggregate Index Scan Nested Loop
+read,1,p365735,14,9,Aggregate Index Scan Nested Loop
+read,1,p609254,125,82,Aggregate Index Scan Nested Loop
+read,1,p985158,63,37,Aggregate Index Scan Nested Loop
+read,1,p441093,76,39,Aggregate Index Scan Nested Loop
+read,1,p132191,140,90,Aggregate Index Scan Nested Loop
+read,1,p327051,19,9,Aggregate Index Scan Nested Loop
+read,1,p634490,66,34,Aggregate Index Scan Nested Loop
+read,1,p453305,140,95,Aggregate Index Scan Nested Loop
+read,1,p26285,10,3,Aggregate Index Scan Nested Loop
+read,1,p619098,9,4,Aggregate Index Scan Nested Loop
+read,1,p575789,11,7,Aggregate Index Scan Nested Loop
+read,1,p225801,81,44,Aggregate Index Scan Nested Loop
+read,1,p799097,9,4,Aggregate Index Scan Nested Loop
+read,1,p209682,15,8,Aggregate Index Scan Nested Loop
+read,1,p369475,34,21,Aggregate Index Scan Nested Loop
+read,1,p384792,87,46,Aggregate Index Scan Nested Loop
+read,1,p592423,53,26,Aggregate Index Scan Nested Loop
+read,1,p88051,15,3,Aggregate Index Scan Nested Loop
+read,1,p562469,140,72,Aggregate Index Scan Nested Loop
+read,1,p188620,72,33,Aggregate Index Scan Nested Loop
+read,1,p73769,91,49,Aggregate Index Scan Nested Loop
+read,1,p513647,78,50,Aggregate Index Scan Nested Loop
+read,1,p600769,9,4,Aggregate Index Scan Nested Loop
+read,1,p483449,56,27,Aggregate Index Scan Nested Loop
+read,1,p82680,152,80,Aggregate Index Scan Nested Loop
+read,1,p906855,19,9,Aggregate Index Scan Nested Loop
+read,1,p624551,21,12,Aggregate Index Scan Nested Loop
+read,1,p197561,22,6,Aggregate Index Scan Nested Loop
+read,1,p570965,42,14,Aggregate Index Scan Nested Loop
+read,1,p649305,51,31,Aggregate Index Scan Nested Loop
+read,1,p251423,6,2,Aggregate Index Scan Nested Loop
+read,1,p745489,106,60,Aggregate Index Scan Nested Loop
+read,1,p192974,37,20,Aggregate Index Scan Nested Loop
+read,1,p185643,149,82,Aggregate Index Scan Nested Loop
+read,1,p433864,57,30,Aggregate Index Scan Nested Loop
+read,1,p383437,44,17,Aggregate Index Scan Nested Loop
+read,1,p542172,10,3,Aggregate Index Scan Nested Loop
+read,1,p589622,75,43,Aggregate Index Scan Nested Loop
+read,1,p488551,73,47,Aggregate Index Scan Nested Loop
+read,1,p738241,47,21,Aggregate Index Scan Nested Loop
+read,1,p640226,65,25,Aggregate Index Scan Nested Loop
+read,1,p313360,9,4,Aggregate Index Scan Nested Loop
+read,1,p189093,24,8,Aggregate Index Scan Nested Loop
+read,1,p971774,9,4,Aggregate Index Scan Nested Loop
+read,1,p817802,93,52,Aggregate Index Scan Nested Loop
+read,1,p917044,12,6,Aggregate Index Scan Nested Loop
+read,1,p580365,112,55,Aggregate Index Scan Nested Loop
+read,1,p116875,30,15,Aggregate Index Scan Nested Loop
+read,1,p884232,9,4,Aggregate Index Scan Nested Loop
+read,1,p906367,7,6,Aggregate Index Scan Nested Loop
+read,1,p462089,114,46,Aggregate Index Scan Nested Loop
+read,1,p454690,55,19,Aggregate Index Scan Nested Loop
+read,1,p822832,83,39,Aggregate Index Scan Nested Loop
+read,1,p530670,12,6,Aggregate Index Scan Nested Loop
+read,1,p676735,67,32,Aggregate Index Scan Nested Loop
+read,1,p667509,15,12,Aggregate Index Scan Nested Loop
+read,1,p524946,62,25,Aggregate Index Scan Nested Loop
+read,1,p206872,21,11,Aggregate Index Scan Nested Loop
+read,1,p954617,84,31,Aggregate Index Scan Nested Loop
+read,1,p471664,73,32,Aggregate Index Scan Nested Loop
+read,1,p267170,19,9,Aggregate Index Scan Nested Loop
+read,1,p229232,94,36,Aggregate Index Scan Nested Loop
+read,1,p910217,26,12,Aggregate Index Scan Nested Loop
+read,1,p759262,106,44,Aggregate Index Scan Nested Loop
+read,1,p968132,16,6,Aggregate Index Scan Nested Loop
+read,1,p864809,129,62,Aggregate Index Scan Nested Loop
+read,1,p407259,77,36,Aggregate Index Scan Nested Loop
+read,1,p138982,104,34,Aggregate Index Scan Nested Loop
+read,1,p964435,36,21,Aggregate Index Scan Nested Loop
+read,1,p705532,15,3,Aggregate Index Scan Nested Loop
+read,1,p447367,17,6,Aggregate Index Scan Nested Loop
+read,1,p422213,9,4,Aggregate Index Scan Nested Loop
+read,1,p855739,11,2,Aggregate Index Scan Nested Loop
+read,1,p49593,9,4,Aggregate Index Scan Nested Loop
+read,1,p796966,49,17,Aggregate Index Scan Nested Loop
+read,1,p368946,12,6,Aggregate Index Scan Nested Loop
+read,1,p368571,63,15,Aggregate Index Scan Nested Loop
+read,1,p936905,7,6,Aggregate Index Scan Nested Loop
+read,1,p980891,86,44,Aggregate Index Scan Nested Loop
+read,1,p993707,11,2,Aggregate Index Scan Nested Loop
+read,1,p718539,8,5,Aggregate Index Scan Nested Loop
+read,1,p653630,18,8,Aggregate Index Scan Nested Loop
+read,1,p14379,78,35,Aggregate Index Scan Nested Loop
+read,1,p706181,165,66,Aggregate Index Scan Nested Loop
+read,1,p363419,21,12,Aggregate Index Scan Nested Loop
+read,1,p48968,27,10,Aggregate Index Scan Nested Loop
+read,1,p820753,90,40,Aggregate Index Scan Nested Loop
+read,1,p858985,15,3,Aggregate Index Scan Nested Loop
+read,1,p629339,30,8,Aggregate Index Scan Nested Loop
+read,1,p110296,101,43,Aggregate Index Scan Nested Loop
+read,1,p23722,50,15,Aggregate Index Scan Nested Loop
+read,1,p77590,174,66,Aggregate Index Scan Nested Loop
+read,1,p74436,81,32,Aggregate Index Scan Nested Loop
+read,1,p909268,16,2,Aggregate Index Scan Nested Loop
+read,1,p281609,24,4,Aggregate Index Scan Nested Loop
+read,1,p774916,17,1,Aggregate Index Scan Nested Loop
+read,2,p643771,306,105,Aggregate Index Scan Nested Loop
+read,2,p916435,17,1,Aggregate Index Scan Nested Loop
+read,2,p725824,839,296,Aggregate Index Scan Nested Loop
+read,2,p248578,167,41,Aggregate Index Scan Nested Loop
+read,2,p596138,101,28,Aggregate Index Scan Nested Loop
+read,2,p384394,2497,790,Aggregate Index Scan Nested Loop
+read,2,p315331,167,45,Aggregate Index Scan Nested Loop
+read,2,p47550,16,7,Aggregate Index Scan Nested Loop
+read,2,p37147,38,12,Aggregate Index Scan Nested Loop
+read,2,p129780,548,162,Aggregate Index Scan Nested Loop
+read,2,p106380,1965,545,Aggregate Index Scan Nested Loop
+read,2,p459693,217,65,Aggregate Index Scan Nested Loop
+read,2,p200676,8,0,Aggregate Index Scan Nested Loop
+read,2,p674294,510,132,Aggregate Index Scan Nested Loop
+read,2,p839927,35,7,Aggregate Index Scan Nested Loop
+read,2,p782055,274,54,Aggregate Index Scan Nested Loop
+read,2,p187296,615,160,Aggregate Index Scan Nested Loop
+read,2,p805034,1276,289,Aggregate Index Scan Nested Loop
+read,2,p279609,74,19,Aggregate Index Scan Nested Loop
+read,2,p943079,608,141,Aggregate Index Scan Nested Loop
+read,2,p930884,124,25,Aggregate Index Scan Nested Loop
+read,2,p229919,4139,910,Aggregate Index Scan Nested Loop
+read,2,p246085,214,44,Aggregate Index Scan Nested Loop
+read,2,p543769,1123,250,Aggregate Index Scan Nested Loop
+read,2,p969584,146,22,Aggregate Index Scan Nested Loop
+read,2,p880872,500,98,Aggregate Index Scan Nested Loop
+read,2,p310865,17,1,Aggregate Index Scan Nested Loop
+read,2,p627504,360,74,Aggregate Index Scan Nested Loop
+read,2,p484113,237,42,Aggregate Index Scan Nested Loop
+read,2,p816641,17,1,Aggregate Index Scan Nested Loop
+read,2,p359572,63,7,Aggregate Index Scan Nested Loop
+read,2,p106236,29,4,Aggregate Index Scan Nested Loop
+read,2,p190140,17,1,Aggregate Index Scan Nested Loop
+read,2,p312994,21,2,Aggregate Index Scan Nested Loop
+read,2,p53694,843,189,Aggregate Index Scan Nested Loop
+read,2,p933849,202,40,Aggregate Index Scan Nested Loop
+read,2,p171576,68,11,Aggregate Index Scan Nested Loop
+read,2,p976646,53,5,Aggregate Index Scan Nested Loop
+read,2,p939966,235,51,Aggregate Index Scan Nested Loop
+read,2,p554135,329,72,Aggregate Index Scan Nested Loop
+read,2,p30788,430,73,Aggregate Index Scan Nested Loop
+read,2,p972884,656,107,Aggregate Index Scan Nested Loop
+read,2,p68138,1947,313,Aggregate Index Scan Nested Loop
+read,2,p738669,91,12,Aggregate Index Scan Nested Loop
+read,2,p926210,209,37,Aggregate Index Scan Nested Loop
+read,2,p275672,88,15,Aggregate Index Scan Nested Loop
+read,2,p262995,69,7,Aggregate Index Scan Nested Loop
+read,2,p155618,979,210,Aggregate Index Scan Nested Loop
+read,2,p243220,131,33,Aggregate Index Scan Nested Loop
+read,2,p538509,1752,291,Aggregate Index Scan Nested Loop
+read,2,p413998,2614,403,Aggregate Index Scan Nested Loop
+read,2,p565512,195,37,Aggregate Index Scan Nested Loop
+read,2,p157112,221,35,Aggregate Index Scan Nested Loop
+read,2,p60238,812,121,Aggregate Index Scan Nested Loop
+read,2,p365735,144,20,Aggregate Index Scan Nested Loop
+read,2,p609254,2971,461,Aggregate Index Scan Nested Loop
+read,2,p985158,1470,214,Aggregate Index Scan Nested Loop
+read,2,p441093,1455,204,Aggregate Index Scan Nested Loop
+read,2,p132191,3193,466,Aggregate Index Scan Nested Loop
+read,2,p327051,164,19,Aggregate Index Scan Nested Loop
+read,2,p634490,1695,220,Aggregate Index Scan Nested Loop
+read,2,p453305,3410,448,Aggregate Index Scan Nested Loop
+read,2,p26285,114,15,Aggregate Index Scan Nested Loop
+read,2,p619098,48,8,Aggregate Index Scan Nested Loop
+read,2,p575789,236,20,Aggregate Index Scan Nested Loop
+read,2,p225801,1142,126,Aggregate Index Scan Nested Loop
+read,2,p799097,18,0,Aggregate Index Scan Nested Loop
+read,2,p209682,162,13,Aggregate Index Scan Nested Loop
+read,2,p369475,827,127,Aggregate Index Scan Nested Loop
+read,2,p384792,2386,286,Aggregate Index Scan Nested Loop
+read,2,p592423,1358,160,Aggregate Index Scan Nested Loop
+read,2,p88051,149,27,Aggregate Index Scan Nested Loop
+read,2,p562469,3426,386,Aggregate Index Scan Nested Loop
+read,2,p188620,1268,140,Aggregate Index Scan Nested Loop
+read,2,p73769,1857,193,Aggregate Index Scan Nested Loop
+read,2,p513647,2063,237,Aggregate Index Scan Nested Loop
+read,2,p600769,98,6,Aggregate Index Scan Nested Loop
+read,2,p483449,1038,101,Aggregate Index Scan Nested Loop
+read,2,p82680,4076,429,Aggregate Index Scan Nested Loop
+read,2,p906855,244,29,Aggregate Index Scan Nested Loop
+read,2,p624551,140,21,Aggregate Index Scan Nested Loop
+read,2,p197561,452,39,Aggregate Index Scan Nested Loop
+read,2,p570965,866,90,Aggregate Index Scan Nested Loop
+read,2,p649305,777,77,Aggregate Index Scan Nested Loop
+read,2,p251423,8,0,Aggregate Index Scan Nested Loop
+read,2,p745489,1951,172,Aggregate Index Scan Nested Loop
+read,2,p192974,471,53,Aggregate Index Scan Nested Loop
+read,2,p185643,4026,451,Aggregate Index Scan Nested Loop
+read,2,p433864,1477,132,Aggregate Index Scan Nested Loop
+read,2,p383437,858,67,Aggregate Index Scan Nested Loop
+read,2,p542172,18,0,Aggregate Index Scan Nested Loop
+read,2,p589622,1985,182,Aggregate Index Scan Nested Loop
+read,2,p488551,1789,167,Aggregate Index Scan Nested Loop
+read,2,p738241,755,55,Aggregate Index Scan Nested Loop
+read,2,p640226,1290,114,Aggregate Index Scan Nested Loop
+read,2,p313360,104,2,Aggregate Index Scan Nested Loop
+read,2,p189093,228,19,Aggregate Index Scan Nested Loop
+read,2,p971774,16,2,Aggregate Index Scan Nested Loop
+read,2,p817802,2559,219,Aggregate Index Scan Nested Loop
+read,2,p917044,372,31,Aggregate Index Scan Nested Loop
+read,2,p580365,2200,195,Aggregate Index Scan Nested Loop
+read,2,p116875,529,51,Aggregate Index Scan Nested Loop
+read,2,p884232,201,16,Aggregate Index Scan Nested Loop
+read,2,p906367,23,0,Aggregate Index Scan Nested Loop
+read,2,p462089,2391,191,Aggregate Index Scan Nested Loop
+read,2,p454690,1171,91,Aggregate Index Scan Nested Loop
+read,2,p822832,1753,117,Aggregate Index Scan Nested Loop
+read,2,p530670,263,30,Aggregate Index Scan Nested Loop
+read,2,p676735,1399,104,Aggregate Index Scan Nested Loop
+read,2,p667509,548,47,Aggregate Index Scan Nested Loop
+read,2,p524946,924,49,Aggregate Index Scan Nested Loop
+read,2,p206872,322,25,Aggregate Index Scan Nested Loop
+read,2,p954617,1857,137,Aggregate Index Scan Nested Loop
+read,2,p471664,1048,92,Aggregate Index Scan Nested Loop
+read,2,p267170,658,41,Aggregate Index Scan Nested Loop
+read,2,p229232,2108,137,Aggregate Index Scan Nested Loop
+read,2,p910217,478,24,Aggregate Index Scan Nested Loop
+read,2,p759262,2473,175,Aggregate Index Scan Nested Loop
+read,2,p968132,341,14,Aggregate Index Scan Nested Loop
+read,2,p864809,2432,184,Aggregate Index Scan Nested Loop
+read,2,p407259,1524,122,Aggregate Index Scan Nested Loop
+read,2,p138982,2008,127,Aggregate Index Scan Nested Loop
+read,2,p964435,551,38,Aggregate Index Scan Nested Loop
+read,2,p705532,102,6,Aggregate Index Scan Nested Loop
+read,2,p447367,160,10,Aggregate Index Scan Nested Loop
+read,2,p422213,28,0,Aggregate Index Scan Nested Loop
+read,2,p855739,200,9,Aggregate Index Scan Nested Loop
+read,2,p49593,204,13,Aggregate Index Scan Nested Loop
+read,2,p796966,742,44,Aggregate Index Scan Nested Loop
+read,2,p368946,205,18,Aggregate Index Scan Nested Loop
+read,2,p368571,977,50,Aggregate Index Scan Nested Loop
+read,2,p936905,58,8,Aggregate Index Scan Nested Loop
+read,2,p980891,1873,126,Aggregate Index Scan Nested Loop
+read,2,p993707,17,1,Aggregate Index Scan Nested Loop
+read,2,p718539,134,8,Aggregate Index Scan Nested Loop
+read,2,p653630,204,23,Aggregate Index Scan Nested Loop
+read,2,p14379,1272,70,Aggregate Index Scan Nested Loop
+read,2,p706181,3116,203,Aggregate Index Scan Nested Loop
+read,2,p363419,458,21,Aggregate Index Scan Nested Loop
+read,2,p48968,596,28,Aggregate Index Scan Nested Loop
+read,2,p820753,1529,93,Aggregate Index Scan Nested Loop
+read,2,p858985,236,18,Aggregate Index Scan Nested Loop
+read,2,p629339,318,13,Aggregate Index Scan Nested Loop
+read,2,p110296,2501,156,Aggregate Index Scan Nested Loop
+read,2,p23722,844,30,Aggregate Index Scan Nested Loop
+read,2,p77590,3530,150,Aggregate Index Scan Nested Loop
+read,2,p74436,1492,56,Aggregate Index Scan Nested Loop
+read,2,p909268,221,7,Aggregate Index Scan Nested Loop
+read,2,p281609,57,1,Aggregate Index Scan Nested Loop
+read,2,p774916,42,1,Aggregate Index Scan Nested Loop
+read,3,p643771,5964,365,Aggregate Index Scan Nested Loop
+read,3,p916435,103,2,Aggregate Index Scan Nested Loop
+read,3,p725824,17352,945,Aggregate Index Scan Nested Loop
+read,3,p248578,2461,144,Aggregate Index Scan Nested Loop
+read,3,p596138,1504,60,Aggregate Index Scan Nested Loop
+read,3,p384394,48954,2169,Aggregate Index Scan Nested Loop
+read,3,p315331,2732,117,Aggregate Index Scan Nested Loop
+read,3,p47550,208,15,Aggregate Index Scan Nested Loop
+read,3,p37147,412,23,Aggregate Index Scan Nested Loop
+read,3,p129780,10592,445,Aggregate Index Scan Nested Loop
+read,3,p106380,37382,1399,Aggregate Index Scan Nested Loop
+read,3,p459693,3599,114,Aggregate Index Scan Nested Loop
+read,3,p200676,8,0,Aggregate Index Scan Nested Loop
+read,3,p674294,9829,388,Aggregate Index Scan Nested Loop
+read,3,p839927,475,10,Aggregate Index Scan Nested Loop
+read,3,p782055,3257,133,Aggregate Index Scan Nested Loop
+read,3,p187296,12253,380,Aggregate Index Scan Nested Loop
+read,3,p805034,23279,767,Aggregate Index Scan Nested Loop
+read,3,p279609,1124,36,Aggregate Index Scan Nested Loop
+read,3,p943079,11315,315,Aggregate Index Scan Nested Loop
+read,3,p930884,1701,45,Aggregate Index Scan Nested Loop
+read,3,p229919,71302,1941,Aggregate Index Scan Nested Loop
+read,3,p246085,4194,116,Aggregate Index Scan Nested Loop
+read,3,p543769,19475,476,Aggregate Index Scan Nested Loop
+read,3,p969584,2951,63,Aggregate Index Scan Nested Loop
+read,3,p880872,8357,225,Aggregate Index Scan Nested Loop
+read,3,p310865,185,1,Aggregate Index Scan Nested Loop
+read,3,p627504,7230,162,Aggregate Index Scan Nested Loop
+read,3,p484113,4374,136,Aggregate Index Scan Nested Loop
+read,3,p816641,33,0,Aggregate Index Scan Nested Loop
+read,3,p359572,1130,26,Aggregate Index Scan Nested Loop
+read,3,p106236,255,8,Aggregate Index Scan Nested Loop
+read,3,p190140,78,4,Aggregate Index Scan Nested Loop
+read,3,p312994,432,15,Aggregate Index Scan Nested Loop
+read,3,p53694,15256,393,Aggregate Index Scan Nested Loop
+read,3,p933849,3622,99,Aggregate Index Scan Nested Loop
+read,3,p171576,785,19,Aggregate Index Scan Nested Loop
+read,3,p976646,561,22,Aggregate Index Scan Nested Loop
+read,3,p939966,3964,89,Aggregate Index Scan Nested Loop
+read,3,p554135,5376,118,Aggregate Index Scan Nested Loop
+read,3,p30788,9108,221,Aggregate Index Scan Nested Loop
+read,3,p972884,11033,266,Aggregate Index Scan Nested Loop
+read,3,p68138,32952,829,Aggregate Index Scan Nested Loop
+read,3,p738669,1851,43,Aggregate Index Scan Nested Loop
+read,3,p926210,3754,120,Aggregate Index Scan Nested Loop
+read,3,p275672,1343,32,Aggregate Index Scan Nested Loop
+read,3,p262995,872,16,Aggregate Index Scan Nested Loop
+read,3,p155618,17026,407,Aggregate Index Scan Nested Loop
+read,3,p243220,2207,60,Aggregate Index Scan Nested Loop
+read,3,p538509,32599,798,Aggregate Index Scan Nested Loop
+read,3,p413998,42635,1001,Aggregate Index Scan Nested Loop
+read,3,p565512,4542,84,Aggregate Index Scan Nested Loop
+read,3,p157112,3395,79,Aggregate Index Scan Nested Loop
+read,3,p60238,12612,313,Aggregate Index Scan Nested Loop
+read,3,p365735,2684,67,Aggregate Index Scan Nested Loop
+read,3,p609254,56677,1393,Aggregate Index Scan Nested Loop
+read,3,p985158,23421,559,Aggregate Index Scan Nested Loop
+read,3,p441093,27448,577,Aggregate Index Scan Nested Loop
+read,3,p132191,60669,1276,Aggregate Index Scan Nested Loop
+read,3,p327051,2168,35,Aggregate Index Scan Nested Loop
+read,3,p634490,28656,617,Aggregate Index Scan Nested Loop
+read,3,p453305,60490,1295,Aggregate Index Scan Nested Loop
+read,3,p26285,1632,29,Aggregate Index Scan Nested Loop
+read,3,p619098,582,16,Aggregate Index Scan Nested Loop
+read,3,p575789,4123,77,Aggregate Index Scan Nested Loop
+read,3,p225801,18341,422,Aggregate Index Scan Nested Loop
+read,3,p799097,179,9,Aggregate Index Scan Nested Loop
+read,3,p209682,2955,44,Aggregate Index Scan Nested Loop
+read,3,p369475,14925,334,Aggregate Index Scan Nested Loop
+read,3,p384792,44311,909,Aggregate Index Scan Nested Loop
+read,3,p592423,24281,513,Aggregate Index Scan Nested Loop
+read,3,p88051,2996,62,Aggregate Index Scan Nested Loop
+read,3,p562469,57964,1181,Aggregate Index Scan Nested Loop
+read,3,p188620,21311,461,Aggregate Index Scan Nested Loop
+read,3,p73769,32764,586,Aggregate Index Scan Nested Loop
+read,3,p513647,34506,798,Aggregate Index Scan Nested Loop
+read,3,p600769,1424,17,Aggregate Index Scan Nested Loop
+read,3,p483449,17836,365,Aggregate Index Scan Nested Loop
+read,3,p82680,67538,1587,Aggregate Index Scan Nested Loop
+read,3,p906855,3242,96,Aggregate Index Scan Nested Loop
+read,3,p624551,1842,36,Aggregate Index Scan Nested Loop
+read,3,p197561,7399,137,Aggregate Index Scan Nested Loop
+read,3,p570965,14931,425,Aggregate Index Scan Nested Loop
+read,3,p649305,12508,307,Aggregate Index Scan Nested Loop
+read,3,p251423,8,0,Aggregate Index Scan Nested Loop
+read,3,p745489,29648,609,Aggregate Index Scan Nested Loop
+read,3,p192974,7112,181,Aggregate Index Scan Nested Loop
+read,3,p185643,66672,1531,Aggregate Index Scan Nested Loop
+read,3,p433864,25292,470,Aggregate Index Scan Nested Loop
+read,3,p383437,12436,261,Aggregate Index Scan Nested Loop
+read,3,p542172,22,1,Aggregate Index Scan Nested Loop
+read,3,p589622,34112,610,Aggregate Index Scan Nested Loop
+read,3,p488551,30175,581,Aggregate Index Scan Nested Loop
+read,3,p738241,11495,250,Aggregate Index Scan Nested Loop
+read,3,p640226,22681,514,Aggregate Index Scan Nested Loop
+read,3,p313360,1388,46,Aggregate Index Scan Nested Loop
+read,3,p189093,3017,61,Aggregate Index Scan Nested Loop
+read,3,p971774,146,5,Aggregate Index Scan Nested Loop
+read,3,p817802,42412,949,Aggregate Index Scan Nested Loop
+read,3,p917044,6417,123,Aggregate Index Scan Nested Loop
+read,3,p580365,35048,660,Aggregate Index Scan Nested Loop
+read,3,p116875,9516,205,Aggregate Index Scan Nested Loop
+read,3,p884232,4103,110,Aggregate Index Scan Nested Loop
+read,3,p906367,299,0,Aggregate Index Scan Nested Loop
+read,3,p462089,41082,746,Aggregate Index Scan Nested Loop
+read,3,p454690,20433,400,Aggregate Index Scan Nested Loop
+read,3,p822832,27920,620,Aggregate Index Scan Nested Loop
+read,3,p530670,4331,111,Aggregate Index Scan Nested Loop
+read,3,p676735,21619,463,Aggregate Index Scan Nested Loop
+read,3,p667509,8961,221,Aggregate Index Scan Nested Loop
+read,3,p524946,14782,317,Aggregate Index Scan Nested Loop
+read,3,p206872,5131,84,Aggregate Index Scan Nested Loop
+read,3,p954617,32768,591,Aggregate Index Scan Nested Loop
+read,3,p471664,15760,354,Aggregate Index Scan Nested Loop
+read,3,p267170,10858,185,Aggregate Index Scan Nested Loop
+read,3,p229232,37560,711,Aggregate Index Scan Nested Loop
+read,3,p910217,7239,157,Aggregate Index Scan Nested Loop
+read,3,p759262,38870,822,Aggregate Index Scan Nested Loop
+read,3,p968132,5163,107,Aggregate Index Scan Nested Loop
+read,3,p864809,40841,920,Aggregate Index Scan Nested Loop
+read,3,p407259,26331,564,Aggregate Index Scan Nested Loop
+read,3,p138982,34314,757,Aggregate Index Scan Nested Loop
+read,3,p964435,7460,196,Aggregate Index Scan Nested Loop
+read,3,p705532,1496,36,Aggregate Index Scan Nested Loop
+read,3,p447367,2815,68,Aggregate Index Scan Nested Loop
+read,3,p422213,455,11,Aggregate Index Scan Nested Loop
+read,3,p855739,4107,58,Aggregate Index Scan Nested Loop
+read,3,p49593,3482,48,Aggregate Index Scan Nested Loop
+read,3,p796966,11241,196,Aggregate Index Scan Nested Loop
+read,3,p368946,4122,67,Aggregate Index Scan Nested Loop
+read,3,p368571,15705,308,Aggregate Index Scan Nested Loop
+read,3,p936905,1284,21,Aggregate Index Scan Nested Loop
+read,3,p980891,31879,725,Aggregate Index Scan Nested Loop
+read,3,p993707,21,2,Aggregate Index Scan Nested Loop
+read,3,p718539,1819,59,Aggregate Index Scan Nested Loop
+read,3,p653630,3181,80,Aggregate Index Scan Nested Loop
+read,3,p14379,21889,390,Aggregate Index Scan Nested Loop
+read,3,p706181,51268,1052,Aggregate Index Scan Nested Loop
+read,3,p363419,7039,142,Aggregate Index Scan Nested Loop
+read,3,p48968,10014,210,Aggregate Index Scan Nested Loop
+read,3,p820753,23336,400,Aggregate Index Scan Nested Loop
+read,3,p858985,3589,68,Aggregate Index Scan Nested Loop
+read,3,p629339,4328,131,Aggregate Index Scan Nested Loop
+read,3,p110296,40666,866,Aggregate Index Scan Nested Loop
+read,3,p23722,13446,315,Aggregate Index Scan Nested Loop
+read,3,p77590,57805,1162,Aggregate Index Scan Nested Loop
+read,3,p74436,23544,413,Aggregate Index Scan Nested Loop
+read,3,p909268,3531,71,Aggregate Index Scan Nested Loop
+read,3,p281609,413,10,Aggregate Index Scan Nested Loop
+read,3,p774916,479,2,Aggregate Index Scan Nested Loop
+read,4,p643771,96563,2187,Aggregate Index Scan Nested Loop
+read,4,p916435,1198,16,Aggregate Index Scan Nested Loop
+read,4,p725824,283794,6469,Aggregate Index Scan Nested Loop
+read,4,p248578,38608,980,Aggregate Index Scan Nested Loop
+read,4,p596138,22817,576,Aggregate Index Scan Nested Loop
+read,4,p384394,771611,17727,Aggregate Index Scan Nested Loop
+read,4,p315331,42782,935,Aggregate Index Scan Nested Loop
+read,4,p47550,2398,69,Aggregate Index Scan Nested Loop
+read,4,p37147,5952,180,Aggregate Index Scan Nested Loop
+read,4,p129780,169160,3969,Aggregate Index Scan Nested Loop
+read,4,p106380,594157,14044,Aggregate Index Scan Nested Loop
+read,4,p459693,58893,1424,Aggregate Index Scan Nested Loop
+read,4,p200676,7,1,Aggregate Index Scan Nested Loop
+read,4,p674294,156423,3739,Aggregate Index Scan Nested Loop
+read,4,p839927,6976,147,Aggregate Index Scan Nested Loop
+read,4,p782055,52258,1088,Aggregate Index Scan Nested Loop
+read,4,p187296,186422,4063,Aggregate Index Scan Nested Loop
+read,4,p805034,363995,8951,Aggregate Index Scan Nested Loop
+read,4,p279609,16453,390,Aggregate Index Scan Nested Loop
+read,4,p943079,181272,4216,Aggregate Index Scan Nested Loop
+read,4,p930884,27860,625,Aggregate Index Scan Nested Loop
+read,4,p229919,1117407,25805,Aggregate Index Scan Nested Loop
+read,4,p246085,67196,1547,Aggregate Index Scan Nested Loop
+read,4,p543769,303599,7109,Aggregate Index Scan Nested Loop
+read,4,p969584,47452,1076,Aggregate Index Scan Nested Loop
+read,4,p880872,130624,3065,Aggregate Index Scan Nested Loop
+read,4,p310865,2384,46,Aggregate Index Scan Nested Loop
+read,4,p627504,115414,2715,Aggregate Index Scan Nested Loop
+read,4,p484113,68868,1752,Aggregate Index Scan Nested Loop
+read,4,p816641,251,9,Aggregate Index Scan Nested Loop
+read,4,p359572,18110,436,Aggregate Index Scan Nested Loop
+read,4,p106236,3479,104,Aggregate Index Scan Nested Loop
+read,4,p190140,1018,45,Aggregate Index Scan Nested Loop
+read,4,p312994,7703,196,Aggregate Index Scan Nested Loop
+read,4,p53694,236481,5729,Aggregate Index Scan Nested Loop
+read,4,p933849,55453,1404,Aggregate Index Scan Nested Loop
+read,4,p171576,10189,246,Aggregate Index Scan Nested Loop
+read,4,p976646,7949,124,Aggregate Index Scan Nested Loop
+read,4,p939966,61064,1557,Aggregate Index Scan Nested Loop
+read,4,p554135,84289,2087,Aggregate Index Scan Nested Loop
+read,4,p30788,153460,3515,Aggregate Index Scan Nested Loop
+read,4,p972884,172756,4172,Aggregate Index Scan Nested Loop
+read,4,p68138,509797,12281,Aggregate Index Scan Nested Loop
+read,4,p738669,26839,576,Aggregate Index Scan Nested Loop
+read,4,p926210,58252,1339,Aggregate Index Scan Nested Loop
+read,4,p275672,20449,442,Aggregate Index Scan Nested Loop
+read,4,p262995,13658,311,Aggregate Index Scan Nested Loop
+read,4,p155618,258824,6044,Aggregate Index Scan Nested Loop
+read,4,p243220,33625,782,Aggregate Index Scan Nested Loop
+read,4,p538509,500797,12416,Aggregate Index Scan Nested Loop
+read,4,p413998,660667,15573,Aggregate Index Scan Nested Loop
+read,4,p565512,72057,1642,Aggregate Index Scan Nested Loop
+read,4,p157112,51191,1209,Aggregate Index Scan Nested Loop
+read,4,p60238,192126,4584,Aggregate Index Scan Nested Loop
+read,4,p365735,43341,1016,Aggregate Index Scan Nested Loop
+read,4,p609254,887970,21051,Aggregate Index Scan Nested Loop
+read,4,p985158,363903,8521,Aggregate Index Scan Nested Loop
+read,4,p441093,429418,10054,Aggregate Index Scan Nested Loop
+read,4,p132191,959418,22354,Aggregate Index Scan Nested Loop
+read,4,p327051,30783,685,Aggregate Index Scan Nested Loop
+read,4,p634490,446221,10833,Aggregate Index Scan Nested Loop
+read,4,p453305,947884,22423,Aggregate Index Scan Nested Loop
+read,4,p26285,25278,609,Aggregate Index Scan Nested Loop
+read,4,p619098,8856,243,Aggregate Index Scan Nested Loop
+read,4,p575789,62444,1447,Aggregate Index Scan Nested Loop
+read,4,p225801,296059,6807,Aggregate Index Scan Nested Loop
+read,4,p799097,2369,45,Aggregate Index Scan Nested Loop
+read,4,p209682,45644,1024,Aggregate Index Scan Nested Loop
+read,4,p369475,232492,5502,Aggregate Index Scan Nested Loop
+read,4,p384792,692348,16686,Aggregate Index Scan Nested Loop
+read,4,p592423,380443,9028,Aggregate Index Scan Nested Loop
+read,4,p88051,47120,1123,Aggregate Index Scan Nested Loop
+read,4,p562469,900819,21271,Aggregate Index Scan Nested Loop
+read,4,p188620,331220,7925,Aggregate Index Scan Nested Loop
+read,4,p73769,503088,12007,Aggregate Index Scan Nested Loop
+read,4,p513647,522947,13254,Aggregate Index Scan Nested Loop
+read,4,p600769,21501,457,Aggregate Index Scan Nested Loop
+read,4,p483449,280034,6728,Aggregate Index Scan Nested Loop
+read,4,p82680,1038873,24735,Aggregate Index Scan Nested Loop
+read,4,p906855,46393,1224,Aggregate Index Scan Nested Loop
+read,4,p624551,26777,565,Aggregate Index Scan Nested Loop
+read,4,p197561,112715,2620,Aggregate Index Scan Nested Loop
+read,4,p570965,235599,5554,Aggregate Index Scan Nested Loop
+read,4,p649305,193574,4533,Aggregate Index Scan Nested Loop
+read,4,p251423,7,1,Aggregate Index Scan Nested Loop
+read,4,p745489,456046,11638,Aggregate Index Scan Nested Loop
+read,4,p192974,103820,2524,Aggregate Index Scan Nested Loop
+read,4,p185643,1038471,24921,Aggregate Index Scan Nested Loop
+read,4,p433864,396544,9637,Aggregate Index Scan Nested Loop
+read,4,p383437,188392,4502,Aggregate Index Scan Nested Loop
+read,4,p542172,26,2,Aggregate Index Scan Nested Loop
+read,4,p589622,521474,12085,Aggregate Index Scan Nested Loop
+read,4,p488551,470138,11240,Aggregate Index Scan Nested Loop
+read,4,p738241,178091,4120,Aggregate Index Scan Nested Loop
+read,4,p640226,346714,8022,Aggregate Index Scan Nested Loop
+read,4,p313360,20465,536,Aggregate Index Scan Nested Loop
+read,4,p189093,45447,1144,Aggregate Index Scan Nested Loop
+read,4,p971774,1914,25,Aggregate Index Scan Nested Loop
+read,4,p817802,649609,15834,Aggregate Index Scan Nested Loop
+read,4,p917044,98274,2349,Aggregate Index Scan Nested Loop
+read,4,p580365,536087,12657,Aggregate Index Scan Nested Loop
+read,4,p116875,148764,3584,Aggregate Index Scan Nested Loop
+read,4,p884232,63597,1554,Aggregate Index Scan Nested Loop
+read,4,p906367,4337,93,Aggregate Index Scan Nested Loop
+read,4,p462089,638235,15317,Aggregate Index Scan Nested Loop
+read,4,p454690,309150,7447,Aggregate Index Scan Nested Loop
+read,4,p822832,427248,10053,Aggregate Index Scan Nested Loop
+read,4,p530670,67809,1600,Aggregate Index Scan Nested Loop
+read,4,p676735,337145,7957,Aggregate Index Scan Nested Loop
+read,4,p667509,138676,3489,Aggregate Index Scan Nested Loop
+read,4,p524946,229500,5478,Aggregate Index Scan Nested Loop
+read,4,p206872,81689,1864,Aggregate Index Scan Nested Loop
+read,4,p954617,510372,12319,Aggregate Index Scan Nested Loop
+read,4,p471664,241915,5715,Aggregate Index Scan Nested Loop
+read,4,p267170,163626,4155,Aggregate Index Scan Nested Loop
+read,4,p229232,590707,13851,Aggregate Index Scan Nested Loop
+read,4,p910217,112863,2583,Aggregate Index Scan Nested Loop
+read,4,p759262,599848,14595,Aggregate Index Scan Nested Loop
+read,4,p968132,77719,1857,Aggregate Index Scan Nested Loop
+read,4,p864809,632499,15068,Aggregate Index Scan Nested Loop
+read,4,p407259,407642,9823,Aggregate Index Scan Nested Loop
+read,4,p138982,530115,13064,Aggregate Index Scan Nested Loop
+read,4,p964435,111740,2706,Aggregate Index Scan Nested Loop
+read,4,p705532,23482,512,Aggregate Index Scan Nested Loop
+read,4,p447367,45779,1052,Aggregate Index Scan Nested Loop
+read,4,p422213,7888,169,Aggregate Index Scan Nested Loop
+read,4,p855739,63489,1502,Aggregate Index Scan Nested Loop
+read,4,p49593,53834,1292,Aggregate Index Scan Nested Loop
+read,4,p796966,169139,4133,Aggregate Index Scan Nested Loop
+read,4,p368946,64996,1454,Aggregate Index Scan Nested Loop
+read,4,p368571,239587,5806,Aggregate Index Scan Nested Loop
+read,4,p936905,19517,448,Aggregate Index Scan Nested Loop
+read,4,p980891,488982,11407,Aggregate Index Scan Nested Loop
+read,4,p993707,42,6,Aggregate Index Scan Nested Loop
+read,4,p718539,26939,627,Aggregate Index Scan Nested Loop
+read,4,p653630,50162,1361,Aggregate Index Scan Nested Loop
+read,4,p14379,329412,7679,Aggregate Index Scan Nested Loop
+read,4,p706181,793020,18671,Aggregate Index Scan Nested Loop
+read,4,p363419,110442,2572,Aggregate Index Scan Nested Loop
+read,4,p48968,148682,3769,Aggregate Index Scan Nested Loop
+read,4,p820753,363926,8507,Aggregate Index Scan Nested Loop
+read,4,p858985,57059,1212,Aggregate Index Scan Nested Loop
+read,4,p629339,66731,1631,Aggregate Index Scan Nested Loop
+read,4,p110296,634264,15169,Aggregate Index Scan Nested Loop
+read,4,p23722,208523,4938,Aggregate Index Scan Nested Loop
+read,4,p77590,907765,21686,Aggregate Index Scan Nested Loop
+read,4,p74436,378489,8864,Aggregate Index Scan Nested Loop
+read,4,p909268,56034,1292,Aggregate Index Scan Nested Loop
+read,4,p281609,5813,174,Aggregate Index Scan Nested Loop
+read,4,p774916,6472,188,Aggregate Index Scan Nested Loop

@@ -168,7 +168,7 @@ private fun file(engine: String, scale: Double) = File("$resultsDir/$engine-sf$s
 
 private fun run(engineName: String, factor: Double, phases: Set<String>) {
     val data = Dataset(Scale(factor))
-    Engine.open(engineName).use { engine ->
+    Engine.open(engineName, factor).use { engine ->
         val previous = file(engineName, factor).takeIf { it.exists() }?.let { json.readValue<Results>(it) }
         var load = previous?.load
         if ("load" in phases) {
@@ -212,13 +212,17 @@ private fun run(engineName: String, factor: Double, phases: Set<String>) {
                 println("  %d hops: median %,.0f paths, %.2f ms; largest %,.0f paths, %.2f ms".format(hops, percentile(paths, 0.5), percentile(millis, 0.5), paths.last(), millis.last()))
             }
         }
+        if ("adjacency" in phases) {
+            println("$engineName: adjacency")
+            Adjacency.run(engine, workloads.walkers, factor)
+        }
         file(engineName, factor).apply { parentFile.mkdirs() }
             .writeText(json.writeValueAsString(Results(engineName, factor, load, outcomes.values.toList(), RunDetails.now())))
     }
 }
 
 private fun report(factor: Double) {
-    val engines = listOf("neo4j", "falkordb", "oracle", "postgres")
+    val engines = listOf("neo4j", "falkordb", "oracle", "postgres", "sqlite")
     val results = engines.mapNotNull { name -> file(name, factor).takeIf { it.exists() }?.let { json.readValue<Results>(it) } }
     if (results.isEmpty()) return println("No results for scale $factor")
     val names = results.map { it.engine }
@@ -272,10 +276,10 @@ fun main(args: Array<String>) {
     val factor = (options["sf"] ?: "1").toDouble()
     when (args.firstOrNull()) {
         "run" -> run(
-            options["engine"] ?: error("--engine neo4j|falkordb|oracle|postgres"), factor,
+            options["engine"] ?: error("--engine neo4j|falkordb|oracle|postgres|sqlite"), factor,
             (options["phases"] ?: "load,read,traverse,concurrent,write").split(",").toSet(),
         )
         "report" -> report(factor)
-        else -> println("run --engine <neo4j|falkordb|oracle|postgres> [--sf 1] [--phases load,read,traverse,concurrent,write] | report [--sf 1]")
+        else -> println("run --engine <neo4j|falkordb|oracle|postgres|sqlite> [--sf 1] [--phases load,read,traverse,concurrent,write,hops,adjacency] | report [--sf 1]")
     }
 }

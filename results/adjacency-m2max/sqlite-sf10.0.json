@@ -1,0 +1,12 @@
+{
+  "engine" : "sqlite",
+  "scale" : 10.0,
+  "load" : {
+    "nodes" : 11210500,
+    "edges" : 44818559,
+    "schemaSeconds" : 0.024465667,
+    "nodeSeconds" : 58.385968625,
+    "edgeSeconds" : 286.370861417
+  },
+  "outcomes" : [ ]
+}
