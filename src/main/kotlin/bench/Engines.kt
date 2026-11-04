@@ -33,11 +33,8 @@ class Engine(val name: String, val type: DatabaseType, val provider: ConnectionP
     /** Whether the SQL is Postgres's, which keeps a graph in Oracle's tables and reads it with joins, not SQL/PGQ. */
     val postgres: Boolean get() = type == DatabaseType.POSTGRES
 
-    /**
-     * Whether this is SQLite, a file opened in this process, which keeps a graph in the same tables and is read with joins too.
-     * By name, not [type]: the release Drivine is built against has no `DatabaseType.SQLITE` (see [open]).
-     */
-    val sqlite: Boolean get() = name == "sqlite"
+    /** Whether this is SQLite, a file opened in this process, which keeps a graph in the same tables and is read with joins too. */
+    val sqlite: Boolean get() = type == DatabaseType.SQLITE
 
     fun execute(statement: String, parameters: Map<String, Any?> = emptyMap()) =
         pm.execute(QuerySpecification.withStatement(statement).bind(parameters))
@@ -49,19 +46,6 @@ class Engine(val name: String, val type: DatabaseType, val provider: ConnectionP
 
     companion object {
         private fun env(name: String, default: String) = System.getenv(name) ?: default
-
-        /**
-         * SQLite is in Drivine's main branch and not yet in a release: until it is, the harness finds it by
-         * name, so that it still builds against the release, and it is run with `DRIVINE_SOURCE`.
-         */
-        private fun sqlite(path: String): ConnectionProvider {
-            val boxed = Int::class.javaObjectType
-            val factory = JdbcConnectionProvider::class.java.getMethod(
-                "sqlite", String::class.java, String::class.java, boxed, boxed, SubtypeRegistry::class.java, String::class.java,
-            )
-            // One connection, so the page cache it is given below is the one every statement reads through.
-            return factory.invoke(null, "sqlite", path, 1, null, null, GRAPH) as ConnectionProvider
-        }
 
         /** [name]'s database. SQLite's is a file of its own for each scale factor, [factor]. */
         fun open(name: String, factor: Double): Engine = when (name) {
@@ -101,7 +85,9 @@ class Engine(val name: String, val type: DatabaseType, val provider: ConnectionP
             "sqlite" -> {
                 val path = env("BENCH_SQLITE_PATH", "build/sqlite/bench-sf$factor.db")
                 java.io.File(path).absoluteFile.parentFile.mkdirs()
-                Engine(name, DatabaseType.valueOf("SQLITE"), sqlite(path)).also { it.execute(SQLITE_CACHE) }
+                // One connection, so the page cache it is given here is the one every statement reads through.
+                Engine(name, DatabaseType.SQLITE, JdbcConnectionProvider.sqlite(name, path, poolMax = 1, graphName = GRAPH))
+                    .also { it.execute(SQLITE_CACHE) }
             }
             else -> error("No engine '$name': neo4j, falkordb, oracle, postgres or sqlite")
         }
