@@ -313,6 +313,82 @@ B-tree over 4.5 million relationships is only a few levels deep; over billions, 
 probe costs more, and that is exactly where index-free adjacency is meant to earn its keep. And this
 is Neo4j Community, which does not have the faster runtime of the Enterprise edition.
 
+## Searching: full text and vectors
+
+*Added November 2026. The numbers are to come, from a run of all four engines on one machine.*
+
+[Guide](https://github.com/embabel/guide), Embabel's assistant for its own docs, moved from Neo4j Aura to Postgres.
+Everything above had Postgres quickest or close to it, but Guide's full-text search was slower there than on Aura:
+on a laptop's Postgres 17, 41 ms for "MCP server" and 487 ms for "how do I define an action", where Aura's Lucene
+answers both in tens of milliseconds. Its vector search was within 40 ms of Aura's. Nothing above searches, so
+nothing above could have caught it. These workloads do.
+
+**The corpus.** Guide's own: the 1,583 chunks of Embabel's docs that Guide answers from, a kilobyte or two of text
+each (1.7 million characters in all) and an embedding of 384 numbers. They are taken from Guide's content seed, the
+export of its Postgres database that Guide's CI makes after an ingest, and saved into each engine through Drivine,
+with `saveAll`, as a `@NodeFragment` of their own:
+
+```kotlin
+@NodeFragment(labels = ["Chunk"])
+data class Chunk(
+    @NodeId val id: String,
+    @FullTextIndex val text: String,
+    @VectorIndex(similarity = SimilarityFunction.COSINE) val embedding: List<Float>,
+)
+```
+
+They are kept in a graph of their own (`guide`), as Guide keeps them in a database of a few thousand nodes, not among
+the 1.1 million of the graph above. On Neo4j, which has one database, they are a label apart.
+
+**The searches.** Each through the object manager, the same line on every engine, as Guide searches:
+
+```kotlin
+graphObjectManager.loadMatching(Chunk::class.java, "how do I define an action", 5)   // full text
+graphObjectManager.loadNearest(Chunk::class.java, queryEmbedding, 5)                  // vector
+```
+
+| workload | what it is for |
+|---|---|
+| full text, a rare term: "MCP server", top 5 | words few chunks hold (52 and 35 of the 1,583): the case an index answers best |
+| full text, common short words: "how do I define an action", top 5 | a question as a person types it: words many chunks hold ("an" is in 608), three of them under three letters |
+| vector, a chunk's own embedding: nearest 5 by cosine | the nearest is the chunk itself, so a search that misses it is wrong |
+| vector, an embedding near a chunk's: nearest 5 by cosine | a chunk's embedding moved by a random vector half its length (a cosine of about 0.9), as a question is near the passage that answers it and not on it |
+
+No embedding model is run: the query vectors are the chunks' own, picked by a fixed seed, so call number 17 asks every
+engine the same. Each search returns the chunks whole, embedding and all, as Guide's does.
+
+**What each engine does with them.** Drivine makes each index from the annotations and writes each search:
+
+| | full-text index | full-text search | vector index |
+|---|---|---|---|
+| Neo4j | Lucene | `db.index.fulltext.queryNodes`, scored by Lucene's BM25 | HNSW |
+| FalkorDB | its own (RediSearch) | `db.idx.fulltext.queryNodes` | HNSW |
+| Oracle | none | BM25 in SQL, over every chunk | neighbour partitions (IVF) |
+| Postgres | trigrams (`pg_trgm`, GIN) | BM25 in SQL, over the chunks the trigram index finds | HNSW (pgvector) |
+
+Postgres and Oracle have no Lucene, so Drivine scores a text by BM25 itself, in SQL, the way Lucene does: each word's
+count in the text, weighed by how rare the word is among the chunks and against the text's length
+([`Bm25.kt`](https://github.com/liberation-data/drivine4j/blob/main/src/main/kotlin/org/drivine/backend/sql/Bm25.kt)).
+On Postgres the chunks scored are first narrowed to those whose text holds the words of the query, through the trigram
+index. That is where the second query should hurt: a word under three letters ("I", "an", "do") has no trigram to look
+for, so nothing is narrowed and every chunk is scored, one regular expression for each word of the query, and the
+counts of the label are worked out again for each search. Oracle is given no full-text index, so that the two SQL
+stores are scored alike; with `GBENCH_ORACLE_TEXT=1` it gets one, and Drivine then searches through Oracle Text where
+the database has it, scored as Oracle Text scores.
+
+**Whether they agree.** Each search keeps the ids it found, best first, for its first five calls. The report sets each
+engine's beside Neo4j's: how many it found a call, how many of those Neo4j found too, and in how many calls the order was
+Neo4j's exactly; and Oracle's beside Postgres's. What a first small run showed, before any timing was taken:
+
+- Oracle and Postgres rank the full-text searches exactly alike.
+- They differ from Neo4j, because Drivine weighs a text's length in characters and Lucene in words. Scored by hand
+  over the same chunks, BM25 with lengths in words gives Neo4j's top five for "MCP server" in Neo4j's order, and
+  with lengths in characters gives the SQL stores'. For the second query Neo4j differs from both, by more.
+- FalkorDB finds nothing for "how do I define an action": it takes a query as all of its words, not any of them, and
+  no chunk holds all six. For "MCP server" it finds five, one of them in Neo4j's five.
+- The vector searches agree, but for Oracle's index, which is approximate in a different way from HNSW and now and
+  then puts another chunk in the five.
+
 ## The bugs
 
 ### FalkorDB 6: a unique constraint makes inserts slower as the label grows
@@ -418,20 +494,34 @@ To run against a database of your own, set `BENCH_NEO4J_HOST`, `BENCH_NEO4J_PORT
 `BENCH_NEO4J_PASSWORD`, and the like for `FALKORDB`, `ORACLE` and `POSTGRES`, and call the harness directly:
 
 ```bash
-build/install/graph-bench/bin/graph-bench run --engine neo4j --sf 1 --phases load,read,traverse,concurrent,write
+build/install/graph-bench/bin/graph-bench run --engine neo4j --sf 1 --phases load,read,traverse,concurrent,write,search
 ```
 
 The hop by hop measurement is a phase of its own, `--phases hops`, and writes each call to
 `results/hops-<engine>-sf<scale>.csv`.
 
+The searches need Guide's content seed, which is not kept here. Fetch it into a folder of its own and name the folder
+in `GBENCH_SEED`; without it the searches are left out. `GBENCH_PHASES` runs only the phases named:
+
+```bash
+gh run download 42417580385 -R embabel/guide -n seed-postgres -D seed/guide   # nodes.tsv, edges.tsv, apply.sql
+GBENCH_SEED=seed/guide ./run.sh 1                         # everything, the searches too
+GBENCH_SEED=seed/guide GBENCH_PHASES=search ./run.sh 1    # only the searches
+```
+
+`seed/` is ignored by git, so a copy of the harness (as a run on another machine is given) carries the seed with it.
+Only the chunks of `nodes.tsv` are read, and nothing in the seed is run: `apply.sql` is Guide's, for loading its own
+database.
+
 ### Where things are
 
 | | |
 |---|---|
-| [`Model.kt`](src/main/kotlin/bench/Model.kt) | the fragments and views |
+| [`Model.kt`](src/main/kotlin/bench/Model.kt) | the fragments and views, and the chunk the searches find |
 | [`Data.kt`](src/main/kotlin/bench/Data.kt) | the generator, and why FOLLOWS never runs both ways |
-| [`Load.kt`](src/main/kotlin/bench/Load.kt) | the indexes, and a loader for Cypher, one for Oracle's tables and one for Postgres's |
+| [`Load.kt`](src/main/kotlin/bench/Load.kt) | the indexes, a loader for Cypher, one for Oracle's tables and one for Postgres's, and the chunks' save and search indexes |
 | [`Workloads.kt`](src/main/kotlin/bench/Workloads.kt) | every workload, with the Cypher, SQL/PGQ and Postgres SQL side by side |
+| [`Seed.kt`](src/main/kotlin/bench/Seed.kt) | Guide's chunks, read from its content seed, for the searches |
 | [`Main.kt`](src/main/kotlin/bench/Main.kt) | timing, the digest that checks the engines agree, the report |
 
 Two things about the data are deliberate. FOLLOWS never runs both ways between two people, and

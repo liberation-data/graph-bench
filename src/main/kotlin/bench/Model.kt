@@ -2,6 +2,7 @@ package bench
 
 import org.drivine.annotation.Count
 import org.drivine.annotation.Direction
+import org.drivine.annotation.FullTextIndex
 import org.drivine.annotation.GraphPath
 import org.drivine.annotation.GraphRelationship
 import org.drivine.annotation.GraphView
@@ -10,6 +11,8 @@ import org.drivine.annotation.NodeFragment
 import org.drivine.annotation.NodeId
 import org.drivine.annotation.ReadOnly
 import org.drivine.annotation.Root
+import org.drivine.annotation.VectorIndex
+import org.drivine.schema.SimilarityFunction
 
 /*
  * A code-collaboration graph:
@@ -108,4 +111,16 @@ data class IssueComments(
     @Root val issue: Issue,
     @GraphRelationship(type = "ON", direction = Direction.INCOMING)
     val comments: List<Comment> = emptyList(),
+)
+
+/**
+ * A chunk of Embabel's docs, as Guide keeps it to answer questions from: a passage of a page, a kilobyte or two of text,
+ * and the embedding of it, 384 numbers. The search workloads load Guide's own chunks (see [Seed]) into a graph of their
+ * own, and search them as Guide does, by its words and by its embedding.
+ */
+@NodeFragment(labels = ["Chunk"])
+data class Chunk(
+    @NodeId val id: String,
+    @FullTextIndex val text: String,
+    @VectorIndex(similarity = SimilarityFunction.COSINE) val embedding: List<Float>,
 )

@@ -1,12 +1,17 @@
 package bench
 
+import org.drivine.manager.Scored
 import org.drivine.manager.update
 import org.drivine.query.dsl.query
 import java.util.SplittableRandom
 import java.util.UUID
+import kotlin.math.sqrt
 
-/** One thing to time: [work] is given the number of the call, and picks its arguments by it. */
-class Workload(val group: String, val name: String, val warmup: Int, val iterations: Int, val work: (Int) -> Any?)
+/**
+ * One thing to time: [work] is given the number of the call, and picks its arguments by it. A [ranked] workload returns
+ * ids, best first, and the order is kept beside the timing, to compare with the other engines'.
+ */
+class Workload(val group: String, val name: String, val warmup: Int, val iterations: Int, val ranked: Boolean = false, val work: (Int) -> Any?)
 
 /**
  * A statement written by hand, in Cypher and in SQL/PGQ. `§name` is a parameter in both, and `§start`
@@ -366,5 +371,65 @@ class Workloads(private val engine: Engine, private val scale: Scale) {
     val concurrent: List<Workload> = listOf(
         Workload("8 threads", "load a view: issue + repo, author, assignees, topics, comments", 0, 0) { gom.load(issue(it), IssueDetail::class.java) },
         Workload("8 threads", "2 hops: who the people I follow follow, distinct", 0, 0) { Queries.twoHops.on(engine, "id" to person(it)) },
+    )
+}
+
+/**
+ * Searches of Guide's chunks, by their words and by their embedding, through the object manager: the same line of Kotlin
+ * on every engine, as Guide's own search is. Each returns the ids of what it found, best first, so the engines' rankings
+ * can be set beside each other (see `Outcome.rankings`).
+ *
+ * Full text: Neo4j searches its Lucene index, FalkorDB its own full-text index, and Oracle and Postgres score by BM25,
+ * which Drivine writes in SQL to rank as Lucene does (`backend/sql/Bm25.kt` in drivine4j). Postgres narrows the chunks
+ * it scores to those whose text holds each word of a term first, through the trigram index of its full-text index; a
+ * word under three letters has no trigram to look for. Oracle scores every chunk.
+ *
+ * Vector: the nearest by cosine, through each engine's vector index: HNSW on Neo4j, FalkorDB and Postgres (pgvector),
+ * neighbour partitions on Oracle. A query is a chunk's own embedding, or one moved off it, so no embedding model is
+ * needed to run them.
+ */
+class SearchWorkloads(engine: Engine, private val chunks: List<Chunk>) {
+
+    private val gom = engine.gom
+
+    private fun ids(found: List<Scored<Chunk>>): List<String> = found.map { it.value.id }
+
+    /** The query vectors, call by call: the same on every engine. */
+    private fun vectors(seed: Long, moved: Boolean): (Int) -> List<Float> {
+        val r = SplittableRandom(seed)
+        val picked = List(200) {
+            val embedding = chunks[r.nextInt(chunks.size)].embedding
+            if (moved) away(embedding, r) else embedding
+        }
+        return { picked[it % picked.size] }
+    }
+
+    /**
+     * [embedding] moved by a random vector half its length, so the query is near a chunk and not one: a cosine of about
+     * 0.9 to the chunk it came from, about what a question has to the passage that answers it.
+     */
+    private fun away(embedding: List<Float>, r: SplittableRandom): List<Float> {
+        val noise = List(embedding.size) { r.nextGaussian() }
+        val length = sqrt(embedding.sumOf { it.toDouble() * it })
+        val noiseLength = sqrt(noise.sumOf { it * it })
+        return embedding.indices.map { (embedding[it] + noise[it] / noiseLength * length * 0.5).toFloat() }
+    }
+
+    private val own = vectors(5, moved = false)
+    private val near = vectors(6, moved = true)
+
+    val searches: List<Workload> = listOf(
+        Workload("search", "full text, a rare term: \"MCP server\", top 5", 5, 100, ranked = true) {
+            ids(gom.loadMatching(Chunk::class.java, "MCP server", 5))
+        },
+        Workload("search", "full text, common short words: \"how do I define an action\", top 5", 5, 100, ranked = true) {
+            ids(gom.loadMatching(Chunk::class.java, "how do I define an action", 5))
+        },
+        Workload("search", "vector, a chunk's own embedding: nearest 5 by cosine", 20, 300, ranked = true) {
+            ids(gom.loadNearest(Chunk::class.java, own(it), 5))
+        },
+        Workload("search", "vector, an embedding near a chunk's: nearest 5 by cosine", 20, 300, ranked = true) {
+            ids(gom.loadNearest(Chunk::class.java, near(it), 5))
+        },
     )
 }

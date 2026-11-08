@@ -38,3 +38,6 @@ results/*
 !results/*-sf1.0.json
 !results/hops-*-sf1.0.csv
 .bench-commit
+
+# Guide's content seed, for the search workloads, where a run is given it beside the harness: fetched, never kept (Seed.kt)
+seed/
