@@ -2,7 +2,8 @@
 
 **Using Drivine to compare the performance of Neo4j, FalkorDB, Oracle and Postgres.**
 
-*15 October 2026. Postgres added 22 October 2026.*
+*15 October 2026. Postgres added 22 October 2026. Run again on a quiet test machine, an Apple M1, through
+Drivine4j 0.6.1, with Neo4j and Postgres also at 3, 10 and 30 times the size, 8 November 2026.*
 
 [Drivine4j](https://github.com/liberation-data/drivine4j) is a graph mapping library for the JVM. You
 describe your domain as fragments (a node) and views (a node with what is related to it), and
@@ -26,27 +27,31 @@ line of Kotlin runs on all four engines and each is asked the same question in i
 The harness checks that they give the same answer.
 
 This repository is that harness, and this page is what it found on a graph of 1.1 million nodes and
-4.5 million relationships.
+4.5 million relationships, and, for Neo4j and Postgres, on graphs of up to 34 million nodes and 134 million relationships.
 
 ### What Drivine costs
 
 Little. A load or a save is one statement and one round trip, however many relationships it has:
-an issue with its repo, author, assignees, topics and comments loads in 1.2 to 3.5 ms on every
+an issue with its repo, author, assignees, topics and comments loads in 1.7 to 3.8 ms on every
 engine.
 
 ## The short version
 
-- **No engine wins everywhere.** FalkorDB is fastest on most workloads, often by 3 to 4 times.
-  Neo4j is never far off and has no bad result. Oracle keeps up on reads, but is 4 to 5 times
+- **No engine wins everywhere.** FalkorDB is fastest on most workloads, often 3 to 5 times faster than Neo4j.
+  Neo4j is never far off and has no bad result. Oracle keeps up on reads, but is 5 to 6 times
   slower than Neo4j on batch writes.
 - **Postgres is the surprise.** Two plain tables and joins load the view of five relationships
   faster than any other engine, sustain more than twice the view loads a second of any other under
-  eight threads, and group all 1.5 million FOLLOWS in less than half the graph engines' time. It
-  writes 2 to 3 times faster than Oracle and beats Neo4j on single saves; bulk writes still trail
+  eight threads, and group all 1.5 million FOLLOWS in about two thirds of the graph engines' time. It
+  writes 3 to 4 times faster than Oracle and beats Neo4j on single saves; bulk writes still trail
   Neo4j.
-- **Neither SQL store has index-free adjacency, and it did not matter.** Walking relationships
+- **Neither SQL store has index-free adjacency, and at this size it did not matter.** Walking relationships
   through an index cost Oracle and Postgres less for each path than Neo4j, out to 275,000 paths.
   What costs them is reading the nodes on the way. [The numbers are below.](#does-oracle-miss-index-free-adjacency)
+- **Grow the graph and Neo4j overtakes Postgres** on most traversals, three hops by 3 times the size and two hops by 10 (3.4 and 11
+  million nodes): at 10 times, two hops take Neo4j 1.2 ms and Postgres 7.8, three hops 3.6 ms and 80. Neo4j's lead
+  on counting a label grows with the graph too, and on `saveAll` of fragments it jumps at 30 times. Postgres keeps point reads, and the walk itself,
+  reading nothing of the nodes, stays cheaper for it at every size. [The numbers are below.](#bigger-graphs-neo4j-and-postgres-at-up-to-30-times-the-size)
 - **A benchmark is a good bug hunt.** FalkorDB 6 is a new engine, rewritten in Rust, and we met
   three rough edges in it, all reported and all with a small workaround. Oracle Free 23.26 has a
   sharper one, where a graph query can return a wrong answer or end the server process. On
@@ -83,19 +88,20 @@ Comment -[:ON]-> Issue              Comment -[:WRITTEN_BY]-> Person
 
 The data is generated from fixed seeds, so every engine holds exactly the same graph.
 
-**The engines.** Neo4j 2026.07.1 (Community), FalkorDB 6.0.0 and Oracle Database Free 23.26,
-through Drivine4j 0.1.6. Oracle ran on Drivine's main branch at
-[977303f](https://github.com/liberation-data/drivine4j/commit/977303f), which adds a change to how
-it indexes properties that is not released yet. Postgres 17 with pgvector (`pgvector/pgvector:pg17`)
-was run a week later, through Drivine4j 0.2.0, which adds it and is not released yet
-([liberation-data/drivine4j#109](https://github.com/liberation-data/drivine4j/pull/109)); the other
-three were not run again.
+**The engines.** Neo4j 2026.07.1 (Community), FalkorDB 6.0.0, Oracle Database Free 23.26
+(`gvenzl/oracle-free:23-faststart`) and Postgres 17 with pgvector (`pgvector/pgvector:pg17`), all four through
+Drivine4j 0.6.1, one after another on the same day. Each results file records the image, its digest, the Drivine
+version and the machine.
 
 **The limits.** Each engine ran alone, in a fresh container given 2 CPUs and 4 GB. Oracle Free
 allows itself 2 CPU threads and 2 GB whatever it is given, so the others were held to the same
 processors. Neo4j had a 1 GB heap and a 2 GB page cache; Postgres a 1 GB buffer cache
 (`shared_buffers`), with the rest left to the operating system's cache, as Postgres expects. The host
-is an Apple M2 Max.
+is a test machine kept for this, an Apple M1 mac mini (8 cores, 16 GB), with nothing else running on it.
+
+The first run of this page, in October, was on an Apple M2 Max laptop through Drivine4j 0.1.6 and 0.2.0; its results
+are still in [`results/`](results). The M1 is slower for Neo4j and Oracle above all (a fragment by id in 2.95 ms against 1.83), so
+the two runs don't compare number for number. The shape is the same.
 
 **Two kinds of workload.**
 
@@ -149,58 +155,61 @@ so call number 17 asks every engine for the same node. Times are wall clock at t
 are throughput, in calls a second, and the bulk load, in seconds. Each column heading carries its
 unit.
 
-A cell is the median, with the 95th percentile in brackets. Lower is better.
+A cell is the median, with the 95th percentile in brackets. Lower is better. The results are in
+[`results/m1-0.6.1`](results/m1-0.6.1).
 
 ### Reads through the object manager
 
 | workload | Neo4j (ms) | FalkorDB (ms) | Oracle (ms) | Postgres (ms) |
 |---|---:|---:|---:|---:|
-| load a fragment by id | 1.83 (3.01) | **0.40** (0.66) | 0.60 (0.89) | 0.64 (1.03) |
-| load a view: issue + repo, author, assignees, topics, comments | 2.22 (3.15) | 3.48 (3.80) | 1.52 (2.31) | **1.16** (2.16) |
-| load a nested view: issue, comments, each comment's author | 1.65 (2.30) | 2.55 (3.04) | **0.81** (1.41) | 1.02 (3.41) |
-| load a view with a `@Count`: repo + owner, dependencies, issue count | 1.41 (1.86) | **0.75** (0.86) | 0.78 (1.21) | 0.76 (1.17) |
-| load a `@GraphPath` view: orgs of the people a person follows | 1.67 (2.58) | **0.43** (0.69) | 1.18 (4.47) | 0.86 (1.97) |
-| `loadAll` by an indexed property: a repo's open issues | 1.33 (1.87) | **0.34** (0.45) | 0.40 (0.71) | 0.57 (0.89) |
-| `count` by unindexed properties: scans 250,000 issues | 66.97 (81.47) | **25.38** (28.23) | 65.22 (69.82) | 72.86 (78.80) |
-| `count` every comment | 1.09 (1.37) | **0.23** (0.27) | 18.73 (21.60) | 31.55 (54.55) |
+| load a fragment by id | 2.95 (3.92) | **0.51** (0.70) | 0.88 (1.18) | 0.75 (1.04) |
+| load a view: issue + repo, author, assignees, topics, comments | 3.66 (5.13) | 3.84 (4.40) | 2.72 (4.20) | **1.69** (2.88) |
+| load a nested view: issue, comments, each comment's author | 2.72 (4.02) | 2.88 (3.71) | 1.34 (2.26) | **0.97** (1.52) |
+| load a view with a `@Count`: repo + owner, dependencies, issue count | 2.02 (3.00) | 0.89 (1.09) | 1.12 (1.71) | **0.83** (1.15) |
+| load a `@GraphPath` view: orgs of the people a person follows | 2.82 (3.99) | **0.59** (0.88) | 1.62 (4.89) | 0.85 (1.55) |
+| `loadAll` by an indexed property: a repo's open issues | 1.71 (2.44) | **0.45** (0.57) | 0.70 (1.36) | 0.58 (0.77) |
+| `count` by unindexed properties: scans 250,000 issues | 70.77 (77.91) | **21.69** (22.09) | 67.37 (67.90) | 72.52 (83.45) |
+| `count` every comment | 1.42 (1.91) | **0.35** (0.44) | 20.91 (21.17) | 26.94 (57.35) |
 
 ### Traversals written by hand
 
 | workload | Neo4j (ms) | FalkorDB (ms) | Oracle (ms) | Postgres (ms) |
 |---|---:|---:|---:|---:|
-| 1 hop: a person's followers, counted | 0.88 (1.12) | 0.27 (0.34) | **0.21** (0.27) | 0.23 (0.41) |
-| 2 hops: who the people I follow follow, distinct | 0.98 (1.34) | **0.29** (0.41) | 0.73 (5.13) | 0.31 (0.85) |
-| 3 hops: the same, one further | 2.14 (5.98) | **0.57** (1.88) | 3.15 (15.25) | 1.57 (6.45) |
-| 1 to 4 hops: a repo's transitive dependencies | 1.00 (1.47) | **0.28** (0.36) | 0.57 (1.17) | 0.42 (0.82) |
-| 3 hops and a group: an org's top topics among open issues | 1.55 (2.69) | **1.14** (1.52) | 2.13 (5.82) | 1.89 (7.17) |
-| 3 hops and a group: a repo's top commenters | 1.05 (1.43) | 2.70 (2.96) | 2.13 (5.23) | **0.80** (1.40) |
-| 3 hops and a group: repos the people I follow raise issues in | 1.22 (3.55) | 0.96 (1.89) | 1.11 (5.47) | **0.88** (4.23) |
+| 1 hop: a person's followers, counted | 1.28 (1.63) | 0.37 (0.45) | 0.23 (0.31) | **0.22** (0.33) |
+| 2 hops: who the people I follow follow, distinct | 1.34 (1.73) | 0.37 (0.52) | 1.01 (5.69) | **0.25** (0.52) |
+| 3 hops: the same, one further | 2.35 (5.70) | **0.70** (1.94) | 4.20 (20.43) | 0.88 (3.56) |
+| 1 to 4 hops: a repo's transitive dependencies | 1.32 (1.66) | 0.41 (0.51) | 0.72 (1.54) | **0.35** (0.54) |
+| 3 hops and a group: an org's top topics among open issues | 1.82 (2.68) | **1.25** (1.58) | 3.15 (9.11) | 1.51 (3.36) |
+| 3 hops and a group: a repo's top commenters | 1.35 (1.73) | 2.90 (3.06) | 2.99 (6.54) | **0.72** (1.04) |
+| 3 hops and a group: repos the people I follow raise issues in | 1.42 (3.19) | 1.10 (1.92) | 1.44 (7.25) | **0.74** (4.12) |
 
 ### The whole graph
 
 | workload | Neo4j (ms) | FalkorDB (ms) | Oracle (ms) | Postgres (ms) |
 |---|---:|---:|---:|---:|
-| every issue, grouped by state | 64.15 (76.67) | **44.79** (47.64) | 63.14 (65.62) | 88.58 (96.85) |
-| every FOLLOWS (1.5 million), grouped: the ten most followed | 785.55 (990.19) | 732.97 (788.97) | 1169.60 (1242.30) | **315.71** (323.77) |
+| every issue, grouped by state | 74.02 (75.90) | **40.76** (41.10) | 69.47 (69.72) | 77.95 (86.24) |
+| every FOLLOWS (1.5 million), grouped: the ten most followed | 736.47 (792.71) | 686.43 (692.33) | 1372.23 (1376.36) | **458.19** (461.50) |
 
 Over the whole graph, index-free adjacency is starting to pay for Oracle: grouping 1.5 million
-FOLLOWS takes it half as long again as the graph engines. Postgres groups them in under half the
+FOLLOWS takes it nearly twice as long as the graph engines. Postgres groups them in about two thirds of the
 graph engines' time: it reads the relationships from the index over the nodes they reach, in that
 order and without touching their rows, merges them with the nodes in the order of their keys, and
 counts. A walk of the whole graph in order is cheap. It takes a lot of data before following a
 pointer, O(1), outshines a probe of a B-tree only a few levels deep, O(log n).
-[Below](#does-oracle-miss-index-free-adjacency), out to 275,000 paths, it has not yet.
+[Below](#does-oracle-miss-index-free-adjacency), out to 275,000 paths, it has not yet; and
+[further below](#bigger-graphs-neo4j-and-postgres-at-up-to-30-times-the-size), on a graph 30 times the size, it
+still has not for this query.
 
 ### Writes through the object manager
 
 | workload | Neo4j (ms) | FalkorDB (ms) | Oracle (ms) | Postgres (ms) |
 |---|---:|---:|---:|---:|
-| save a new fragment | 1.23 (1.86) | **0.44** (0.62) | 1.94 (2.63) | 0.75 (1.18) |
-| update a fragment: load, change, save | 1.83 (2.60) | **0.80** (1.05) | 2.65 (3.43) | 1.41 (2.66) |
-| save a new view: an issue and 10 new comments | 4.66 (7.90) | **1.27** (2.29) | 5.44 (6.39) | 2.04 (2.86) |
-| save a new view: an issue and 100 new comments | 8.47 (20.32) | **3.85** (32.44) | 36.44 (43.96) | 11.87 (14.04) |
-| `saveAll`: 1,000 new fragments | 43.15 (47.66) | **28.85** (34.94) | 214.68 (244.89) | 83.96 (107.66) |
-| `saveAll`: 100 new views of 5 comments | **68.53** (73.64) | 108.15 (120.97) | 270.51 (344.06) | 111.74 (127.56) |
+| save a new fragment | 2.46 (3.91) | **0.46** (0.60) | 3.15 (4.82) | 1.04 (1.76) |
+| update a fragment: load, change, save | 3.31 (4.18) | **1.30** (2.03) | 3.56 (4.21) | 1.37 (1.65) |
+| save a new view: an issue and 10 new comments | 4.69 (6.27) | **1.51** (1.80) | 6.97 (9.14) | 2.21 (2.90) |
+| save a new view: an issue and 100 new comments | 9.63 (12.95) | **4.11** (13.41) | 44.33 (51.92) | 10.66 (11.26) |
+| `saveAll`: 1,000 new fragments | 46.81 (54.07) | **33.09** (41.32) | 289.52 (298.70) | 67.49 (68.81) |
+| `saveAll`: 100 new views of 5 comments | **94.08** (109.68) | 103.55 (115.59) | 515.55 (606.58) | 120.79 (139.66) |
 
 FalkorDB's writes are measured **without unique constraints**, which the other three have. See
 [below](#falkordb-6-a-unique-constraint-makes-inserts-slower-as-the-label-grows) for why.
@@ -212,8 +221,8 @@ Higher is better.
 
 | workload | Neo4j (calls/s) | FalkorDB (calls/s) | Oracle (calls/s) | Postgres (calls/s) |
 |---|---:|---:|---:|---:|
-| load a view: issue + repo, author, assignees, topics, comments | 2,850 (1.4) | 731 (10.7) | 3,531 (0.9) | **8,148** (0.9) |
-| 2 hops: who the people I follow follow, distinct | 3,605 (1.2) | **14,536** (0.5) | 4,711 (0.6) | 11,792 (0.4) |
+| load a view: issue + repo, author, assignees, topics, comments | 1,772 (2.1) | 679 (11.5) | 2,370 (1.6) | **5,230** (1.2) |
+| 2 hops: who the people I follow follow, distinct | 2,687 (1.6) | **11,050** (0.6) | 3,366 (0.9) | 8,208 (0.5) |
 
 ### Loading the graph
 
@@ -224,42 +233,48 @@ like for like comparison.
 
 | | Neo4j | FalkorDB | Oracle | Postgres |
 |---|---:|---:|---:|---:|
-| 1,121,500 nodes | 18.5 s | 9.0 s | 48.0 s | **7.6 s** |
-| 4,482,439 relationships | 81.8 s | **48.4 s** | 76.2 s | 63.2 s |
-| container memory after the run | 1.9 GB | **1.1 GB** | 2.1 GB | 1.2 GB |
+| 1,121,500 nodes | 19.4 s | 11.4 s | 59.6 s | **7.5 s** |
+| 4,482,439 relationships | 78.0 s | 55.2 s | 77.6 s | **54.7 s** |
+
+### Drivine 0.4.1 against 0.6.1
+
+Every workload above was also run through Drivine4j 0.4.1, on the same machine the same day, into
+[`results/m1-0.4.1`](results/m1-0.4.1), to see whether two releases of Drivine changed anything. They did not: every
+workload gives the same answer on both, and the times agree within about 1.5 times, the bulk loads
+within about a second. No difference reaches the 2 times that [the cautions](#what-to-make-of-it) ask for.
 
 ## Reading the results
 
-**FalkorDB** is the quickest on point reads and on traversals: about 0.3 ms for one to four hops
-where Neo4j takes about 1 ms. It is also the quickest writer, though without the constraints the
-others carry. Its one slow result is a view load under eight threads, 731 calls a second against
-2,850 to 8,148 for the others: the load costs FalkorDB about 2.8 ms of CPU, and it has two CPUs.
+**FalkorDB** is the quickest on point reads and on writes, though without the constraints the others carry, and close
+to Postgres on short traversals: about 0.4 ms for one to four hops where Neo4j takes about 1.3 ms. Its one slow result is a view load
+under eight threads, 679 calls a second against 1,772 to 5,230 for the others: the load costs FalkorDB about 2.9 ms
+of CPU, and it has two CPUs.
 
 **Neo4j** is rarely the fastest and never far off. It is the only engine with no result needing an
-explanation. Everything by id or by a short traversal lands between 1 and 2 ms.
+explanation. Everything by id or by a short traversal lands between 1.3 and 3 ms.
 
 **Oracle** is the surprise. Its graph is two tables, with labels and properties as JSON, read
-through a SQL property graph, and it still loads views faster than either graph engine (1.52 ms
-for five relationships, 0.81 ms for a nested one), and sustains more view loads a second than
-either under eight threads. Traversals written by hand keep pace up to two hops and fall behind at three (3.2 ms
-against 2.1 and 0.6), though
+through a SQL property graph, and it still loads views faster than either graph engine (2.72 ms
+for five relationships, 1.34 ms for a nested one), and sustains more view loads a second than
+either under eight threads. Traversals written by hand keep pace up to two hops and fall behind at three (4.2 ms
+against 2.35 and 0.70), though
 [that is not the price of the walk itself](#does-oracle-miss-index-free-adjacency). Writes are
 where the relational storage shows. Saving one thing is close to Neo4j, but anything in bulk is
-4 to 5 times slower: `saveAll` of 1,000 fragments takes 215 ms.
+5 to 6 times slower: `saveAll` of 1,000 fragments takes 290 ms.
 
 **Postgres** keeps the graph in Oracle's tables and reads them with nothing but joins, and does best
 of the four on what an application mostly asks: views. It loads one with five relationships in
-1.16 ms, the quickest here, and under eight threads sustains 8,148 view loads a second, more than
-twice Oracle's 3,531 and nearly three times Neo4j's. Short traversals are close to FalkorDB's (0.23
-and 0.31 ms for one and two hops), and the grouped three-hop traversals are the quickest of all on
-two of the three. It writes a single object faster than Neo4j and 2 to 3 times faster than Oracle;
-in bulk it trails Neo4j by 1.4 to 2 times, because Drivine's write function finds and writes each
+1.69 ms, the quickest here, and under eight threads sustains 5,230 view loads a second, more than
+twice Oracle's 2,370 and nearly three times Neo4j's. Short traversals are quicker than FalkorDB's (0.22
+and 0.25 ms for one and two hops, against 0.37), and the grouped three-hop traversals are the quickest of all on
+two of the three. It writes a single object faster than Neo4j and about 3 times faster than Oracle;
+in bulk it trails Neo4j by 1.3 to 1.4 times, because Drivine's write function finds and writes each
 node in turn. Its slow result is counting a whole label: Postgres keeps no count of a label's nodes, so a
-count of 750,000 comments reads them, 32 ms against 1 ms for Neo4j, which keeps one.
+count of 750,000 comments reads them, 27 ms against 1.4 ms for Neo4j, which keeps one.
 
-Scans of a whole label come out about the same on all four, between 25 and 89 ms for 250,000
-nodes. Grouping all 1.5 million FOLLOWS takes the graph engines about 0.75 seconds, Oracle 1.2, and
-Postgres 0.32.
+Scans of a whole label come out about the same on all four, between 22 and 78 ms for 250,000
+nodes. Grouping all 1.5 million FOLLOWS takes the graph engines about 0.7 seconds, Oracle 1.4, and
+Postgres 0.46.
 
 ## Does Oracle miss index-free adjacency?
 
@@ -282,46 +297,122 @@ Median time of a call in **milliseconds**, by how many paths the call walked:
 
 | paths walked | calls | Neo4j (ms) | FalkorDB (ms) | Oracle (ms) | Postgres (ms) |
 |---|---:|---:|---:|---:|---:|
-| under 100 | 264 | 0.73 | 0.23 | 0.18 | **0.15** |
-| 100 to 1,000 | 122 | 0.77 | 0.26 | 0.25 | **0.21** |
-| 1,000 to 10,000 | 102 | 1.33 | **0.35** | 0.65 | 0.61 |
-| 10,000 to 100,000 | 77 | 5.12 | **0.90** | 3.05 | 3.42 |
-| over 100,000 | 35 | 40.93 | **4.46** | 23.56 | 24.51 |
+| under 100 | 264 | 0.74 | 0.29 | **0.18** | **0.18** |
+| 100 to 1,000 | 122 | 0.86 | 0.32 | 0.26 | **0.25** |
+| 1,000 to 10,000 | 102 | 1.51 | **0.40** | 0.72 | 0.63 |
+| 10,000 to 100,000 | 77 | 7.63 | **0.96** | 5.02 | 3.56 |
+| over 100,000 | 35 | 51.98 | **4.74** | 36.97 | 25.59 |
 
 A straight line through each engine's calls gives a fixed cost for a call and a cost for each path:
 
 | | fixed cost of a call | each path walked |
 |---|---:|---:|
-| Neo4j | 0.56 ms | 0.24 microseconds |
-| FalkorDB | 0.25 ms | 0.025 microseconds |
-| Oracle | 0.16 ms | 0.14 microseconds |
-| Postgres | 0.13 ms | 0.14 microseconds |
+| Neo4j | 0.68 ms | 0.29 microseconds |
+| FalkorDB | 0.31 ms | 0.026 microseconds |
+| Oracle | 0.13 ms | 0.21 microseconds |
+| Postgres | 0.17 ms | 0.15 microseconds |
 
-**The missing adjacency never bites here.** Oracle's index walk costs a little over half of what
-Neo4j's pointers cost for each path, at every size we reached. Postgres, walking the same kind of
-index over the same table, costs the same for each path to two decimal places, and has the lowest
-fixed cost of the four. FalkorDB's matrices are in a class of their own, five times cheaper again.
+**The missing adjacency never bites here.** Oracle's index walk costs about three quarters of what
+Neo4j's pointers cost for each path, at every size we reached, and has the lowest fixed cost of the four. Postgres,
+walking the same kind of index over the same table, costs half of what Neo4j does for each path. FalkorDB's matrices
+are in a class of their own, six to eight times cheaper again.
 
 What does bite is **reading the nodes**. An index over `(src, type)` holds everything a walk needs,
 so Oracle answers it without touching a node's row, and the last hop without touching a
 relationship's row either. The moment a query wants something of the nodes it passes, each one is a
 primary key probe and a JSON document to open. That is the difference between two numbers on this
-page for three hops of FOLLOWS: 0.38 ms here, and 3.15 ms in the traversal table above, where the
-query counts the distinct people at the end and not the paths. Postgres shows the same, 1.57 ms in
-the traversal table. It is also why Oracle's batch writes and its grouped traversals trail: they are
+page for three hops of FOLLOWS: 0.47 ms here (the median of the 150 calls), and 4.20 ms in the traversal table
+above, where the query counts the distinct people at the end and not the paths. Postgres shows the same, 0.42 ms
+here and 0.88 ms in the traversal table. It is also why Oracle's batch writes and its grouped traversals trail: they are
 about nodes, not about relationships.
 
 Three cautions. This is counting, the kindest case for an index. The graph fits in memory, and a
 B-tree over 4.5 million relationships is only a few levels deep; over billions, or colder, each
-probe costs more, and that is exactly where index-free adjacency is meant to earn its keep. And this
-is Neo4j Community, which does not have the faster runtime of the Enterprise edition.
+probe costs more, and that is exactly where index-free adjacency is meant to earn its keep. The next section grows
+the graph to 30 times this size to look. And this is Neo4j Community, which does not have the faster runtime of the
+Enterprise edition.
+
+## Bigger graphs: Neo4j and Postgres at up to 30 times the size
+
+At 1.1 million nodes the graph fits in each container's 4 GB, and Postgres keeps up with Neo4j or beats it on most workloads.
+So where does that turn? Neo4j and Postgres were run again at 3, 10 and 30 times the size, the same graph generated
+bigger, with the same limits as above: 2 CPUs and 4 GB, so the largest graphs are well beyond memory. The searches were
+left out. The results are in [`results/m1-scaling`](results/m1-scaling), scale 1 a run of its own beside the one above.
+
+| scale | nodes | relationships |
+|---:|---:|---:|
+| ×1 | 1,121,500 | 4,482,439 |
+| ×3 | 3,363,500 | 13,448,688 |
+| ×10 | 11,210,500 | 44,818,559 |
+| ×30 | 33,630,500 | 134,509,246 |
+
+Both gave the same answers at every scale. Each cell is Neo4j's median and then Postgres's, in **milliseconds**, the
+quicker in bold:
+
+| workload | ×1 | ×3 | ×10 | ×30 |
+|---|---:|---:|---:|---:|
+| load a fragment by id | 2.92 / **0.74** | 2.64 / **0.92** | 2.04 / **0.90** | 2.00 / **1.22** |
+| load a view: issue and five relationships | 3.70 / **1.62** | 3.52 / **2.54** | 4.76 / **4.23** | 5.91 / **5.47** |
+| load a view with a `@Count` | 2.00 / **0.89** | 2.00 / **1.23** | **2.61** / 3.76 | **3.96** / 6.17 |
+| load a `@GraphPath` view | 2.82 / **0.79** | 2.67 / **2.29** | **2.51** / 5.32 | **6.55** / 7.17 |
+| `loadAll` by an indexed property | 1.74 / **0.57** | 1.75 / **0.84** | 5.06 / **2.07** | **4.97** / 5.29 |
+| `count` every comment | **1.43** / 27.3 | **1.38** / 107 | **1.28** / 329 | **0.99** / 1,559 |
+| 1 hop, counted | 1.25 / **0.27** | 1.33 / **0.30** | 1.14 / **0.58** | 2.25 / **1.08** |
+| 2 hops, distinct | 1.42 / **0.31** | 1.41 / **0.85** | **1.23** / 7.80 | **8.10** / 17.3 |
+| 3 hops, distinct | 2.32 / **1.02** | **2.95** / 3.20 | **3.61** / 80.2 | 172 / **170** |
+| 1 to 4 hops: transitive dependencies | 1.42 / **0.45** | 1.43 / **0.58** | 1.63 / **0.71** | **2.27** / 2.35 |
+| 3 hops and a group: an org's top topics | 1.99 / **1.51** | **1.90** / 4.15 | **4.51** / 30.3 | **49.6** / 64.2 |
+| 3 hops and a group: a repo's top commenters | 1.43 / **0.72** | **1.52** / 2.94 | **4.35** / 16.6 | **12.6** / 18.2 |
+| 3 hops and a group: repos the people I follow raise issues in | 1.54 / **0.74** | 1.61 / **1.45** | **1.99** / 10.8 | 21.7 / **17.9** |
+| every issue, grouped by state | **62.2** / 67.2 | **200** / 302 | **664** / 998 | **1,887** / 12,489 |
+| every FOLLOWS, grouped: the ten most followed | 723 / **449** | 2,542 / **1,167** | 10,817 / **4,374** | 571,884 / **42,012** |
+| save a new fragment | 2.26 / **0.94** | 2.55 / **0.99** | 2.45 / **1.04** | 2.69 / **1.37** |
+| save a new view: an issue and 100 new comments | **10.4** / 10.6 | **10.5** / 11.3 | **12.5** / 25.2 | **12.3** / 59.7 |
+| `saveAll`: 1,000 new fragments | **45.1** / 70.2 | **54.1** / 70.8 | **59.6** / 70.1 | **54.9** / 364 |
+
+Under eight threads, in **calls a second**, Neo4j's and then Postgres's, the higher in bold:
+
+| workload | ×1 | ×3 | ×10 | ×30 |
+|---|---:|---:|---:|---:|
+| load a view: issue and five relationships | 1,867 / **5,228** | **1,793** / 1,728 | **1,720** / 1,407 | **2,175** / 1,351 |
+| 2 hops, distinct | 2,610 / **8,239** | 2,584 / **7,240** | 2,461 / **4,366** | **773** / 345 |
+
+Loading, in **seconds**, by the paths described [above](#loading-the-graph):
+
+| | Neo4j nodes | Neo4j relationships | Postgres nodes | Postgres relationships |
+|---:|---:|---:|---:|---:|
+| ×1 | 19 s | 78 s | **7 s** | **55 s** |
+| ×3 | 51 s | 250 s | **23 s** | **208 s** |
+| ×10 | 175 s | **915 s** | **78 s** | 1,499 s |
+| ×30 | 550 s | **3,724 s** | **251 s** | 16,738 s |
+
+- **Traversals that read the nodes turn by 3 or 10 times the size.** At 10 times, two hops take Neo4j 1.2 ms and
+  Postgres 7.8; three hops 3.6 ms and 80; the grouped three-hop traversals are 4 to 7 times quicker on Neo4j. Neo4j's
+  times grow far less up to there than Postgres's, which grow faster than the graph, likely because each node on the way is a probe of the node
+  table's key and a row to read, and fewer of those rows are in memory.
+- **The walk itself never turns.** Counting the paths and reading nothing of the nodes, as in
+  [the section above](#does-oracle-miss-index-free-adjacency), Postgres costs less for each path than Neo4j at every
+  scale: 0.15 microseconds against 0.29 at 1 times, 0.27 against 0.39 at 30. What costs Postgres is the nodes.
+- **At 30 times Neo4j slows down too.** Its store is then far larger than its 2 GB page cache, and three hops take it 172 ms,
+  about what they take Postgres; grouping every FOLLOWS takes it nine and a half minutes, against 42 seconds for
+  Postgres, which reads the relationships from its index in order.
+- **Postgres keeps point reads and saves of one fragment** at every scale: a fragment by id in 1.2 ms against 2.0 at 30 times.
+  The view of five relationships is still Postgres's, just, at 5.5 ms against 5.9.
+- **Neo4j's lead on whole labels grows, and in bulk it jumps at 30 times.** It keeps a count of each label, so counting the comments costs it
+  1 ms at every size, and Postgres 1.6 s at 30 times. `saveAll` of 1,000 fragments costs Neo4j 45 to 60 ms at every size,
+  and Postgres 70 ms up to 10 times and 364 ms at 30. `saveAll` of 100 views, not in the table, stays within 1.3 times of
+  Neo4j at every size.
+- **Postgres's bulk load grows faster than the graph.** Its relationships took 55 s at 1 times and 4.6 hours at 30,
+  where Neo4j's took an hour: 300 times as long for 30 times the rows. The load is the harness's own `COPY` and
+  `INSERT … SELECT`, into Drivine's edge table, with its two foreign keys and three indexes; where the time goes is not
+  measured yet.
 
 ## Searching: full text and vectors
 
-*Added 8 November 2026. Run on the test box, an Apple M1 mac mini, not the M2 Max of the numbers above, through Drivine4j 0.6.1, each engine alone in a fresh container with the same limits as above. The results are in [`results/search-2026-11-08`](results/search-2026-11-08) and, for Oracle Text, [`results/search-2026-11-08-oracle-text`](results/search-2026-11-08-oracle-text).*
+*Added 8 November 2026. Run on the test machine of the numbers above, through Drivine4j 0.6.1, each engine alone in a fresh container with the same limits as above. The results are in [`results/search-2026-11-08`](results/search-2026-11-08) and, for Oracle Text, [`results/search-2026-11-08-oracle-text`](results/search-2026-11-08-oracle-text).*
 
 [Guide](https://github.com/embabel/guide), Embabel's assistant for its own docs, moved from Neo4j Aura to Postgres.
-Everything above had Postgres quickest or close to it, but Guide's full-text search was slower there than on Aura:
+Everything above at scale 1 had Postgres quickest or close to it, but Guide's full-text search was slower there than on Aura:
 on a laptop's Postgres 17, 41 ms for "MCP server" and 487 ms for "how do I define an action", where Aura's Lucene
 answers both in tens of milliseconds. Its vector search was within 40 ms of Aura's. Nothing above searches, so
 nothing above could have caught it. These workloads do.
@@ -481,16 +572,15 @@ The SQL in this benchmark avoids it by finding the start node first, with a subq
 
 Take the shape of these results and not the last decimal place.
 
-- **Postgres was run a week after the others**, on Drivine 0.2.0, which is not released yet. The
-  host was the same, and was quieter for its run.
-- **One run of each, on a busy laptop.** Other work was running on the host (load average 6 to 9
-  on 12 cores). The same statement can differ by up to 2 times from one run to the next.
-  Differences of 3 times and more are the ones to believe.
+- **One run of each, on a quiet machine.** Nothing else ran on the test machine while the engines did. Neo4j and
+  Postgres were run twice at scale 1 through 0.6.1, in two of the runs on this page, and their medians differ from one to the other by
+  up to 1.3 times. Differences of 2 times and more are the ones to believe.
 - **Oracle Free is not Oracle.** It is capped at 2 CPU threads and 2 GB of memory. The same
   statements on a licensed edition with real memory would behave differently, above all under
   concurrency.
-- **Small machines, a warm cache.** At this size the graph fits in memory on all four. Nothing
-  here says what happens when it does not.
+- **Small machines, a warm cache.** At scale 1 the graph fits in memory on all four. Only Neo4j and Postgres were
+  run on graphs that do not, [up to 30 times the size](#bigger-graphs-neo4j-and-postgres-at-up-to-30-times-the-size),
+  and still on 2 CPUs and 4 GB: a server sized for its graph would move those numbers.
 - **The SQL is ours and untuned.** The SQL/PGQ is what a competent first attempt looks like, shaped
   to get around a bug, and Postgres's is plain joins. Someone who tunes Oracle or Postgres for a
   living would do better.
@@ -510,11 +600,23 @@ You need Docker and a JDK (17 or later).
 
 `run.sh` starts a fresh container for each engine in turn (`gbench-neo4j`, `gbench-falkordb`,
 `gbench-oracle`, `gbench-postgres`, on ports 17687, 16379, 11521 and 15432), loads the graph, runs the workloads, stops the
-container and prints the tables. Results are written to `results/<engine>-sf<scale>.json`; the ones
-behind this page are in [`results/`](results). To print the tables again:
+container and prints the tables. Results are written to `results/<engine>-sf<scale>.json`, or to the folder named
+by `GBENCH_RESULTS`, so that runs of two Drivine versions, or on two machines, are kept apart. `DRIVINE_VERSION`
+builds against another release of Drivine than `build.gradle.kts` names. The runs behind this page were these, besides the searches' own run
+(named in their section), with the searches' seed in `seed/guide` (below):
 
 ```bash
-build/install/graph-bench/bin/graph-bench report --sf 1
+GBENCH_RESULTS=results/m1-0.6.1 GBENCH_SEED=seed/guide GBENCH_PHASES=load,read,traverse,concurrent,write,search,hops ./run.sh 1
+GBENCH_RESULTS=results/m1-0.4.1 DRIVINE_VERSION=0.4.1 GBENCH_PHASES=load,read,traverse,concurrent,write,hops ./run.sh 1
+for sf in 1 3 10 30; do
+    GBENCH_RESULTS=results/m1-scaling GBENCH_PHASES=load,read,traverse,concurrent,write,hops ./run.sh $sf neo4j postgres
+done
+```
+
+At 30 times the run of both engines took over 7 hours, most of it Postgres's load. To print the tables again:
+
+```bash
+GBENCH_RESULTS=results/m1-0.6.1 build/install/graph-bench/bin/graph-bench report --sf 1
 ```
 
 `build.gradle.kts` names the released Drivine the harness builds against. To build against a

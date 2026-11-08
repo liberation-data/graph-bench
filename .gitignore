@@ -40,6 +40,10 @@ results/*
 # The published search run (README: Searching), and its Oracle Text run
 !results/search-2026-11-08/
 !results/search-2026-11-08-oracle-text/
+# The runs on the test machine (README: What was run, Bigger graphs)
+!results/m1-0.6.1/
+!results/m1-0.4.1/
+!results/m1-scaling/
 .bench-commit
 
 # Guide's content seed, for the search workloads, where a run is given it beside the harness: fetched, never kept (Seed.kt)
