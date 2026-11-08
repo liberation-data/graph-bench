@@ -10,6 +10,8 @@
 # a folder of its own, so they can be compared rather than written over one another.
 # GBENCH_SEED=<folder> holds Guide's content seed, for the search workloads (see src/main/kotlin/bench/Seed.kt): with
 # none, they are left out. GBENCH_PHASES=<phases> runs only those, as `search` or `load,read`; all of them by default.
+# GBENCH_ORACLE_TEXT=1 gives Oracle's chunks a full-text index, so its searches go through Oracle Text (see Load.chunks);
+# the results don't record it, so keep that run in a GBENCH_RESULTS folder of its own.
 set -euo pipefail
 cd "$(dirname "$0")"
 SF=${1:-1}; shift || true

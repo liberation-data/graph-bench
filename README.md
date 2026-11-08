@@ -53,7 +53,7 @@ engine.
   Postgres it was Drivine's own writes that the benchmark found slow, fixed before the run shown.
 - **Every engine gave the same answers.** Each read workload's results are digested and compared
   across the four. They agree on all of them.
-- **Search is the SQL stores' weak spot.** Vector search is quick everywhere (2 to 5 ms). Full-text search on
+- **Search is the SQL stores' weak spot.** Vector search is quick everywhere (1.5 to 5 ms). Full-text search on
   Postgres takes 38 ms for rare words and 459 ms for common short ones, where Neo4j takes 5 or 6; and it ranks
   unlike Neo4j's index. [The numbers are below.](#searching-full-text-and-vectors)
 

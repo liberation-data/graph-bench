@@ -91,6 +91,8 @@ object Load {
                 engine.pm.indexes.ensure(FullTextIndexSpec("Chunk", "text"))
             }
             engine.pm.indexes.ensure(VectorIndexSpec("Chunk", "embedding", chunks.first().embedding.size, SimilarityFunction.COSINE))
+            // The SQL stores' statistics are brought up to date, as after the bench graph's load, so the planner knows the
+            // chunks are there. VACUUM can't run in a transaction, so it goes on a connection of its own, not through Drivine.
             when (engine.name) {
                 "neo4j" -> engine.execute("CALL db.awaitIndexes(300)")
                 "postgres" -> {
