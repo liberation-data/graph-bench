@@ -50,7 +50,7 @@ engine.
   What costs them is reading the nodes on the way. [The numbers are below.](#does-oracle-miss-index-free-adjacency)
 - **Grow the graph and Neo4j overtakes Postgres** on most traversals, three hops by 3 times the size and two hops by 10 (3.4 and 11
   million nodes): at 10 times, two hops take Neo4j 1.2 ms and Postgres 7.8, three hops 3.6 ms and 80. Neo4j's lead
-  on counting a label and on `saveAll` of fragments grows with the graph too. Postgres keeps point reads, and the walk itself,
+  on counting a label grows with the graph too, and on `saveAll` of fragments it jumps at 30 times. Postgres keeps point reads, and the walk itself,
   reading nothing of the nodes, stays cheaper for it at every size. [The numbers are below.](#bigger-graphs-neo4j-and-postgres-at-up-to-30-times-the-size)
 - **A benchmark is a good bug hunt.** FalkorDB 6 is a new engine, rewritten in Rust, and we met
   three rough edges in it, all reported and all with a small workaround. Oracle Free 23.26 has a
@@ -398,8 +398,8 @@ Loading, in **seconds**, by the paths described [above](#loading-the-graph):
   Postgres, which reads the relationships from its index in order.
 - **Postgres keeps point reads and saves of one fragment** at every scale: a fragment by id in 1.2 ms against 2.0 at 30 times.
   The view of five relationships is still Postgres's, just, at 5.5 ms against 5.9.
-- **Neo4j's lead on whole labels and in bulk grows.** It keeps a count of each label, so counting the comments costs it
-  1 ms at every size, and Postgres 1.6 s at 30 times. `saveAll` of 1,000 fragments costs Neo4j the same at every size,
+- **Neo4j's lead on whole labels grows, and in bulk it jumps at 30 times.** It keeps a count of each label, so counting the comments costs it
+  1 ms at every size, and Postgres 1.6 s at 30 times. `saveAll` of 1,000 fragments costs Neo4j 45 to 60 ms at every size,
   and Postgres 70 ms up to 10 times and 364 ms at 30. `saveAll` of 100 views, not in the table, stays within 1.3 times of
   Neo4j at every size.
 - **Postgres's bulk load grows faster than the graph.** Its relationships took 55 s at 1 times and 4.6 hours at 30,
