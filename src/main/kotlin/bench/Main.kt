@@ -254,16 +254,22 @@ private fun searchWorkloads(engineName: String): Pair<ChunksOutcome?, Search>? {
     val folder = Seed.folder ?: return null.also { println("$engineName: search left out: GBENCH_SEED names no folder with Guide's seed (see Seed.kt)") }
     val chunks = Seed.chunks(folder)
     val engine = Engine.open(engineName, SEARCH_GRAPH)
-    var loaded: ChunksOutcome? = null
-    if (runCatching { Load.chunksLoaded(engine, chunks) }.getOrDefault(false)) {
-        println("$engineName: Guide's chunks are loaded already")
-    } else {
-        println("$engineName: loading %,d of Guide's chunks".format(chunks.size))
-        val report = Load.chunks(engine, chunks)
-        loaded = ChunksOutcome(report.chunks, report.saveSeconds, report.indexSeconds)
-        println("$engineName: %,d chunks saved in %.1f s, indexed in %.1f s".format(report.chunks, report.saveSeconds, report.indexSeconds))
+    // A load that fails is reported and the run goes on without the searches: the engine is closed here, as no Search holds it.
+    try {
+        var loaded: ChunksOutcome? = null
+        if (runCatching { Load.chunksLoaded(engine, chunks) }.getOrDefault(false)) {
+            println("$engineName: Guide's chunks are loaded already")
+        } else {
+            println("$engineName: loading %,d of Guide's chunks".format(chunks.size))
+            val report = Load.chunks(engine, chunks)
+            loaded = ChunksOutcome(report.chunks, report.saveSeconds, report.indexSeconds)
+            println("$engineName: %,d chunks saved in %.1f s, indexed in %.1f s".format(report.chunks, report.saveSeconds, report.indexSeconds))
+        }
+        return loaded to Search(engine, SearchWorkloads(engine, chunks))
+    } catch (e: Throwable) {
+        engine.close()
+        throw e
     }
-    return loaded to Search(engine, SearchWorkloads(engine, chunks))
 }
 
 private fun report(factor: Double) {

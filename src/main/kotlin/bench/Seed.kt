@@ -41,6 +41,9 @@ object Seed {
                     embedding = (props["embedding"] as List<*>).map { (it as Number).toFloat() },
                 )
             }.toList()
+        }.also {
+            // A seed with no chunks would pass for one loaded already (a count of none is all of them) and leave no searches.
+            require(it.isNotEmpty()) { "No chunks in $nodes: is it Guide's content seed?" }
         }
     }
 

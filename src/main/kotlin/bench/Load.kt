@@ -25,19 +25,27 @@ object Load {
 
     /** The indexes every engine gets: each label's id, unique where the engine can afford it, and an issue's repo. */
     fun schema(engine: Engine, data: Dataset) {
-        if (engine.name == "falkordb") {
-            // FalkorDB makes a graph when it is first written to, and schema commands need it there.
-            engine.execute("CREATE (:_Init)")
-            engine.execute("MATCH (n:_Init) DELETE n")
-        }
-        for (label in data.labels) {
-            // FalkorDB 6.0.0 checks a unique constraint in time that grows with the label: 10,000 nodes take
-            // 17 seconds to create and the next 10,000 take 35. It gets a plain index over the id.
-            if (engine.name == "falkordb") engine.pm.indexes.ensure(RangeIndexSpec(label, "id"))
-            else engine.pm.constraints.ensure(UniquenessConstraintSpec(label, "id"))
-        }
+        graphMade(engine)
+        for (label in data.labels) idIndex(engine, label)
         engine.pm.indexes.ensure(RangeIndexSpec("Issue", "repoKey"))
         if (engine.name == "neo4j") engine.execute("CALL db.awaitIndexes(300)")
+    }
+
+    /** FalkorDB makes a graph when it is first written to, and schema commands need it there. */
+    private fun graphMade(engine: Engine) {
+        if (engine.name != "falkordb") return
+        engine.execute("CREATE (:_Init)")
+        engine.execute("MATCH (n:_Init) DELETE n")
+    }
+
+    /**
+     * An index over [label]'s id, unique where the engine can afford it. FalkorDB 6.0.0 checks a unique constraint in
+     * time that grows with the label: 10,000 nodes take 17 seconds to create and the next 10,000 take 35. It gets a
+     * plain index over the id.
+     */
+    private fun idIndex(engine: Engine, label: String) {
+        if (engine.name == "falkordb") engine.pm.indexes.ensure(RangeIndexSpec(label, "id"))
+        else engine.pm.constraints.ensure(UniquenessConstraintSpec(label, "id"))
     }
 
     fun loaded(engine: Engine, data: Dataset): Boolean = engine.gom.count(Comment::class.java) >= data.scale.comments
@@ -75,12 +83,8 @@ object Load {
      * on Postgres, which is what the two SQL stores are compared on.
      */
     fun chunks(engine: Engine, chunks: List<Chunk>): ChunksReport {
-        if (engine.name == "falkordb") {
-            engine.execute("CREATE (:_Init)")
-            engine.execute("MATCH (n:_Init) DELETE n")
-        }
-        if (engine.name == "falkordb") engine.pm.indexes.ensure(RangeIndexSpec("Chunk", "id"))
-        else engine.pm.constraints.ensure(UniquenessConstraintSpec("Chunk", "id"))
+        graphMade(engine)
+        idIndex(engine, "Chunk")
         val (_, saveSeconds) = timed { chunks.chunked(100).forEach { engine.gom.saveAll(it) } }
         val (_, indexSeconds) = timed {
             if (engine.name != "oracle" || !System.getenv("GBENCH_ORACLE_TEXT").isNullOrBlank()) {
