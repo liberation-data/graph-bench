@@ -27,7 +27,7 @@ line of Kotlin runs on all four engines and each is asked the same question in i
 The harness checks that they give the same answer.
 
 This repository is that harness, and this page is what it found on a graph of 1.1 million nodes and
-4.5 million relationships, and, for Neo4j and Postgres, on graphs of up to 34 million nodes and 134 million.
+4.5 million relationships, and, for Neo4j and Postgres, on graphs of up to 34 million nodes and 134 million relationships.
 
 ### What Drivine costs
 
@@ -37,7 +37,7 @@ engine.
 
 ## The short version
 
-- **No engine wins everywhere.** FalkorDB is fastest on most workloads, often by 3 to 5 times.
+- **No engine wins everywhere.** FalkorDB is fastest on most workloads, often 3 to 5 times faster than Neo4j.
   Neo4j is never far off and has no bad result. Oracle keeps up on reads, but is 5 to 6 times
   slower than Neo4j on batch writes.
 - **Postgres is the surprise.** Two plain tables and joins load the view of five relationships
@@ -336,7 +336,7 @@ Enterprise edition.
 
 At 1.1 million nodes the graph fits in each container's 4 GB, and Postgres keeps up with Neo4j or beats it.
 So where does that turn? Neo4j and Postgres were run again at 3, 10 and 30 times the size, the same graph generated
-bigger, with the same limits as above: 2 CPUs and 4 GB, so the larger graphs are well beyond memory. The searches were
+bigger, with the same limits as above: 2 CPUs and 4 GB, so the largest graphs are well beyond memory. The searches were
 left out. The results are in [`results/m1-scaling`](results/m1-scaling), scale 1 a run of its own beside the one above.
 
 | scale | nodes | relationships |
@@ -601,8 +601,8 @@ You need Docker and a JDK (17 or later).
 `gbench-oracle`, `gbench-postgres`, on ports 17687, 16379, 11521 and 15432), loads the graph, runs the workloads, stops the
 container and prints the tables. Results are written to `results/<engine>-sf<scale>.json`, or to the folder named
 by `GBENCH_RESULTS`, so that runs of two Drivine versions, or on two machines, are kept apart. `DRIVINE_VERSION`
-builds against another release of Drivine than `build.gradle.kts` names. The runs behind this page were these, with
-the searches' seed in `seed/guide` (below):
+builds against another release of Drivine than `build.gradle.kts` names. The runs behind this page were these, besides the searches' own run
+(named in their section), with the searches' seed in `seed/guide` (below):
 
 ```bash
 GBENCH_RESULTS=results/m1-0.6.1 GBENCH_SEED=seed/guide GBENCH_PHASES=load,read,traverse,concurrent,write,search,hops ./run.sh 1
