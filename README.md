@@ -543,7 +543,7 @@ GBENCH_SEED=seed/guide ./run.sh 1                         # everything, the sear
 GBENCH_SEED=seed/guide GBENCH_PHASES=search ./run.sh 1    # only the searches
 ```
 
-`seed/` is ignored by git, so a copy of the harness (as a run on another machine is given) carries the seed with it.
+`seed/` is ignored by git but sits inside the harness's folder, so a copy of that folder (as a run on another machine is given) carries the seed with it.
 Only the chunks of `nodes.tsv` are read, and nothing in the seed is run: `apply.sql` is Guide's, for loading its own
 database.
 
