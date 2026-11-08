@@ -24,9 +24,14 @@ data class Outcome(
     val throughput: Double? = null,
     /** A digest of what the first calls returned: the same on every engine when they agree. */
     val digest: String? = null,
+    /** For a search, the ids each of the first calls found, best first: to compare one engine's ranking with another's. */
+    val rankings: List<List<String>>? = null,
 )
 
 data class LoadOutcome(val nodes: Long, val edges: Long, val schemaSeconds: Double, val nodeSeconds: Double, val edgeSeconds: Double)
+
+/** The chunks the searches search, saved through Drivine, and the seconds the save and their indexes took. */
+data class ChunksOutcome(val chunks: Int, val saveSeconds: Double, val indexSeconds: Double)
 
 /**
  * What a run was made on and against, so two runs are compared knowing what differs between them: when it ended, the
@@ -77,7 +82,14 @@ data class RunDetails(
 }
 
 /** A run's results, as written to `results/<engine>-sf<scale>.json`. Files from before `run` was kept have none. */
-data class Results(val engine: String, val scale: Double, val load: LoadOutcome?, val outcomes: List<Outcome>, val run: RunDetails? = null)
+data class Results(
+    val engine: String,
+    val scale: Double,
+    val load: LoadOutcome?,
+    val outcomes: List<Outcome>,
+    val run: RunDetails? = null,
+    val chunks: ChunksOutcome? = null,
+)
 
 private val json: ObjectMapper = jacksonObjectMapper().enable(SerializationFeature.INDENT_OUTPUT)
 
@@ -120,6 +132,7 @@ private fun measure(workload: Workload): Outcome {
     return Outcome(
         workload.group, workload.name, sorted.size, percentile(sorted, 0.5), percentile(sorted, 0.95),
         sorted.average(), sorted.first(), sorted.last(), digest = if (comparable) digest(sampled) else null,
+        rankings = if (workload.ranked) sampled.map { found -> (found as List<*>).map { it.toString() } } else null,
     )
 }
 
@@ -182,6 +195,7 @@ private fun run(engineName: String, factor: Double, phases: Set<String>) {
                 println("$engineName: %,d nodes in %.1f s, %,d relationships in %.1f s".format(report.nodes, report.nodeSeconds, report.edges, report.edgeSeconds))
             }
         }
+        var chunks = previous?.chunks
         val workloads = Workloads(engine, data.scale)
         val outcomes = previous?.outcomes.orEmpty().associateBy { it.group to it.name }.toMutableMap()
         fun each(phase: String, list: List<Workload>, measured: (Workload) -> Outcome) {
@@ -200,6 +214,16 @@ private fun run(engineName: String, factor: Double, phases: Set<String>) {
         each("traverse", workloads.traversals, ::measure)
         each("concurrent", workloads.concurrent) { concurrently(it, 8, 15) }
         each("write", workloads.writes, ::measure)
+        if ("search" in phases) {
+            val searches = runCatching { searchWorkloads(engineName) }.getOrElse {
+                println("$engineName: FAILED loading Guide's chunks: ${it.message?.lineSequence()?.firstOrNull()}")
+                null
+            }
+            searches?.let { (loaded, search) ->
+                if (loaded != null) chunks = loaded
+                search.use { each("search", it.workloads.searches, ::measure) }
+            }
+        }
         if ("hops" in phases) {
             println("$engineName: hops")
             // Once over everything first: the server has then compiled what it runs and holds the graph in memory.
@@ -213,7 +237,38 @@ private fun run(engineName: String, factor: Double, phases: Set<String>) {
             }
         }
         file(engineName, factor).apply { parentFile.mkdirs() }
-            .writeText(json.writeValueAsString(Results(engineName, factor, load, outcomes.values.toList(), RunDetails.now())))
+            .writeText(json.writeValueAsString(Results(engineName, factor, load, outcomes.values.toList(), RunDetails.now(), chunks)))
+    }
+}
+
+/** The search workloads, over the chunks of Guide's seed in a graph of their own, and the engine they are run on. */
+private class Search(val engine: Engine, val workloads: SearchWorkloads) : AutoCloseable {
+    override fun close() = engine.close()
+}
+
+/**
+ * Opens [engineName]'s search graph and loads Guide's chunks into it if they are not there: the load's numbers, when
+ * there was one, and the searches. Null when GBENCH_SEED names no seed, and the searches are left out.
+ */
+private fun searchWorkloads(engineName: String): Pair<ChunksOutcome?, Search>? {
+    val folder = Seed.folder ?: return null.also { println("$engineName: search left out: GBENCH_SEED names no folder with Guide's seed (see Seed.kt)") }
+    val chunks = Seed.chunks(folder)
+    val engine = Engine.open(engineName, SEARCH_GRAPH)
+    // A load that fails is reported and the run goes on without the searches: the engine is closed here, as no Search holds it.
+    try {
+        var loaded: ChunksOutcome? = null
+        if (runCatching { Load.chunksLoaded(engine, chunks) }.getOrDefault(false)) {
+            println("$engineName: Guide's chunks are loaded already")
+        } else {
+            println("$engineName: loading %,d of Guide's chunks".format(chunks.size))
+            val report = Load.chunks(engine, chunks)
+            loaded = ChunksOutcome(report.chunks, report.saveSeconds, report.indexSeconds)
+            println("$engineName: %,d chunks saved in %.1f s, indexed in %.1f s".format(report.chunks, report.saveSeconds, report.indexSeconds))
+        }
+        return loaded to Search(engine, SearchWorkloads(engine, chunks))
+    } catch (e: Throwable) {
+        engine.close()
+        throw e
     }
 }
 
@@ -245,6 +300,13 @@ private fun report(factor: Double) {
     loadRow("relationships") { "%,d".format(it.edges) }
     loadRow("nodes, seconds") { "%.1f".format(it.nodeSeconds) }
     loadRow("relationships, seconds") { "%.1f".format(it.edgeSeconds) }
+    if (results.any { it.chunks != null }) {
+        fun chunksRow(title: String, value: (ChunksOutcome) -> String) =
+            println("| $title | " + results.joinToString(" | ") { r -> r.chunks?.let(value) ?: "-" } + " |")
+        chunksRow("Guide's chunks, for the searches") { "%,d".format(it.chunks) }
+        chunksRow("chunks saved, seconds") { "%.1f".format(it.saveSeconds) }
+        chunksRow("chunks indexed, seconds") { "%.1f".format(it.indexSeconds) }
+    }
     val keys = results.flatMap { r -> r.outcomes.map { it.group to it.name } }.distinct()
     for ((group, inGroup) in keys.groupBy { it.first }) {
         val concurrent = group.endsWith("threads")
@@ -264,6 +326,40 @@ private fun report(factor: Double) {
             val agree = if (digests.isEmpty()) "" else if (digests.distinct().size == 1 && digests.size == found.size) "yes" else "NO"
             println("| ${key.second} | " + cells.joinToString(" | ") + " | $agree |")
         }
+        rankings(results, inGroup)
+    }
+}
+
+/**
+ * How the engines' rankings of the same searches compare: for each engine, how many it found a call, and of them how
+ * many Neo4j's top found too (or the first engine's, where Neo4j wasn't run), with how many of the calls gave Neo4j's
+ * order exactly; and the same between Oracle and Postgres, which both score by BM25 and should agree with each other.
+ */
+private fun rankings(results: List<Results>, keys: List<Pair<String, String>>) {
+    val ranked = keys.filter { key -> results.any { r -> r.outcomes.any { it.group to it.name == key && it.rankings != null } } }
+    if (ranked.isEmpty()) return
+    fun of(r: Results?, key: Pair<String, String>) = r?.outcomes?.firstOrNull { it.group to it.name == key }?.rankings
+    fun compared(mine: List<List<String>>, theirs: List<List<String>>): String {
+        val calls = mine.zip(theirs)
+        val shared = calls.map { (a, b) -> a.intersect(b.toSet()).size }.average()
+        val same = calls.count { (a, b) -> a == b }
+        return "%.1f shared, %d/%d in order".format(shared, same, calls.size)
+    }
+    val reference = results.firstOrNull { it.engine == "neo4j" } ?: results.first()
+    val oracle = results.firstOrNull { it.engine == "oracle" }
+    val postgres = results.firstOrNull { it.engine == "postgres" }
+    println("\n### rankings: found a call, and how many of them ${reference.engine} found too\n")
+    println("| workload | " + results.joinToString(" | ") { it.engine } + " | oracle and postgres |")
+    println("|---|" + results.joinToString("") { "---|" } + "---|")
+    for (key in ranked) {
+        val mine = of(reference, key)
+        val cells = results.map { r ->
+            val found = of(r, key) ?: return@map "-"
+            val count = "%.1f found".format(found.map { it.size }.average())
+            if (r === reference || mine == null) count else "$count, ${compared(found, mine)}"
+        }
+        val sql = of(oracle, key)?.let { o -> of(postgres, key)?.let { p -> compared(o, p) } } ?: "-"
+        println("| ${key.second} | " + cells.joinToString(" | ") + " | $sql |")
     }
 }
 
@@ -273,9 +369,9 @@ fun main(args: Array<String>) {
     when (args.firstOrNull()) {
         "run" -> run(
             options["engine"] ?: error("--engine neo4j|falkordb|oracle|postgres"), factor,
-            (options["phases"] ?: "load,read,traverse,concurrent,write").split(",").toSet(),
+            (options["phases"] ?: "load,read,traverse,concurrent,write,search").split(",").toSet(),
         )
         "report" -> report(factor)
-        else -> println("run --engine <neo4j|falkordb|oracle|postgres> [--sf 1] [--phases load,read,traverse,concurrent,write] | report [--sf 1]")
+        else -> println("run --engine <neo4j|falkordb|oracle|postgres> [--sf 1] [--phases load,read,traverse,concurrent,write,search] | report [--sf 1]")
     }
 }

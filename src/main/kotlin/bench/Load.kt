@@ -2,8 +2,11 @@ package bench
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.drivine.connection.NativeDriverSource
+import org.drivine.schema.FullTextIndexSpec
 import org.drivine.schema.RangeIndexSpec
+import org.drivine.schema.SimilarityFunction
 import org.drivine.schema.UniquenessConstraintSpec
+import org.drivine.schema.VectorIndexSpec
 import org.postgresql.PGConnection
 import javax.sql.DataSource
 
@@ -22,19 +25,27 @@ object Load {
 
     /** The indexes every engine gets: each label's id, unique where the engine can afford it, and an issue's repo. */
     fun schema(engine: Engine, data: Dataset) {
-        if (engine.name == "falkordb") {
-            // FalkorDB makes a graph when it is first written to, and schema commands need it there.
-            engine.execute("CREATE (:_Init)")
-            engine.execute("MATCH (n:_Init) DELETE n")
-        }
-        for (label in data.labels) {
-            // FalkorDB 6.0.0 checks a unique constraint in time that grows with the label: 10,000 nodes take
-            // 17 seconds to create and the next 10,000 take 35. It gets a plain index over the id.
-            if (engine.name == "falkordb") engine.pm.indexes.ensure(RangeIndexSpec(label, "id"))
-            else engine.pm.constraints.ensure(UniquenessConstraintSpec(label, "id"))
-        }
+        graphMade(engine)
+        for (label in data.labels) idIndex(engine, label)
         engine.pm.indexes.ensure(RangeIndexSpec("Issue", "repoKey"))
         if (engine.name == "neo4j") engine.execute("CALL db.awaitIndexes(300)")
+    }
+
+    /** FalkorDB makes a graph when it is first written to, and schema commands need it there. */
+    private fun graphMade(engine: Engine) {
+        if (engine.name != "falkordb") return
+        engine.execute("CREATE (:_Init)")
+        engine.execute("MATCH (n:_Init) DELETE n")
+    }
+
+    /**
+     * An index over [label]'s id, unique where the engine can afford it. FalkorDB 6.0.0 checks a unique constraint in
+     * time that grows with the label: 10,000 nodes take 17 seconds to create and the next 10,000 take 35. It gets a
+     * plain index over the id.
+     */
+    private fun idIndex(engine: Engine, label: String) {
+        if (engine.name == "falkordb") engine.pm.indexes.ensure(RangeIndexSpec(label, "id"))
+        else engine.pm.constraints.ensure(UniquenessConstraintSpec(label, "id"))
     }
 
     fun loaded(engine: Engine, data: Dataset): Boolean = engine.gom.count(Comment::class.java) >= data.scale.comments
@@ -53,6 +64,46 @@ object Load {
         }
         loader.finish()
         return Report(nodes, edges, schemaSeconds, nodeSeconds, edgeSeconds)
+    }
+
+    /** The chunks the search workloads search, and how long the save and the indexes took, in seconds. */
+    class ChunksReport(val chunks: Int, val saveSeconds: Double, val indexSeconds: Double)
+
+    fun chunksLoaded(engine: Engine, chunks: List<Chunk>): Boolean = engine.gom.count(Chunk::class.java) >= chunks.size
+
+    /**
+     * Guide's chunks into [engine], through Drivine, as Guide writes them: `saveAll`, a hundred at a time. Then the
+     * indexes the searches go through, each the engine's own as Drivine makes it: a full-text index over the text
+     * (Lucene on Neo4j, FalkorDB's own, trigrams on Postgres) and a vector index over the embedding (HNSW on Neo4j,
+     * FalkorDB and Postgres, neighbour partitions on Oracle). They are made after the save, as Oracle's vector index
+     * wants: its partitions are trained on the embeddings there are.
+     *
+     * Oracle is given no full-text index unless GBENCH_ORACLE_TEXT is set. With one, Drivine searches through Oracle
+     * Text where the database has it, and scores as Oracle Text does; with none it scores by BM25 over every chunk, as
+     * on Postgres, which is what the two SQL stores are compared on.
+     */
+    fun chunks(engine: Engine, chunks: List<Chunk>): ChunksReport {
+        graphMade(engine)
+        idIndex(engine, "Chunk")
+        val (_, saveSeconds) = timed { chunks.chunked(100).forEach { engine.gom.saveAll(it) } }
+        val (_, indexSeconds) = timed {
+            if (engine.name != "oracle" || !System.getenv("GBENCH_ORACLE_TEXT").isNullOrBlank()) {
+                engine.pm.indexes.ensure(FullTextIndexSpec("Chunk", "text"))
+            }
+            engine.pm.indexes.ensure(VectorIndexSpec("Chunk", "embedding", chunks.first().embedding.size, SimilarityFunction.COSINE))
+            // The SQL stores' statistics are brought up to date, as after the bench graph's load, so the planner knows the
+            // chunks are there. VACUUM can't run in a transaction, so it goes on a connection of its own, not through Drivine.
+            when (engine.name) {
+                "neo4j" -> engine.execute("CALL db.awaitIndexes(300)")
+                "postgres" -> {
+                    @Suppress("UNCHECKED_CAST")
+                    val dataSource = (engine.provider as NativeDriverSource<DataSource>).nativeDriver
+                    dataSource.connection.use { c -> c.createStatement().use { it.execute("VACUUM ANALYZE ${SEARCH_GRAPH}_node") } }
+                }
+                "oracle" -> engine.execute("BEGIN DBMS_STATS.GATHER_TABLE_STATS(USER, '${SEARCH_GRAPH.uppercase()}_NODE'); END;")
+            }
+        }
+        return ChunksReport(chunks.size, saveSeconds, indexSeconds)
     }
 
     private interface Loader {

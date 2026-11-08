@@ -8,6 +8,11 @@
 # DRIVINE_VERSION=<a released version> builds against that one, to compare it with build.gradle.kts's own.
 # GBENCH_RESULTS=<folder> keeps the results there and not in results/: a run of each version, or on each machine, in
 # a folder of its own, so they can be compared rather than written over one another.
+# GBENCH_SEED=<folder> holds Guide's content seed, for the search workloads (see src/main/kotlin/bench/Seed.kt): with
+# none, they are left out. GBENCH_PHASES=<phases> runs only those, as `search` or `load,read`; by default all but
+# `hops`, as the harness has them.
+# GBENCH_ORACLE_TEXT=1 gives Oracle's chunks a full-text index, so its searches go through Oracle Text (see Load.chunks);
+# the results don't record it, so keep that run in a GBENCH_RESULTS folder of its own.
 set -euo pipefail
 cd "$(dirname "$0")"
 SF=${1:-1}; shift || true
@@ -69,7 +74,7 @@ start() {
 ./gradlew --console=plain -q ${DRIVINE_SOURCE:+--include-build "$DRIVINE_SOURCE"} ${DRIVINE_VERSION:+-PdrivineVersion=$DRIVINE_VERSION} installDist 2>&1 | grep -E "^e: |FAILED" || true
 for engine in $ENGINES; do
     start "$engine"
-    build/install/graph-bench/bin/graph-bench run --engine "$engine" --sf "$SF" 2> "$GBENCH_RESULTS/$engine-sf$SF.log" || echo "$engine: run failed, see $GBENCH_RESULTS/$engine-sf$SF.log"
+    build/install/graph-bench/bin/graph-bench run --engine "$engine" --sf "$SF" ${GBENCH_PHASES:+--phases "$GBENCH_PHASES"} 2> "$GBENCH_RESULTS/$engine-sf$SF.log" || echo "$engine: run failed, see $GBENCH_RESULTS/$engine-sf$SF.log"
     docker stats --no-stream --format "$engine: container memory {{.MemUsage}}" "gbench-$engine"
     docker stop "gbench-$engine" >/dev/null
 done

@@ -14,6 +14,13 @@ import org.drivine.query.QuerySpecification
 /** The name of the graph on FalkorDB, and of the property graph and its tables on Oracle, and of the tables on Postgres. */
 const val GRAPH = "bench"
 
+/**
+ * The graph the search workloads' chunks are kept in, apart from the bench graph, as Guide keeps them in a graph of a
+ * few thousand nodes: what a search on a SQL store reads is the label's rows, and there they are among few others. Neo4j
+ * has one database, so there the chunks are only a label apart.
+ */
+const val SEARCH_GRAPH = "guide"
+
 /** One database, and Drivine's managers over it. */
 class Engine(val name: String, val type: DatabaseType, val provider: ConnectionProvider) : AutoCloseable {
 
@@ -38,7 +45,7 @@ class Engine(val name: String, val type: DatabaseType, val provider: ConnectionP
     companion object {
         private fun env(name: String, default: String) = System.getenv(name) ?: default
 
-        fun open(name: String): Engine = when (name) {
+        fun open(name: String, graph: String = GRAPH): Engine = when (name) {
             "neo4j" -> Engine(
                 name, DatabaseType.NEO4J,
                 Neo4jConnectionProvider(
@@ -51,7 +58,7 @@ class Engine(val name: String, val type: DatabaseType, val provider: ConnectionP
                 name, DatabaseType.FALKORDB,
                 FalkorDbConnectionProvider(
                     name = name, host = env("BENCH_FALKORDB_HOST", "localhost"), port = env("BENCH_FALKORDB_PORT", "16379").toInt(),
-                    password = null, graphName = GRAPH,
+                    password = null, graphName = graph,
                 ),
             )
             "oracle" -> Engine(
@@ -60,7 +67,7 @@ class Engine(val name: String, val type: DatabaseType, val provider: ConnectionP
                     name, DatabaseType.ORACLE,
                     JdbcConnectionProvider.oracleUrl(env("BENCH_ORACLE_HOST", "localhost"), env("BENCH_ORACLE_PORT", "11521").toInt(), "FREEPDB1"),
                     "bench", env("BENCH_ORACLE_PASSWORD", "bench"),
-                    graphName = GRAPH,
+                    graphName = graph,
                 ),
             )
             "postgres" -> Engine(
@@ -69,7 +76,7 @@ class Engine(val name: String, val type: DatabaseType, val provider: ConnectionP
                     name, DatabaseType.POSTGRES,
                     JdbcConnectionProvider.postgresUrl(env("BENCH_POSTGRES_HOST", "localhost"), env("BENCH_POSTGRES_PORT", "15432").toInt(), "bench"),
                     "bench", env("BENCH_POSTGRES_PASSWORD", "bench"),
-                    graphName = GRAPH,
+                    graphName = graph,
                 ),
             )
             else -> error("No engine '$name': neo4j, falkordb, oracle or postgres")

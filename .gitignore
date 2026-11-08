@@ -37,4 +37,10 @@ build/
 results/*
 !results/*-sf1.0.json
 !results/hops-*-sf1.0.csv
+# The published search run (README: Searching), and its Oracle Text run
+!results/search-2026-11-08/
+!results/search-2026-11-08-oracle-text/
 .bench-commit
+
+# Guide's content seed, for the search workloads, where a run is given it beside the harness: fetched, never kept (Seed.kt)
+seed/

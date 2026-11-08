@@ -53,6 +53,9 @@ engine.
   Postgres it was Drivine's own writes that the benchmark found slow, fixed before the run shown.
 - **Every engine gave the same answers.** Each read workload's results are digested and compared
   across the four. They agree on all of them.
+- **Search is the SQL stores' weak spot.** Vector search is quick everywhere (1.5 to 5 ms). Full-text search on
+  Postgres takes 38 ms for rare words and 459 ms for common short ones, where Neo4j takes 5 or 6; and it ranks
+  unlike Neo4j's index. [The numbers are below.](#searching-full-text-and-vectors)
 
 ## What was run
 
@@ -313,6 +316,113 @@ B-tree over 4.5 million relationships is only a few levels deep; over billions, 
 probe costs more, and that is exactly where index-free adjacency is meant to earn its keep. And this
 is Neo4j Community, which does not have the faster runtime of the Enterprise edition.
 
+## Searching: full text and vectors
+
+*Added 8 November 2026. Run on the test box, an Apple M1 mac mini, not the M2 Max of the numbers above, through Drivine4j 0.6.1, each engine alone in a fresh container with the same limits as above. The results are in [`results/search-2026-11-08`](results/search-2026-11-08) and, for Oracle Text, [`results/search-2026-11-08-oracle-text`](results/search-2026-11-08-oracle-text).*
+
+[Guide](https://github.com/embabel/guide), Embabel's assistant for its own docs, moved from Neo4j Aura to Postgres.
+Everything above had Postgres quickest or close to it, but Guide's full-text search was slower there than on Aura:
+on a laptop's Postgres 17, 41 ms for "MCP server" and 487 ms for "how do I define an action", where Aura's Lucene
+answers both in tens of milliseconds. Its vector search was within 40 ms of Aura's. Nothing above searches, so
+nothing above could have caught it. These workloads do.
+
+**The corpus.** Guide's own: the 1,583 chunks of Embabel's docs that Guide answers from, a kilobyte or two of text
+each (1.7 million characters in all) and an embedding of 384 numbers. They are taken from Guide's content seed, the
+export of its Postgres database that Guide's CI makes after an ingest, and saved into each engine through Drivine,
+with `saveAll`, as a `@NodeFragment` of their own:
+
+```kotlin
+@NodeFragment(labels = ["Chunk"])
+data class Chunk(
+    @NodeId val id: String,
+    @FullTextIndex val text: String,
+    @VectorIndex(similarity = SimilarityFunction.COSINE) val embedding: List<Float>,
+)
+```
+
+They are kept in a graph of their own (`guide`), as Guide keeps them in a database of a few thousand nodes, not among
+the 1.1 million of the graph above. On Neo4j, which has one database, they are a label apart.
+
+**The searches.** Each through the object manager, the same line on every engine, as Guide searches:
+
+```kotlin
+graphObjectManager.loadMatching(Chunk::class.java, "how do I define an action", 5)   // full text
+graphObjectManager.loadNearest(Chunk::class.java, queryEmbedding, 5)                  // vector
+```
+
+| workload | what it is for |
+|---|---|
+| full text, a rare term: "MCP server", top 5 | words few chunks hold (52 and 35 of the 1,583): the case an index answers best |
+| full text, common short words: "how do I define an action", top 5 | a question as a person types it: words many chunks hold ("an" is in 608), three of them under three letters |
+| vector, a chunk's own embedding: nearest 5 by cosine | the nearest is the chunk itself, so a search that misses it is wrong |
+| vector, an embedding near a chunk's: nearest 5 by cosine | a chunk's embedding moved by a random vector half its length (a cosine of about 0.9), as a question is near the passage that answers it and not on it |
+
+No embedding model is run: the query vectors are the chunks' own, picked by a fixed seed, so call number 17 asks every
+engine the same. Each search returns the chunks whole, embedding and all, as Guide's does.
+
+**What each engine does with them.** Drivine makes each index from the annotations and writes each search:
+
+| | full-text index | full-text search | vector index |
+|---|---|---|---|
+| Neo4j | Lucene | `db.index.fulltext.queryNodes`, scored by Lucene's BM25 | HNSW |
+| FalkorDB | its own (RediSearch) | `db.idx.fulltext.queryNodes` | HNSW |
+| Oracle | none | BM25 in SQL, over every chunk | neighbour partitions (IVF) |
+| Postgres | trigrams (`pg_trgm`, GIN) | BM25 in SQL, over the chunks the trigram index finds | HNSW (pgvector) |
+
+Postgres and Oracle have no Lucene, so Drivine scores a text by BM25 itself, in SQL, the way Lucene does: each word's
+count in the text, weighed by how rare the word is among the chunks and against the text's length
+([`Bm25.kt`](https://github.com/liberation-data/drivine4j/blob/main/src/main/kotlin/org/drivine/backend/sql/Bm25.kt)).
+On Postgres the chunks scored are first narrowed to those whose text holds the words of the query, through the trigram
+index. That is where the second query should hurt: a word under three letters ("I", "an", "do") has no trigram to look
+for, so nothing is narrowed and every chunk is scored, one regular expression for each word of the query, and the
+counts of the label are worked out again for each search. Oracle is given no full-text index, so that the two SQL
+stores are scored alike; with `GBENCH_ORACLE_TEXT=1` it gets one, and Drivine then searches through Oracle Text where
+the database has it, scored as Oracle Text scores.
+
+**How fast.** Milliseconds a search, p50 and in brackets p95, over 1,583 chunks:
+
+| workload | Neo4j | FalkorDB | Oracle | Oracle Text | Postgres |
+|---|---:|---:|---:|---:|---:|
+| full text: "MCP server" | 6.3 (10.8) | 2.1 (5.5) | 565 (570) | 7.2 (8.8) | 38 (42) |
+| full text: "how do I define an action" | 5.4 (6.8) | 0.4 (0.5)\* | 4,232 (4,242) | 27 (30) | 459 (470) |
+| vector: a chunk's own embedding | 4.9 (6.1) | 1.5 (1.8) | 3.2 (4.0) | 3.0 (3.4) | 3.1 (5.3) |
+| vector: an embedding near a chunk's | 3.3 (4.0) | 1.8 (3.3) | 3.3 (9.0) | 3.1 (7.5) | 2.5 (2.9) |
+
+\* FalkorDB found nothing for this query (see below), so it had nothing to score.
+
+Saving the 1,583 chunks took 1.0 to 1.6 s on every engine, and indexing them 0.1 to 1.6 s (Oracle Text 2.9 s).
+
+- **Vector search is no problem anywhere.** All five answer in 1.5 to 5 ms at p50. Postgres's HNSW is as quick as
+  Neo4j's.
+- **Full text is where the SQL stores fall behind.** Postgres takes 38 ms for the rare words, 6 times Neo4j, and
+  459 ms for the common ones, 85 times Neo4j: Guide's 41 ms and 487 ms, measured again. The second query is slow for
+  the reason given above: its short words have no trigrams, so every chunk is scored, by one regular expression a
+  word. Oracle, with no full-text index, scores every chunk for both queries, and takes 0.6 s and 4.2 s.
+- **Oracle Text is fast,** 7 and 27 ms, but it ranks by its own scoring, not BM25 (below).
+
+**Whether they agree.** Each search keeps the ids it found, best first, for its first five calls. The report sets each
+engine's beside Neo4j's: how many it found a call, how many of those Neo4j found too, and in how many of the five calls
+the order was Neo4j's exactly; and Oracle's beside Postgres's.
+
+| workload | FalkorDB | Oracle | Oracle Text | Postgres | Oracle and Postgres |
+|---|---|---|---|---|---|
+| full text: "MCP server" | 1 of Neo4j's 5 | 4 of 5 | 0 of 5 | 4 of 5 | the same 5, in the same order |
+| full text: "how do I define an action" | **found none** | 2 of 5 | 0 of 5 | 2 of 5 | the same 5, in the same order |
+| vector: a chunk's own embedding | 5 of 5, in order | 4.8 of 5 (in order 4 of 5 calls) | 4.6 of 5 | 5 of 5, in order | 4.8 of 5 |
+| vector: an embedding near a chunk's | 5 of 5, in order | 4.6 of 5 (in order 3 of 5 calls) | 4.8 of 5 | 5 of 5, in order | 4.6 of 5 |
+
+- **Oracle and Postgres rank full text exactly alike,** as they share Drivine's BM25, but not as Neo4j does. Drivine
+  weighs a text's length in characters and Lucene in words: scored by hand over the same chunks, BM25 with lengths in
+  words gives Neo4j's top five for "MCP server" in Neo4j's order, and with lengths in characters gives the SQL stores'.
+  For the second query Neo4j differs from both by more. Reported as
+  [drivine4j#665](https://github.com/liberation-data/drivine4j/issues/665).
+- **FalkorDB finds nothing for "how do I define an action".** Drivine passes it the query as it is, and FalkorDB takes a
+  query as all of its words, not any of them; no chunk holds all six. Reported as
+  [drivine4j#666](https://github.com/liberation-data/drivine4j/issues/666).
+- **Oracle Text shares none of Neo4j's five** for either query: it finds five, by a score of its own.
+- **The vector searches agree,** but for Oracle's index, which is approximate in a different way from HNSW (neighbour
+  partitions) and now and then puts another chunk in the five.
+
 ## The bugs
 
 ### FalkorDB 6: a unique constraint makes inserts slower as the label grows
@@ -418,20 +528,39 @@ To run against a database of your own, set `BENCH_NEO4J_HOST`, `BENCH_NEO4J_PORT
 `BENCH_NEO4J_PASSWORD`, and the like for `FALKORDB`, `ORACLE` and `POSTGRES`, and call the harness directly:
 
 ```bash
-build/install/graph-bench/bin/graph-bench run --engine neo4j --sf 1 --phases load,read,traverse,concurrent,write
+build/install/graph-bench/bin/graph-bench run --engine neo4j --sf 1 --phases load,read,traverse,concurrent,write,search
 ```
 
 The hop by hop measurement is a phase of its own, `--phases hops`, and writes each call to
 `results/hops-<engine>-sf<scale>.csv`.
 
+The searches need Guide's content seed, which is not kept here. Fetch it into a folder of its own and name the folder
+in `GBENCH_SEED`; without it the searches are left out. `GBENCH_PHASES` runs only the phases named:
+
+```bash
+gh run download 42417580385 -R embabel/guide -n seed-postgres -D seed/guide   # nodes.tsv, edges.tsv, apply.sql
+GBENCH_SEED=seed/guide ./run.sh 1                         # everything, the searches too
+GBENCH_SEED=seed/guide GBENCH_PHASES=search ./run.sh 1    # only the searches
+```
+
+`seed/` is ignored by git but sits inside the harness's folder, so a copy of that folder (as a run on another machine is given) carries the seed with it.
+Only the chunks of `nodes.tsv` are read, and nothing in the seed is run: `apply.sql` is Guide's, for loading its own
+database.
+
+The run named above is the seed the numbers were measured on, and GitHub keeps its files only until 7 December 2026.
+After that, take `seed-postgres` from a later run of Guide's "Export Seed Database" workflow
+(`gh run list -R embabel/guide -w export-seed.yml`): it is a later ingest of the docs, so its chunks, and the numbers
+and rankings over them, will not be the same.
+
 ### Where things are
 
 | | |
 |---|---|
-| [`Model.kt`](src/main/kotlin/bench/Model.kt) | the fragments and views |
+| [`Model.kt`](src/main/kotlin/bench/Model.kt) | the fragments and views, and the chunk the searches find |
 | [`Data.kt`](src/main/kotlin/bench/Data.kt) | the generator, and why FOLLOWS never runs both ways |
-| [`Load.kt`](src/main/kotlin/bench/Load.kt) | the indexes, and a loader for Cypher, one for Oracle's tables and one for Postgres's |
+| [`Load.kt`](src/main/kotlin/bench/Load.kt) | the indexes, a loader for Cypher, one for Oracle's tables and one for Postgres's, and the chunks' save and search indexes |
 | [`Workloads.kt`](src/main/kotlin/bench/Workloads.kt) | every workload, with the Cypher, SQL/PGQ and Postgres SQL side by side |
+| [`Seed.kt`](src/main/kotlin/bench/Seed.kt) | Guide's chunks, read from its content seed, for the searches |
 | [`Main.kt`](src/main/kotlin/bench/Main.kt) | timing, the digest that checks the engines agree, the report |
 
 Two things about the data are deliberate. FOLLOWS never runs both ways between two people, and

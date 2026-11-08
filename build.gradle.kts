@@ -10,7 +10,8 @@ group = "bench"
 version = "0.1.0"
 
 // The Drivine to build against: this one, or another to compare with it, as `-PdrivineVersion=0.2.0` (run.sh: DRIVINE_VERSION).
-val drivineVersion = (findProperty("drivineVersion") as String?) ?: "0.4.1"
+// The search workloads need 0.5.0 or later, where Oracle and Postgres score full-text search by BM25 as Neo4j's Lucene does.
+val drivineVersion = (findProperty("drivineVersion") as String?) ?: "0.6.1"
 
 repositories {
     mavenCentral()
@@ -32,6 +33,12 @@ dependencies {
     implementation("org.postgresql:postgresql")
     implementation("com.zaxxer:HikariCP")
     runtimeOnly("ch.qos.logback:logback-classic")
+}
+
+// Drivine's KSP names the module in .drivine/model.json after the folder it is built in, unless told: a checkout or a
+// run's copy in a folder of another name would rewrite the committed file, and run.sh would then call the harness dirty.
+ksp {
+    arg("drivine.model.module", rootProject.name)
 }
 
 kotlin {
