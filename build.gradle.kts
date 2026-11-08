@@ -35,6 +35,12 @@ dependencies {
     runtimeOnly("ch.qos.logback:logback-classic")
 }
 
+// Drivine's KSP names the module in .drivine/model.json after the folder it is built in, unless told: a checkout or a
+// run's copy in a folder of another name would rewrite the committed file, and run.sh would then call the harness dirty.
+ksp {
+    arg("drivine.model.module", rootProject.name)
+}
+
 kotlin {
     compilerOptions {
         // Required for the Drivine DSL, which uses context parameters

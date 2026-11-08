@@ -6,7 +6,7 @@
     "version": "0.6.1",
     "language": "kotlin"
   },
-  "module": "graph-bench-search",
+  "module": "graph-bench",
   "fragments": [
     {
       "id": "bench.Chunk",
