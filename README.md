@@ -42,13 +42,13 @@ engine.
   slower than Neo4j on batch writes.
 - **Postgres is the surprise.** Two plain tables and joins load the view of five relationships
   faster than any other engine, sustain more than twice the view loads a second of any other under
-  eight threads, and group all 1.5 million FOLLOWS in less than two thirds of the graph engines' time. It
+  eight threads, and group all 1.5 million FOLLOWS in about two thirds of the graph engines' time. It
   writes 3 to 4 times faster than Oracle and beats Neo4j on single saves; bulk writes still trail
   Neo4j.
 - **Neither SQL store has index-free adjacency, and at this size it did not matter.** Walking relationships
   through an index cost Oracle and Postgres less for each path than Neo4j, out to 275,000 paths.
   What costs them is reading the nodes on the way. [The numbers are below.](#does-oracle-miss-index-free-adjacency)
-- **Grow the graph and Neo4j overtakes Postgres** on traversals, between 3 and 10 times the size (3.4 and 11
+- **Grow the graph and Neo4j overtakes Postgres** on most traversals, three hops by 3 times the size and two hops by 10 (3.4 and 11
   million nodes): at 10 times, two hops take Neo4j 1.2 ms and Postgres 7.8, three hops 3.6 ms and 80. Neo4j's lead
   on counting a label and on bulk writes grows with the graph too. Postgres keeps point reads, and the walk itself,
   reading nothing of the nodes, stays cheaper for it at every size. [The numbers are below.](#bigger-graphs-neo4j-and-postgres-at-up-to-30-times-the-size)
@@ -100,7 +100,7 @@ processors. Neo4j had a 1 GB heap and a 2 GB page cache; Postgres a 1 GB buffer 
 is a test machine kept for this, an Apple M1 mac mini (8 cores, 16 GB), with nothing else running on it.
 
 The first run of this page, in October, was on an Apple M2 Max laptop through Drivine4j 0.1.6 and 0.2.0; its results
-are still in [`results/`](results). The M1 is slower for Neo4j above all (a fragment by id in 2.95 ms against 1.83), so
+are still in [`results/`](results). The M1 is slower for Neo4j and Oracle above all (a fragment by id in 2.95 ms against 1.83), so
 the two runs don't compare number for number. The shape is the same.
 
 **Two kinds of workload.**
@@ -191,7 +191,7 @@ A cell is the median, with the 95th percentile in brackets. Lower is better. The
 | every FOLLOWS (1.5 million), grouped: the ten most followed | 736.47 (792.71) | 686.43 (692.33) | 1372.23 (1376.36) | **458.19** (461.50) |
 
 Over the whole graph, index-free adjacency is starting to pay for Oracle: grouping 1.5 million
-FOLLOWS takes it nearly twice as long as the graph engines. Postgres groups them in under two thirds of the
+FOLLOWS takes it nearly twice as long as the graph engines. Postgres groups them in about two thirds of the
 graph engines' time: it reads the relationships from the index over the nodes they reach, in that
 order and without touching their rows, merges them with the nodes in the order of their keys, and
 counts. A walk of the whole graph in order is cheap. It takes a lot of data before following a
@@ -240,13 +240,13 @@ like for like comparison.
 
 Every workload above was also run through Drivine4j 0.4.1, on the same machine the same day, into
 [`results/m1-0.4.1`](results/m1-0.4.1), to see whether two releases of Drivine changed anything. They did not: every
-workload gives the same answer on both, and the times agree within what one run differs from the next, the bulk loads
-within about a second. Nothing between the two releases slowed what is measured here.
+workload gives the same answer on both, and the times agree within about 1.5 times, the bulk loads
+within about a second. No difference reaches the 2 times that [the cautions](#what-to-make-of-it) ask for.
 
 ## Reading the results
 
-**FalkorDB** is the quickest on point reads, on most traversals and on writes: about 0.4 ms for one to four hops
-where Neo4j takes about 1.3 ms, though without the constraints the others carry. Its one slow result is a view load
+**FalkorDB** is the quickest on point reads and on writes, though without the constraints the others carry, and close
+to Postgres on short traversals: about 0.4 ms for one to four hops where Neo4j takes about 1.3 ms. Its one slow result is a view load
 under eight threads, 679 calls a second against 1,772 to 5,230 for the others: the load costs FalkorDB about 2.9 ms
 of CPU, and it has two CPUs.
 
@@ -267,7 +267,7 @@ of the four on what an application mostly asks: views. It loads one with five re
 1.69 ms, the quickest here, and under eight threads sustains 5,230 view loads a second, more than
 twice Oracle's 2,370 and nearly three times Neo4j's. Short traversals are quicker than FalkorDB's (0.22
 and 0.25 ms for one and two hops, against 0.37), and the grouped three-hop traversals are the quickest of all on
-two of the three. It writes a single object faster than Neo4j and 3 to 4 times faster than Oracle;
+two of the three. It writes a single object faster than Neo4j and about 3 times faster than Oracle;
 in bulk it trails Neo4j by 1.3 to 1.4 times, because Drivine's write function finds and writes each
 node in turn. Its slow result is counting a whole label: Postgres keeps no count of a label's nodes, so a
 count of 750,000 comments reads them, 27 ms against 1.4 ms for Neo4j, which keeps one.
@@ -315,7 +315,7 @@ A straight line through each engine's calls gives a fixed cost for a call and a 
 **The missing adjacency never bites here.** Oracle's index walk costs about three quarters of what
 Neo4j's pointers cost for each path, at every size we reached, and has the lowest fixed cost of the four. Postgres,
 walking the same kind of index over the same table, costs half of what Neo4j does for each path. FalkorDB's matrices
-are in a class of their own, five to six times cheaper again.
+are in a class of their own, six to eight times cheaper again.
 
 What does bite is **reading the nodes**. An index over `(src, type)` holds everything a walk needs,
 so Oracle answers it without touching a node's row, and the last hop without touching a
@@ -334,7 +334,7 @@ Enterprise edition.
 
 ## Bigger graphs: Neo4j and Postgres at up to 30 times the size
 
-At 1.1 million nodes the graph nearly fits in each container's 4 GB, and Postgres keeps up with Neo4j or beats it.
+At 1.1 million nodes the graph fits in each container's 4 GB, and Postgres keeps up with Neo4j or beats it.
 So where does that turn? Neo4j and Postgres were run again at 3, 10 and 30 times the size, the same graph generated
 bigger, with the same limits as above: 2 CPUs and 4 GB, so the larger graphs are well beyond memory. The searches were
 left out. The results are in [`results/m1-scaling`](results/m1-scaling), scale 1 a run of its own beside the one above.
@@ -386,9 +386,9 @@ Loading, in **seconds**, by the paths described [above](#loading-the-graph):
 | ×10 | 175 s | **915 s** | **78 s** | 1,499 s |
 | ×30 | 550 s | **3,724 s** | **251 s** | 16,738 s |
 
-- **Traversals that read the nodes turn between 3 and 10 times the size.** At 10 times, two hops take Neo4j 1.2 ms and
+- **Traversals that read the nodes turn by 3 or 10 times the size.** At 10 times, two hops take Neo4j 1.2 ms and
   Postgres 7.8; three hops 3.6 ms and 80; the grouped three-hop traversals are 4 to 7 times quicker on Neo4j. Neo4j's
-  times grow far less up to there than Postgres's, which grow with the graph: each node on the way is a probe of the node
+  times grow far less up to there than Postgres's, which grow with the graph, likely because each node on the way is a probe of the node
   table's key and a row to read, and fewer of those rows are in memory.
 - **The walk itself never turns.** Counting the paths and reading nothing of the nodes, as in
   [the section above](#does-oracle-miss-index-free-adjacency), Postgres costs less for each path than Neo4j at every
@@ -396,7 +396,7 @@ Loading, in **seconds**, by the paths described [above](#loading-the-graph):
 - **At 30 times Neo4j slows down too.** Its store is then far larger than its 2 GB page cache, and three hops take it 172 ms,
   about what they take Postgres; grouping every FOLLOWS takes it nine and a half minutes, against 42 seconds for
   Postgres, which reads the relationships from its index in order.
-- **Postgres keeps point reads and single saves** at every scale: a fragment by id in 1.2 ms against 2.0 at 30 times.
+- **Postgres keeps point reads and saves of one fragment** at every scale: a fragment by id in 1.2 ms against 2.0 at 30 times.
   The view of five relationships is still Postgres's, just, at 5.5 ms against 5.9.
 - **Neo4j's lead on whole labels and in bulk grows.** It keeps a count of each label, so counting the comments costs it
   1 ms at every size, and Postgres 1.6 s at 30 times. `saveAll` of 1,000 fragments costs Neo4j the same at every size,
@@ -411,7 +411,7 @@ Loading, in **seconds**, by the paths described [above](#loading-the-graph):
 *Added 8 November 2026. Run on the test machine of the numbers above, through Drivine4j 0.6.1, each engine alone in a fresh container with the same limits as above. The results are in [`results/search-2026-11-08`](results/search-2026-11-08) and, for Oracle Text, [`results/search-2026-11-08-oracle-text`](results/search-2026-11-08-oracle-text).*
 
 [Guide](https://github.com/embabel/guide), Embabel's assistant for its own docs, moved from Neo4j Aura to Postgres.
-Everything above had Postgres quickest or close to it, but Guide's full-text search was slower there than on Aura:
+Everything above at scale 1 had Postgres quickest or close to it, but Guide's full-text search was slower there than on Aura:
 on a laptop's Postgres 17, 41 ms for "MCP server" and 487 ms for "how do I define an action", where Aura's Lucene
 answers both in tens of milliseconds. Its vector search was within 40 ms of Aura's. Nothing above searches, so
 nothing above could have caught it. These workloads do.
@@ -572,7 +572,7 @@ The SQL in this benchmark avoids it by finding the start node first, with a subq
 Take the shape of these results and not the last decimal place.
 
 - **One run of each, on a quiet machine.** Nothing else ran on the test machine while the engines did. Neo4j and
-  Postgres were run twice at scale 1, in the two runs on this page, and their medians differ from one to the other by
+  Postgres were run twice at scale 1 through 0.6.1, in two of the runs on this page, and their medians differ from one to the other by
   up to 1.3 times. Differences of 2 times and more are the ones to believe.
 - **Oracle Free is not Oracle.** It is capped at 2 CPU threads and 2 GB of memory. The same
   statements on a licensed edition with real memory would behave differently, above all under
