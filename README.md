@@ -53,6 +53,9 @@ engine.
   Postgres it was Drivine's own writes that the benchmark found slow, fixed before the run shown.
 - **Every engine gave the same answers.** Each read workload's results are digested and compared
   across the four. They agree on all of them.
+- **Search is the SQL stores' weak spot.** Vector search is quick everywhere (2 to 5 ms). Full-text search on
+  Postgres takes 38 ms for rare words and 459 ms for common short ones, where Neo4j takes 5 or 6; and it ranks
+  unlike Neo4j's index. [The numbers are below.](#searching-full-text-and-vectors)
 
 ## What was run
 
@@ -315,7 +318,7 @@ is Neo4j Community, which does not have the faster runtime of the Enterprise edi
 
 ## Searching: full text and vectors
 
-*Added November 2026. The numbers are to come, from a run of all four engines on one machine.*
+*Added 8 November 2026. Run on the test box, an Apple M1 mac mini, not the M2 Max of the numbers above, through Drivine4j 0.6.1, each engine alone in a fresh container with the same limits as above. The results are in [`results/search-2026-11-08`](results/search-2026-11-08) and, for Oracle Text, [`results/search-2026-11-08-oracle-text`](results/search-2026-11-08-oracle-text).*
 
 [Guide](https://github.com/embabel/guide), Embabel's assistant for its own docs, moved from Neo4j Aura to Postgres.
 Everything above had Postgres quickest or close to it, but Guide's full-text search was slower there than on Aura:
@@ -376,18 +379,49 @@ counts of the label are worked out again for each search. Oracle is given no ful
 stores are scored alike; with `GBENCH_ORACLE_TEXT=1` it gets one, and Drivine then searches through Oracle Text where
 the database has it, scored as Oracle Text scores.
 
-**Whether they agree.** Each search keeps the ids it found, best first, for its first five calls. The report sets each
-engine's beside Neo4j's: how many it found a call, how many of those Neo4j found too, and in how many calls the order was
-Neo4j's exactly; and Oracle's beside Postgres's. What a first small run showed, before any timing was taken:
+**How fast.** Milliseconds a search, p50 and in brackets p95, over 1,583 chunks:
 
-- Oracle and Postgres rank the full-text searches exactly alike.
-- They differ from Neo4j, because Drivine weighs a text's length in characters and Lucene in words. Scored by hand
-  over the same chunks, BM25 with lengths in words gives Neo4j's top five for "MCP server" in Neo4j's order, and
-  with lengths in characters gives the SQL stores'. For the second query Neo4j differs from both, by more.
-- FalkorDB finds nothing for "how do I define an action": it takes a query as all of its words, not any of them, and
-  no chunk holds all six. For "MCP server" it finds five, one of them in Neo4j's five.
-- The vector searches agree, but for Oracle's index, which is approximate in a different way from HNSW and now and
-  then puts another chunk in the five.
+| workload | Neo4j | FalkorDB | Oracle | Oracle Text | Postgres |
+|---|---:|---:|---:|---:|---:|
+| full text: "MCP server" | 6.3 (10.8) | 2.1 (5.5) | 565 (570) | 7.2 (8.8) | 38 (42) |
+| full text: "how do I define an action" | 5.4 (6.8) | 0.4 (0.5)\* | 4,232 (4,242) | 27 (30) | 459 (470) |
+| vector: a chunk's own embedding | 4.9 (6.1) | 1.5 (1.8) | 3.2 (4.0) | 3.0 (3.4) | 3.1 (5.3) |
+| vector: an embedding near a chunk's | 3.3 (4.0) | 1.8 (3.3) | 3.3 (9.0) | 3.1 (7.5) | 2.5 (2.9) |
+
+\* FalkorDB found nothing for this query (see below), so it had nothing to score.
+
+Saving the 1,583 chunks took 1.0 to 1.6 s on every engine, and indexing them 0.1 to 1.6 s (Oracle Text 2.9 s).
+
+- **Vector search is no problem anywhere.** All five answer in 1.5 to 5 ms at p50. Postgres's HNSW is as quick as
+  Neo4j's.
+- **Full text is where the SQL stores fall behind.** Postgres takes 38 ms for the rare words, 6 times Neo4j, and
+  459 ms for the common ones, 85 times Neo4j: Guide's 41 ms and 487 ms, measured again. The second query is slow for
+  the reason given above: its short words have no trigrams, so every chunk is scored, by one regular expression a
+  word. Oracle, with no full-text index, scores every chunk for both queries, and takes 0.6 s and 4.2 s.
+- **Oracle Text is fast,** 7 and 27 ms, but it ranks by its own scoring, not BM25 (below).
+
+**Whether they agree.** Each search keeps the ids it found, best first, for its first five calls. The report sets each
+engine's beside Neo4j's: how many it found a call, how many of those Neo4j found too, and in how many of the five calls
+the order was Neo4j's exactly; and Oracle's beside Postgres's.
+
+| workload | FalkorDB | Oracle | Oracle Text | Postgres | Oracle and Postgres |
+|---|---|---|---|---|---|
+| full text: "MCP server" | 1 of Neo4j's 5 | 4 of 5 | 0 of 5 | 4 of 5 | the same 5, in the same order |
+| full text: "how do I define an action" | **found none** | 2 of 5 | 0 of 5 | 2 of 5 | the same 5, in the same order |
+| vector: a chunk's own embedding | 5 of 5, in order | 4.8 of 5 (in order 4 of 5 calls) | 4.6 of 5 | 5 of 5, in order | 4.8 of 5 |
+| vector: an embedding near a chunk's | 5 of 5, in order | 4.6 of 5 (in order 3 of 5 calls) | 4.8 of 5 | 5 of 5, in order | 4.6 of 5 |
+
+- **Oracle and Postgres rank full text exactly alike,** as they share Drivine's BM25, but not as Neo4j does. Drivine
+  weighs a text's length in characters and Lucene in words: scored by hand over the same chunks, BM25 with lengths in
+  words gives Neo4j's top five for "MCP server" in Neo4j's order, and with lengths in characters gives the SQL stores'.
+  For the second query Neo4j differs from both by more. Reported as
+  [drivine4j#665](https://github.com/liberation-data/drivine4j/issues/665).
+- **FalkorDB finds nothing for "how do I define an action".** Drivine passes it the query as it is, and FalkorDB takes a
+  query as all of its words, not any of them; no chunk holds all six. Reported as
+  [drivine4j#666](https://github.com/liberation-data/drivine4j/issues/666).
+- **Oracle Text shares none of Neo4j's five** for either query: it finds five, by a score of its own.
+- **The vector searches agree,** but for Oracle's index, which is approximate in a different way from HNSW (neighbour
+  partitions) and now and then puts another chunk in the five.
 
 ## The bugs
 
