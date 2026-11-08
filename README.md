@@ -547,6 +547,11 @@ GBENCH_SEED=seed/guide GBENCH_PHASES=search ./run.sh 1    # only the searches
 Only the chunks of `nodes.tsv` are read, and nothing in the seed is run: `apply.sql` is Guide's, for loading its own
 database.
 
+The run named above is the seed the numbers were measured on, and GitHub keeps its files only until 7 December 2026.
+After that, take `seed-postgres` from a later run of Guide's "Export Seed Database" workflow
+(`gh run list -R embabel/guide -w export-seed.yml`): it is a later ingest of the docs, so its chunks, and the numbers
+and rankings over them, will not be the same.
+
 ### Where things are
 
 | | |

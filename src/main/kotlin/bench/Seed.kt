@@ -12,6 +12,9 @@ import java.io.File
  * gh run download 42417580385 -R embabel/guide -n seed-postgres -D <folder>
  * ```
  *
+ * That run is the seed the README's numbers were measured on; GitHub keeps its files until 7 December 2026. A later
+ * run of Guide's `export-seed.yml` gives a later ingest, with other chunks (README: Run it yourself).
+ *
  * The folder holds `nodes.tsv` and `edges.tsv`, Drivine's node and relationship tables on Postgres as `COPY` writes
  * them, and `apply.sql`, which Guide runs to load them; nothing here runs it. Only `nodes.tsv` is read, and of it only
  * the chunks: each one's id, text and embedding. They are written into each engine through Drivine (see
