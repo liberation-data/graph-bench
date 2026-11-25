@@ -60,7 +60,11 @@ object Load {
         }
         val (edges, edgeSeconds) = timed {
             loader.beforeEdges()
-            data.edges.sumOf { set -> loader.edges(set).also { println("  loaded %,d %s".format(it, set.type)) } }
+            data.edges.sumOf { set ->
+                val (n, seconds) = timed { loader.edges(set) }
+                println("  loaded %,d %s in %.1f s, %,.0f a second".format(n, set.type, seconds, n / seconds))
+                n
+            }.also { loader.afterEdges(it) }
         }
         loader.finish()
         return Report(nodes, edges, schemaSeconds, nodeSeconds, edgeSeconds)
@@ -110,6 +114,8 @@ object Load {
         fun nodes(label: String, rows: Sequence<Map<String, Any>>): Long
         fun beforeEdges() {}
         fun edges(set: EdgeSet): Long
+        /** After the last of the [edges], [total] of them, and inside the time they are counted in. */
+        fun afterEdges(total: Long) {}
         fun finish() {}
     }
 
@@ -245,7 +251,21 @@ object Load {
         private val dataSource = (engine.provider as NativeDriverSource<DataSource>).nativeDriver
         private val json = ObjectMapper()
 
-        private fun run(vararg statements: String) = dataSource.connection.use { c ->
+        /**
+         * GBENCH_PG_ONE_TX=1 loads the relationships in one transaction, from the drop of what is deferred to its making
+         * again: what all of them go through while it is open, and every other statement otherwise on a connection of its own.
+         */
+        private val oneTx = !System.getenv("GBENCH_PG_ONE_TX").isNullOrBlank()
+        private var tx: java.sql.Connection? = null
+        private var walStart = ""
+
+        private fun <T> conn(work: (java.sql.Connection) -> T): T = tx?.let(work) ?: dataSource.connection.use(work)
+
+        private fun wal(): String = dataSource.connection.use { c ->
+            c.createStatement().use { s -> s.executeQuery("SELECT pg_current_wal_lsn()::text").use { it.next(); it.getString(1) } }
+        }
+
+        private fun run(vararg statements: String) = conn { c ->
             c.createStatement().use { s -> statements.forEach { s.execute(it) } }
         }
 
@@ -253,7 +273,7 @@ object Load {
         private fun csv(text: String) = "\"" + text.replace("\"", "\"\"") + "\""
 
         /** Copies [lines] of CSV into [table]'s [columns]: each a line of fields, with its own line end. */
-        private fun copy(table: String, columns: String, lines: Sequence<String>): Long = dataSource.connection.use { c ->
+        private fun copy(table: String, columns: String, lines: Sequence<String>): Long = conn { c ->
             val copy = c.unwrap(PGConnection::class.java).copyAPI.copyIn("COPY $table ($columns) FROM STDIN WITH (FORMAT csv)")
             try {
                 lines.forEach { line -> line.toByteArray().let { copy.writeToCopy(it, 0, it.size) } }
@@ -268,7 +288,36 @@ object Load {
             return copy("${GRAPH}_node", "labels, props", rows.map { "$labels,${csv(json.writeValueAsString(it))}\n" })
         }
 
+        /**
+         * drivine4j#684's probe: GBENCH_PG_DEFER, as `fk`, `idx` or `fk,idx`, drops the edge table's foreign keys or its
+         * two secondary indexes before the relationships are loaded, and makes them again after, inside their time.
+         * GBENCH_PG_EXPLAIN=1 runs each type's move as EXPLAIN (ANALYZE, BUFFERS), and prints its plan.
+         */
+        private val defer = System.getenv("GBENCH_PG_DEFER").orEmpty().split(',').map { it.trim() }.filter { it.isNotEmpty() }.toSet()
+        private val explain = !System.getenv("GBENCH_PG_EXPLAIN").isNullOrBlank()
+
+        private fun timedRun(what: String, vararg statements: String) = timedRun(what) { run(*statements) }
+
+        private fun timedRun(what: String, work: () -> Unit) = println("  %s in %.1f s".format(what, timed(work).second))
+
         override fun beforeEdges() {
+            require(defer.all { it == "fk" || it == "idx" }) { "GBENCH_PG_DEFER is $defer: fk, idx or both" }
+            walStart = wal()
+            if (oneTx) tx = dataSource.connection.apply { autoCommit = false }
+            if ("fk" in defer) run(
+                "ALTER TABLE ${GRAPH}_edge DROP CONSTRAINT IF EXISTS ${GRAPH}_edge_src_fkey",
+                "ALTER TABLE ${GRAPH}_edge DROP CONSTRAINT IF EXISTS ${GRAPH}_edge_dst_fkey",
+            )
+            if ("idx" in defer) run("DROP INDEX IF EXISTS ${GRAPH}_edge_src", "DROP INDEX IF EXISTS ${GRAPH}_edge_dst")
+            // What is left on the edge table, so a drop that missed its name is seen.
+            conn { c ->
+                c.createStatement().use { st ->
+                    st.executeQuery(
+                        "SELECT (SELECT count(*) FROM pg_constraint WHERE conrelid = '${GRAPH}_edge'::regclass AND contype = 'f'), " +
+                            "(SELECT count(*) FROM pg_index WHERE indrelid = '${GRAPH}_edge'::regclass)",
+                    ).use { it.next(); println("  deferred $defer: edge table keeps ${it.getLong(1)} foreign keys, ${it.getLong(2)} indexes") }
+                }
+            }
             run(
                 "DROP TABLE IF EXISTS ${GRAPH}_load_map, ${GRAPH}_load_stage",
                 "CREATE UNLOGGED TABLE ${GRAPH}_load_map AS SELECT props ->> 'id' AS id, nid FROM ${GRAPH}_node",
@@ -280,21 +329,49 @@ object Load {
 
         override fun edges(set: EdgeSet): Long {
             val count = copy("${GRAPH}_load_stage", "s, d", set.pairs.asSequence().map { (s, d) -> "${csv(s)},${csv(d)}\n" })
-            dataSource.connection.use { c ->
+            conn { c ->
+                if (explain) c.createStatement().use { it.execute("SET track_io_timing = on") }
                 c.prepareStatement(
-                    """
+                    (if (explain) "EXPLAIN (ANALYZE, BUFFERS) " else "") + """
                     INSERT INTO ${GRAPH}_edge (src, dst, type)
                     SELECT s.nid, d.nid, ? FROM ${GRAPH}_load_stage st
                     JOIN ${GRAPH}_load_map s ON s.id = st.s JOIN ${GRAPH}_load_map d ON d.id = st.d
                     """.trimIndent(),
                 ).use { move ->
                     move.setString(1, set.type)
-                    val moved = move.executeUpdate()
-                    check(moved.toLong() == count) { "${set.type}: $count pairs gave $moved relationships" }
+                    if (explain) {
+                        move.executeQuery().use { plan -> while (plan.next()) println("    | " + plan.getString(1)) }
+                    } else {
+                        val moved = move.executeUpdate()
+                        check(moved.toLong() == count) { "${set.type}: $count pairs gave $moved relationships" }
+                    }
                 }
             }
             run("TRUNCATE ${GRAPH}_load_stage")
             return count
+        }
+
+        override fun afterEdges(total: Long) {
+            if (explain) conn { c ->
+                c.createStatement().use { s ->
+                    s.executeQuery("SELECT count(*) FROM ${GRAPH}_edge").use { it.next(); check(it.getLong(1) == total) { "${it.getLong(1)} edges, not $total" } }
+                }
+            }
+            if ("idx" in defer) {
+                timedRun("made ${GRAPH}_edge_src", "SET maintenance_work_mem = '1GB'", "CREATE INDEX ${GRAPH}_edge_src ON ${GRAPH}_edge (src, type)")
+                timedRun("made ${GRAPH}_edge_dst", "SET maintenance_work_mem = '1GB'", "CREATE INDEX ${GRAPH}_edge_dst ON ${GRAPH}_edge (dst, type)")
+            }
+            if ("fk" in defer) {
+                timedRun("made ${GRAPH}_edge_src_fkey", "ALTER TABLE ${GRAPH}_edge ADD CONSTRAINT ${GRAPH}_edge_src_fkey FOREIGN KEY (src) REFERENCES ${GRAPH}_node (nid) ON DELETE CASCADE")
+                timedRun("made ${GRAPH}_edge_dst_fkey", "ALTER TABLE ${GRAPH}_edge ADD CONSTRAINT ${GRAPH}_edge_dst_fkey FOREIGN KEY (dst) REFERENCES ${GRAPH}_node (nid) ON DELETE CASCADE")
+            }
+            tx?.let { c -> timedRun("committed") { c.commit() }; c.close() }
+            tx = null
+            val walEnd = wal()
+            val bytes = dataSource.connection.use { c ->
+                c.createStatement().use { s -> s.executeQuery("SELECT pg_wal_lsn_diff('$walEnd', '$walStart')::bigint").use { it.next(); it.getLong(1) } }
+            }
+            println("  relationships wrote %,d MB of WAL%s".format(bytes / 1_000_000, if (oneTx) ", in one transaction" else ""))
         }
 
         /**
@@ -304,6 +381,66 @@ object Load {
          */
         override fun finish() {
             run("DROP TABLE ${GRAPH}_load_map, ${GRAPH}_load_stage", "VACUUM ANALYZE ${GRAPH}_node", "VACUUM ANALYZE ${GRAPH}_edge")
+            System.getenv("GBENCH_PG_GUARDS")?.toIntOrNull()?.let { guards(it) }
+        }
+
+        /**
+         * drivine4j#684's second probe, run by GBENCH_PG_GUARDS=<edges>: what an ordinary edge write pays for its endpoints,
+         * by how the store is kept from an edge to a node that is gone, on the graph as loaded. Each way writes [edges] edges between random nodes, a
+         * thousand to a statement as a saveAll writes them, each statement rolled back so the edge table stays as it was:
+         * - `fk read`: today's: the endpoints read, as a compiled MATCH reads them, and the foreign keys checking them again;
+         * - `read`: the foreign keys gone and no guard: what option 3 would save at most;
+         * - `key share`: no foreign keys, the endpoints read `FOR KEY SHARE`, as the foreign key's check locks them;
+         * - `advisory`: no foreign keys, a shared advisory lock on each endpoint's id, which writes no page (the `try` form,
+         *   which never waits: here nothing holds one, so it is always given).
+         * `fk read` runs first and again last, so the cache warming as the probe goes is seen.
+         */
+        private fun guards(edges: Int) {
+            val batch = 1_000
+            val (low, high) = conn { c ->
+                c.createStatement().use { s -> s.executeQuery("SELECT min(nid), max(nid) FROM ${GRAPH}_node").use { it.next(); it.getLong(1) to it.getLong(2) } }
+            }
+            val pairs = "SELECT ($low + floor(random() * ${high - low + 1}))::bigint AS a, ($low + floor(random() * ${high - low + 1}))::bigint AS b FROM generate_series(1, $batch)"
+            val joined = "FROM ($pairs) p JOIN ${GRAPH}_node s ON s.nid = p.a JOIN ${GRAPH}_node d ON d.nid = p.b"
+            val insert = "INSERT INTO ${GRAPH}_edge (src, dst, type)"
+            val ways = mapOf(
+                "fk read" to "$insert SELECT s.nid, d.nid, 'PROBE' $joined",
+                "read" to "$insert SELECT s.nid, d.nid, 'PROBE' $joined",
+                "key share" to "$insert SELECT s.nid, d.nid, 'PROBE' $joined FOR KEY SHARE OF s, d",
+                "advisory" to "$insert SELECT s.nid, d.nid, 'PROBE' $joined WHERE pg_try_advisory_xact_lock_shared(s.nid) AND pg_try_advisory_xact_lock_shared(d.nid)",
+            )
+            fun measure(way: String) = dataSource.connection.use { c ->
+                c.autoCommit = false
+                var written = 0L
+                val start = System.nanoTime()
+                try {
+                    c.createStatement().use { s ->
+                        repeat(edges / batch) {
+                            written += s.executeUpdate(ways.getValue(way))
+                            c.rollback()
+                        }
+                    }
+                    val seconds = (System.nanoTime() - start) / 1e9
+                    println("  guard %-9s %,d edges in %.1f s, %,.0f a second".format(way, written, seconds, written / seconds))
+                } catch (e: java.sql.SQLException) {
+                    // One way failing leaves the others to be measured.
+                    c.rollback()
+                    println("  guard $way failed after $written edges: ${e.message}")
+                }
+            }
+            measure("fk read")
+            timedRun(
+                "dropped the foreign keys",
+                "ALTER TABLE ${GRAPH}_edge DROP CONSTRAINT ${GRAPH}_edge_src_fkey",
+                "ALTER TABLE ${GRAPH}_edge DROP CONSTRAINT ${GRAPH}_edge_dst_fkey",
+            )
+            listOf("read", "key share", "advisory").forEach(::measure)
+            timedRun(
+                "made the foreign keys again",
+                "ALTER TABLE ${GRAPH}_edge ADD CONSTRAINT ${GRAPH}_edge_src_fkey FOREIGN KEY (src) REFERENCES ${GRAPH}_node (nid) ON DELETE CASCADE",
+                "ALTER TABLE ${GRAPH}_edge ADD CONSTRAINT ${GRAPH}_edge_dst_fkey FOREIGN KEY (dst) REFERENCES ${GRAPH}_node (nid) ON DELETE CASCADE",
+            )
+            measure("fk read")
         }
     }
 }

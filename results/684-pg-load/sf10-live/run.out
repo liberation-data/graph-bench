@@ -1,0 +1,433 @@
+postgres: loading 11,210,500 nodes
+  loaded 10,000 Org
+  loaded 1,000,000 Person
+  loaded 200,000 Repo
+  loaded 500 Topic
+  loaded 2,500,000 Issue
+  loaded 7,500,000 Comment
+  deferred []: edge table keeps 2 foreign keys, 3 indexes
+    | Insert on bench_edge  (cost=750409.17..901057.63 rows=0 width=0) (actual time=12897.947..12897.950 rows=0 loops=1)
+    |   Buffers: shared hit=11510944 read=136838 dirtied=28092 written=23067, temp read=104429 written=104429
+    |   I/O Timings: shared read=98.812 write=86.125, temp read=188.892 write=315.865
+    |   ->  Hash Join  (cost=750409.17..901057.63 rows=622336 width=330) (actual time=5017.435..8464.584 rows=1300193 loops=1)
+    |         Hash Cond: (st.d = d.id)
+    |         Buffers: shared hit=1307142 read=136835 dirtied=5026, temp read=104429 written=104429
+    |         I/O Timings: shared read=97.925, temp read=188.892 write=315.865
+    |         ->  Hash Join  (cost=375204.59..458222.58 rows=622336 width=40) (actual time=2543.832..4259.899 rows=1300193 loops=1)
+    |               Hash Cond: (st.s = s.id)
+    |               Buffers: shared hit=4512 read=70912 dirtied=5024, temp read=52037 written=52037
+    |               I/O Timings: shared read=58.454, temp read=96.857 write=193.631
+    |               ->  Seq Scan on bench_load_stage st  (cost=0.00..13295.36 rows=622336 width=64) (actual time=0.027..100.242 rows=1300193 loops=1)
+    |                     Buffers: shared hit=2048 read=5024 dirtied=5024
+    |                     I/O Timings: shared read=18.405
+    |               ->  Hash  (cost=180412.26..180412.26 rows=11206026 width=16) (actual time=2538.918..2538.918 rows=11210500 loops=1)
+    |                     Buckets: 2097152  Batches: 16  Memory Usage: 49697kB
+    |                     Buffers: shared hit=2464 read=65888, temp written=47040
+    |                     I/O Timings: shared read=40.049, temp write=177.995
+    |                     ->  Seq Scan on bench_load_map s  (cost=0.00..180412.26 rows=11206026 width=16) (actual time=0.042..759.727 rows=11210500 loops=1)
+    |                           Buffers: shared hit=2464 read=65888
+    |                           I/O Timings: shared read=40.049
+    |         ->  Hash  (cost=180412.26..180412.26 rows=11206026 width=16) (actual time=2470.530..2470.531 rows=11210500 loops=1)
+    |               Buckets: 2097152  Batches: 16  Memory Usage: 49697kB
+    |               Buffers: shared hit=2432 read=65920, temp written=47040
+    |               I/O Timings: shared read=38.027, temp write=104.357
+    |               ->  Seq Scan on bench_load_map d  (cost=0.00..180412.26 rows=11206026 width=16) (actual time=96.781..825.680 rows=11210500 loops=1)
+    |                     Buffers: shared hit=2432 read=65920
+    |                     I/O Timings: shared read=38.027
+    | Planning:
+    |   Buffers: shared hit=48 read=4
+    |   I/O Timings: shared read=0.499
+    | Planning Time: 0.788 ms
+    | Trigger for constraint bench_edge_src_fkey: time=5594.851 calls=1300193
+    | Trigger for constraint bench_edge_dst_fkey: time=3887.584 calls=1300193
+    | JIT:
+    |   Functions: 19
+    |   Options: Inlining true, Optimization true, Expressions true, Deforming true
+    |   Timing: Generation 0.343 ms (Deform 0.145 ms), Inlining 45.717 ms, Optimization 27.882 ms, Emission 23.329 ms, Total 97.270 ms
+    | Execution Time: 22496.175 ms
+  loaded 1,300,193 MEMBER_OF in 23.0 s, 56,439 a second
+    | Insert on bench_edge  (cost=750409.17..1349365.19 rows=0 width=0) (actual time=97344.522..97344.550 rows=0 loops=1)
+    |   Buffers: shared hit=140415112 read=213950 dirtied=773398 written=300398, temp read=221087 written=221087
+    |   I/O Timings: shared read=198.036 write=3013.832, temp read=438.584 write=5078.903
+    |   ->  Hash Join  (cost=750409.17..1349365.19 rows=7392000 width=330) (actual time=7101.110..31340.258 rows=15534072 loops=1)
+    |         Hash Cond: (st.d = d.id)
+    |         Buffers: shared hit=15541164 read=213632 dirtied=81968 written=81920, temp read=221087 written=221087
+    |         I/O Timings: shared read=186.992 write=1497.307, temp read=438.584 write=5078.903
+    |         ->  Hash Join  (cost=375204.59..766059.60 rows=7392000 width=40) (actual time=4580.769..14254.728 rows=15534072 loops=1)
+    |               Hash Cond: (st.s = s.id)
+    |               Buffers: shared hit=4576 read=147776 dirtied=81952 written=81920, temp read=110024 written=110024
+    |               I/O Timings: shared read=126.726 write=1497.307, temp read=223.242 write=2997.715
+    |               ->  Seq Scan on bench_load_stage st  (cost=0.00..157920.00 rows=7392000 width=64) (actual time=0.023..2463.063 rows=15534072 loops=1)
+    |                     Buffers: shared hit=2048 read=81952 dirtied=81952 written=81920
+    |                     I/O Timings: shared read=96.253 write=1497.307
+    |               ->  Hash  (cost=180412.26..180412.26 rows=11206026 width=16) (actual time=4576.307..4576.308 rows=11210500 loops=1)
+    |                     Buckets: 2097152  Batches: 16  Memory Usage: 49697kB
+    |                     Buffers: shared hit=2528 read=65824, temp written=47040
+    |                     I/O Timings: shared read=30.473, temp write=2168.787
+    |                     ->  Seq Scan on bench_load_map s  (cost=0.00..180412.26 rows=11206026 width=16) (actual time=0.076..762.343 rows=11210500 loops=1)
+    |                           Buffers: shared hit=2528 read=65824
+    |                           I/O Timings: shared read=30.473
+    |         ->  Hash  (cost=180412.26..180412.26 rows=11206026 width=16) (actual time=2519.711..2519.711 rows=11210500 loops=1)
+    |               Buckets: 2097152  Batches: 16  Memory Usage: 49697kB
+    |               Buffers: shared hit=2496 read=65856, temp written=47040
+    |               I/O Timings: shared read=60.266, temp write=164.421
+    |               ->  Seq Scan on bench_load_map d  (cost=0.00..180412.26 rows=11206026 width=16) (actual time=57.807..810.828 rows=11210500 loops=1)
+    |                     Buffers: shared hit=2496 read=65856
+    |                     I/O Timings: shared read=60.266
+    | Planning:
+    |   Buffers: shared hit=2
+    | Planning Time: 0.127 ms
+    | Trigger for constraint bench_edge_src_fkey: time=48759.077 calls=15534072
+    | Trigger for constraint bench_edge_dst_fkey: time=61863.227 calls=15534072
+    | JIT:
+    |   Functions: 19
+    |   Options: Inlining true, Optimization true, Expressions true, Deforming true
+    |   Timing: Generation 0.509 ms (Deform 0.234 ms), Inlining 7.004 ms, Optimization 27.880 ms, Emission 23.016 ms, Total 58.408 ms
+    | Execution Time: 209331.525 ms
+  loaded 15,534,072 FOLLOWS in 214.5 s, 72,413 a second
+    | Insert on bench_edge  (cost=381336.05..663979.78 rows=0 width=0) (actual time=6071.780..6071.782 rows=0 loops=1)
+    |   Buffers: shared hit=1782398 read=138139 dirtied=5226 written=3760, temp read=47882 written=47882
+    |   I/O Timings: shared read=226.851 write=12.380, temp read=73.745 write=136.153
+    |   ->  Hash Join  (cost=381336.05..663979.78 rows=217280 width=330) (actual time=2879.446..5459.598 rows=200000 loops=1)
+    |         Hash Cond: (st.d = d.id)
+    |         Buffers: shared hit=201152 read=136672 dirtied=1, temp read=47882 written=47882
+    |         I/O Timings: shared read=174.775, temp read=73.745 write=136.153
+    |         ->  Hash Join  (cost=6008.80..230677.97 rows=217280 width=15) (actual time=375.535..1941.899 rows=200000 loops=1)
+    |               Hash Cond: (s.id = st.s)
+    |               Buffers: shared hit=1120 read=68352
+    |               I/O Timings: shared read=71.158
+    |               ->  Seq Scan on bench_load_map s  (cost=0.00..180457.00 rows=11210500 width=16) (actual time=0.408..592.882 rows=11210500 loops=1)
+    |                     Buffers: shared read=68352
+    |                     I/O Timings: shared read=71.158
+    |               ->  Hash  (cost=3292.80..3292.80 rows=217280 width=14) (actual time=89.781..89.782 rows=200000 loops=1)
+    |                     Buckets: 262144  Batches: 1  Memory Usage: 10836kB
+    |                     Buffers: shared hit=1120
+    |                     ->  Seq Scan on bench_load_stage st  (cost=0.00..3292.80 rows=217280 width=14) (actual time=0.006..12.058 rows=200000 loops=1)
+    |                           Buffers: shared hit=1120
+    |         ->  Hash  (cost=180457.00..180457.00 rows=11210500 width=16) (actual time=2502.174..2502.175 rows=11210500 loops=1)
+    |               Buckets: 2097152  Batches: 16  Memory Usage: 49697kB
+    |               Buffers: shared hit=33 read=68319, temp written=47040
+    |               I/O Timings: shared read=103.470, temp write=132.718
+    |               ->  Seq Scan on bench_load_map d  (cost=0.00..180457.00 rows=11210500 width=16) (actual time=0.022..822.106 rows=11210500 loops=1)
+    |                     Buffers: shared hit=33 read=68319
+    |                     I/O Timings: shared read=103.470
+    | Planning:
+    |   Buffers: shared hit=13 read=13 dirtied=1
+    |   I/O Timings: shared read=2.659
+    | Planning Time: 3.010 ms
+    | Trigger for constraint bench_edge_src_fkey: time=702.392 calls=200000
+    | Trigger for constraint bench_edge_dst_fkey: time=616.417 calls=200000
+    | JIT:
+    |   Functions: 18
+    |   Options: Inlining true, Optimization true, Expressions true, Deforming true
+    |   Timing: Generation 0.583 ms (Deform 0.197 ms), Inlining 9.026 ms, Optimization 27.060 ms, Emission 21.324 ms, Total 57.992 ms
+    | Execution Time: 7408.634 ms
+  loaded 200,000 OWNED_BY in 7.5 s, 26,631 a second
+    | Insert on bench_edge  (cost=0.89..613669.77 rows=0 width=0) (actual time=4770.385..4770.386 rows=0 loops=1)
+    |   Buffers: shared hit=8505000 read=6026 dirtied=17337 written=14882
+    |   I/O Timings: shared read=38.232 write=124.646
+    |   ->  Nested Loop  (cost=0.89..613669.77 rows=848944 width=330) (actual time=54.497..2029.142 rows=798757 loops=1)
+    |         Buffers: shared hit=2066327 read=6010 dirtied=4317 written=523
+    |         I/O Timings: shared read=38.063 write=1.565
+    |         ->  Nested Loop  (cost=0.45..209692.35 rows=848944 width=15) (actual time=54.265..922.244 rows=798757 loops=1)
+    |               Buffers: shared hit=708510 read=5982 dirtied=4317 written=523
+    |               I/O Timings: shared read=33.986 write=1.565
+    |               ->  Seq Scan on bench_load_stage st  (cost=0.00..12865.44 rows=848944 width=14) (actual time=0.019..71.143 rows=798757 loops=1)
+    |                     Buffers: shared read=4376 dirtied=4317 written=409
+    |                     I/O Timings: shared read=12.112 write=1.151
+    |               ->  Memoize  (cost=0.45..0.97 rows=1 width=16) (actual time=0.001..0.001 rows=1 loops=798757)
+    |                     Cache Key: st.s
+    |                     Cache Mode: logical
+    |                     Hits: 621228  Misses: 177529  Evictions: 0  Overflows: 0  Memory Usage: 20612kB
+    |                     Buffers: shared hit=708510 read=1606 written=114
+    |                     I/O Timings: shared read=21.875 write=0.414
+    |                     ->  Index Scan using bench_load_map_pkey on bench_load_map s  (cost=0.43..0.96 rows=1 width=16) (actual time=0.003..0.003 rows=1 loops=177529)
+    |                           Index Cond: (id = st.s)
+    |                           Buffers: shared hit=708510 read=1606 written=114
+    |                           I/O Timings: shared read=21.875 write=0.414
+    |         ->  Memoize  (cost=0.45..0.97 rows=1 width=16) (actual time=0.001..0.001 rows=1 loops=798757)
+    |               Cache Key: st.d
+    |               Cache Mode: logical
+    |               Hits: 658985  Misses: 139772  Evictions: 0  Overflows: 0  Memory Usage: 16172kB
+    |               Buffers: shared hit=559060 read=28
+    |               I/O Timings: shared read=4.077
+    |               ->  Index Scan using bench_load_map_pkey on bench_load_map d  (cost=0.43..0.96 rows=1 width=16) (actual time=0.003..0.003 rows=1 loops=139772)
+    |                     Index Cond: (id = st.d)
+    |                     Buffers: shared hit=559060 read=28
+    |                     I/O Timings: shared read=4.077
+    | Planning:
+    |   Buffers: shared hit=10
+    | Planning Time: 0.166 ms
+    | Trigger for constraint bench_edge_src_fkey: time=2374.809 calls=798757
+    | Trigger for constraint bench_edge_dst_fkey: time=2608.558 calls=798757
+    | JIT:
+    |   Functions: 21
+    |   Options: Inlining true, Optimization true, Expressions true, Deforming true
+    |   Timing: Generation 0.517 ms (Deform 0.175 ms), Inlining 7.013 ms, Optimization 24.799 ms, Emission 21.142 ms, Total 53.471 ms
+    | Execution Time: 9823.785 ms
+  loaded 798,757 DEPENDS_ON in 10.1 s, 79,138 a second
+    | Insert on bench_edge  (cost=0.89..537553.58 rows=0 width=0) (actual time=21568.892..21568.895 rows=0 loops=1)
+    |   Buffers: shared hit=28426835 read=35407 dirtied=54719 written=41071
+    |   I/O Timings: shared read=328.446 write=262.921
+    |   ->  Nested Loop  (cost=0.89..537553.58 rows=2712896 width=330) (actual time=52.912..13107.650 rows=2500000 loops=1)
+    |         Buffers: shared hit=13278233 read=35407 dirtied=11938
+    |         I/O Timings: shared read=328.446
+    |         ->  Nested Loop  (cost=0.45..220697.44 rows=2712896 width=15) (actual time=52.627..9857.474 rows=2500000 loops=1)
+    |               Buffers: shared hit=9978577 read=35407 dirtied=11936
+    |               I/O Timings: shared read=328.446
+    |               ->  Seq Scan on bench_load_stage st  (cost=0.00..41112.96 rows=2712896 width=14) (actual time=0.014..217.005 rows=2500000 loops=1)
+    |                     Buffers: shared hit=2048 read=11936 dirtied=11936
+    |                     I/O Timings: shared read=37.477
+    |               ->  Memoize  (cost=0.45..0.62 rows=1 width=16) (actual time=0.004..0.004 rows=1 loops=2500000)
+    |                     Cache Key: st.s
+    |                     Cache Mode: logical
+    |                     Hits: 0  Misses: 2500000  Evictions: 1949928  Overflows: 0  Memory Usage: 65537kB
+    |                     Buffers: shared hit=9976529 read=23471
+    |                     I/O Timings: shared read=290.969
+    |                     ->  Index Scan using bench_load_map_pkey on bench_load_map s  (cost=0.43..0.61 rows=1 width=16) (actual time=0.003..0.003 rows=1 loops=2500000)
+    |                           Index Cond: (id = st.s)
+    |                           Buffers: shared hit=9976529 read=23471
+    |                           I/O Timings: shared read=290.969
+    |         ->  Memoize  (cost=0.45..0.62 rows=1 width=16) (actual time=0.001..0.001 rows=1 loops=2500000)
+    |               Cache Key: st.d
+    |               Cache Mode: logical
+    |               Hits: 2300086  Misses: 199914  Evictions: 0  Overflows: 0  Memory Usage: 23211kB
+    |               Buffers: shared hit=799656
+    |               ->  Index Scan using bench_load_map_pkey on bench_load_map d  (cost=0.43..0.61 rows=1 width=16) (actual time=0.004..0.004 rows=1 loops=199914)
+    |                     Index Cond: (id = st.d)
+    |                     Buffers: shared hit=799656
+    | Planning:
+    |   Buffers: shared hit=10
+    | Planning Time: 0.123 ms
+    | Trigger for constraint bench_edge_src_fkey: time=8396.018 calls=2500000
+    | Trigger for constraint bench_edge_dst_fkey: time=9368.792 calls=2500000
+    | JIT:
+    |   Functions: 21
+    |   Options: Inlining true, Optimization true, Expressions true, Deforming true
+    |   Timing: Generation 0.369 ms (Deform 0.149 ms), Inlining 6.767 ms, Optimization 23.424 ms, Emission 19.413 ms, Total 49.972 ms
+    | Execution Time: 39557.826 ms
+  loaded 2,500,000 IN_REPO in 40.5 s, 61,776 a second
+    | Insert on bench_edge  (cost=0.89..541469.96 rows=0 width=0) (actual time=30853.654..30853.655 rows=0 loops=1)
+    |   Buffers: shared hit=36736859 read=77505 dirtied=149047 written=61436
+    |   I/O Timings: shared read=1823.367 write=375.947
+    |   ->  Nested Loop  (cost=0.89..541469.96 rows=2824640 width=330) (actual time=51.132..17659.253 rows=2500000 loops=1)
+    |         Buffers: shared hit=16630289 read=45819 dirtied=13235 written=1882
+    |         I/O Timings: shared read=322.414 write=5.595
+    |         ->  Nested Loop  (cost=0.45..224034.19 rows=2824640 width=15) (actual time=50.738..9860.683 rows=2500000 loops=1)
+    |               Buffers: shared hit=9976893 read=37667 dirtied=13232 written=1882
+    |               I/O Timings: shared read=218.286 write=5.595
+    |               ->  Seq Scan on bench_load_stage st  (cost=0.00..42806.40 rows=2824640 width=14) (actual time=0.016..242.576 rows=2500000 loops=1)
+    |                     Buffers: shared hit=298 read=14262 dirtied=13232 written=916
+    |                     I/O Timings: shared read=43.571 write=2.140
+    |               ->  Memoize  (cost=0.45..0.62 rows=1 width=16) (actual time=0.004..0.004 rows=1 loops=2500000)
+    |                     Cache Key: st.s
+    |                     Cache Mode: logical
+    |                     Hits: 0  Misses: 2500000  Evictions: 1949928  Overflows: 0  Memory Usage: 65537kB
+    |                     Buffers: shared hit=9976595 read=23405 written=966
+    |                     I/O Timings: shared read=174.716 write=3.455
+    |                     ->  Index Scan using bench_load_map_pkey on bench_load_map s  (cost=0.43..0.61 rows=1 width=16) (actual time=0.003..0.003 rows=1 loops=2500000)
+    |                           Index Cond: (id = st.s)
+    |                           Buffers: shared hit=9976595 read=23405 written=966
+    |                           I/O Timings: shared read=174.716 write=3.455
+    |         ->  Memoize  (cost=0.45..0.62 rows=1 width=16) (actual time=0.003..0.003 rows=1 loops=2500000)
+    |               Cache Key: st.d
+    |               Cache Mode: logical
+    |               Hits: 1459613  Misses: 1040387  Evictions: 479465  Overflows: 0  Memory Usage: 65537kB
+    |               Buffers: shared hit=4153397 read=8151
+    |               I/O Timings: shared read=104.118
+    |               ->  Index Scan using bench_load_map_pkey on bench_load_map d  (cost=0.43..0.61 rows=1 width=16) (actual time=0.005..0.005 rows=1 loops=1040387)
+    |                     Index Cond: (id = st.d)
+    |                     Buffers: shared hit=4153397 read=8151
+    |                     I/O Timings: shared read=104.118
+    | Planning:
+    |   Buffers: shared hit=6 read=4
+    |   I/O Timings: shared read=0.183
+    | Planning Time: 0.322 ms
+    | Trigger for constraint bench_edge_src_fkey: time=8249.562 calls=2500000
+    | Trigger for constraint bench_edge_dst_fkey: time=13183.786 calls=2500000
+    | JIT:
+    |   Functions: 21
+    |   Options: Inlining true, Optimization true, Expressions true, Deforming true
+    |   Timing: Generation 0.420 ms (Deform 0.180 ms), Inlining 6.700 ms, Optimization 23.607 ms, Emission 20.204 ms, Total 50.931 ms
+    | Execution Time: 52511.532 ms
+  loaded 2,500,000 OPENED_BY in 53.4 s, 46,793 a second
+    | Insert on bench_edge  (cost=73315.12..714202.60 rows=0 width=0) (actual time=23920.173..23920.175 rows=0 loops=1)
+    |   Buffers: shared hit=22353987 read=148805 dirtied=325163 written=54301, temp read=44306 written=44306
+    |   I/O Timings: shared read=772.366 write=469.288, temp read=60.764 write=163.431
+    |   ->  Nested Loop  (cost=73315.12..714202.60 rows=2243808 width=330) (actual time=874.761..11987.421 rows=2000463 loops=1)
+    |         Buffers: shared hit=6309309 read=86326 dirtied=9929 written=1720, temp read=44306 written=44306
+    |         I/O Timings: shared read=311.648 write=4.382, temp read=60.764 write=163.431
+    |         ->  Hash Join  (cost=73314.68..452697.26 rows=2243808 width=15) (actual time=873.112..4716.123 rows=2000463 loops=1)
+    |               Hash Cond: (s.id = st.s)
+    |               Buffers: shared hit=2049 read=78175 dirtied=9924, temp read=44306 written=44306
+    |               I/O Timings: shared read=90.356, temp read=60.764 write=163.431
+    |               ->  Seq Scan on bench_load_map s  (cost=0.00..180457.00 rows=11210500 width=16) (actual time=47.299..843.519 rows=11210500 loops=1)
+    |                     Buffers: shared hit=1 read=68351
+    |                     I/O Timings: shared read=66.955
+    |               ->  Hash  (cost=34310.08..34310.08 rows=2243808 width=15) (actual time=408.656..408.657 rows=2000463 loops=1)
+    |                     Buckets: 2097152  Batches: 4  Memory Usage: 40085kB
+    |                     Buffers: shared hit=2048 read=9824 dirtied=9924, temp written=6668
+    |                     I/O Timings: shared read=23.402, temp write=17.056
+    |                     ->  Seq Scan on bench_load_stage st  (cost=0.00..34310.08 rows=2243808 width=15) (actual time=0.042..147.332 rows=2000463 loops=1)
+    |                           Buffers: shared hit=2048 read=9824 dirtied=9924
+    |                           I/O Timings: shared read=23.402
+    |         ->  Memoize  (cost=0.45..0.65 rows=1 width=16) (actual time=0.003..0.003 rows=1 loops=2000463)
+    |               Cache Key: st.d
+    |               Cache Mode: logical
+    |               Hits: 921726  Misses: 1078737  Evictions: 518462  Overflows: 0  Memory Usage: 65537kB
+    |               Buffers: shared hit=4306798 read=8150 written=1720
+    |               I/O Timings: shared read=221.236 write=4.382
+    |               ->  Index Scan using bench_load_map_pkey on bench_load_map d  (cost=0.43..0.64 rows=1 width=16) (actual time=0.005..0.005 rows=1 loops=1078737)
+    |                     Index Cond: (id = st.d)
+    |                     Buffers: shared hit=4306798 read=8150 written=1720
+    |                     I/O Timings: shared read=221.236 write=4.382
+    | Planning:
+    |   Buffers: shared hit=8 read=8 dirtied=3
+    |   I/O Timings: shared read=0.913
+    | Planning Time: 1.083 ms
+    | Trigger for constraint bench_edge_src_fkey: time=9673.417 calls=2000463
+    | Trigger for constraint bench_edge_dst_fkey: time=11486.268 calls=2000463
+    | JIT:
+    |   Functions: 19
+    |   Options: Inlining true, Optimization true, Expressions true, Deforming true
+    |   Timing: Generation 0.410 ms (Deform 0.165 ms), Inlining 6.965 ms, Optimization 21.927 ms, Emission 18.100 ms, Total 47.403 ms
+    | Execution Time: 45267.070 ms
+  loaded 2,000,463 ASSIGNED_TO in 46.0 s, 43,536 a second
+    | Insert on bench_edge  (cost=750654.50..1077186.24 rows=0 width=0) (actual time=34545.984..34545.987 rows=0 loops=1)
+    |   Buffers: shared hit=45040681 read=206532 dirtied=407946 written=89044, temp read=133354 written=133354
+    |   I/O Timings: shared read=426.450 write=489.796, temp read=253.689 write=424.275
+    |   ->  Hash Join  (cost=750654.50..1077186.24 rows=5098464 width=330) (actual time=5076.330..12682.074 rows=4985074 loops=1)
+    |         Hash Cond: (st.d = d.id)
+    |         Buffers: shared hit=4985671 read=163083 dirtied=5074 written=6353, temp read=133354 written=133354
+    |         I/O Timings: shared read=144.590 write=32.588, temp read=253.689 write=424.275
+    |         ->  Hash Join  (cost=375327.25..571200.36 rows=5098464 width=15) (actual time=2533.771..6273.493 rows=4985074 loops=1)
+    |               Hash Cond: (st.s = s.id)
+    |               Buffers: shared hit=541 read=94787 dirtied=5067 written=6353, temp read=65871 written=65871
+    |               I/O Timings: shared read=86.569 write=32.588, temp read=134.640 write=221.009
+    |               ->  Seq Scan on bench_load_stage st  (cost=0.00..77960.64 rows=5098464 width=15) (actual time=0.031..390.203 rows=4985074 loops=1)
+    |                     Buffers: shared hit=451 read=26525 dirtied=5067 written=6353
+    |                     I/O Timings: shared read=57.136 write=32.588
+    |               ->  Hash  (cost=180457.00..180457.00 rows=11210500 width=16) (actual time=2530.307..2530.308 rows=11210500 loops=1)
+    |                     Buckets: 2097152  Batches: 16  Memory Usage: 49697kB
+    |                     Buffers: shared hit=90 read=68262, temp written=47040
+    |                     I/O Timings: shared read=29.433, temp write=148.887
+    |                     ->  Seq Scan on bench_load_map s  (cost=0.00..180457.00 rows=11210500 width=16) (actual time=0.060..779.823 rows=11210500 loops=1)
+    |                           Buffers: shared hit=90 read=68262
+    |                           I/O Timings: shared read=29.433
+    |         ->  Hash  (cost=180457.00..180457.00 rows=11210500 width=16) (actual time=2540.961..2540.962 rows=11210500 loops=1)
+    |               Buckets: 2097152  Batches: 16  Memory Usage: 49697kB
+    |               Buffers: shared hit=57 read=68295, temp written=47040
+    |               I/O Timings: shared read=57.666, temp write=131.584
+    |               ->  Seq Scan on bench_load_map d  (cost=0.00..180457.00 rows=11210500 width=16) (actual time=54.671..847.724 rows=11210500 loops=1)
+    |                     Buffers: shared hit=57 read=68295
+    |                     I/O Timings: shared read=57.666
+    | Planning:
+    |   Buffers: shared hit=2 read=4
+    |   I/O Timings: shared read=0.209
+    | Planning Time: 0.406 ms
+    | Trigger for constraint bench_edge_src_fkey: time=45236.509 calls=4985074
+    | Trigger for constraint bench_edge_dst_fkey: time=22365.259 calls=4985074
+    | JIT:
+    |   Functions: 19
+    |   Options: Inlining true, Optimization true, Expressions true, Deforming true
+    |   Timing: Generation 0.388 ms (Deform 0.174 ms), Inlining 6.576 ms, Optimization 26.769 ms, Emission 21.332 ms, Total 55.064 ms
+    | Execution Time: 104416.429 ms
+  loaded 4,985,074 TAGGED in 106.0 s, 47,040 a second
+    | Insert on bench_edge  (cost=375327.70..950750.59 rows=0 width=0) (actual time=176859.849..176860.315 rows=0 loops=1)
+    |   Buffers: shared hit=89280054 read=146187 dirtied=381599 written=184199, temp read=78956 written=78956
+    |   I/O Timings: shared read=18218.200 write=6453.742, temp read=661.645 write=3449.849
+    |   ->  Nested Loop  (cost=375327.70..950750.59 rows=9498240 width=330) (actual time=7334.519..109953.625 rows=7500000 loops=1)
+    |         Buffers: shared hit=29862195 read=145869 dirtied=46566 written=50281, temp read=78956 written=78956
+    |         I/O Timings: shared read=18197.803 write=1503.101, temp read=661.645 write=3449.849
+    |         ->  Hash Join  (cost=375327.25..689299.54 rows=9498240 width=12) (actual time=7311.309..23959.606 rows=7500000 loops=1)
+    |               Hash Cond: (st.s = s.id)
+    |               Buffers: shared read=114912 dirtied=46558 written=46528, temp read=78956 written=78956
+    |               I/O Timings: shared read=1586.279 write=1195.213, temp read=661.645 write=3449.849
+    |               ->  Seq Scan on bench_load_stage st  (cost=0.00..141542.40 rows=9498240 width=12) (actual time=0.065..3569.446 rows=7500000 loops=1)
+    |                     Buffers: shared read=46560 dirtied=46558 written=46528
+    |                     I/O Timings: shared read=754.928 write=1195.213
+    |               ->  Hash  (cost=180457.00..180457.00 rows=11210500 width=16) (actual time=7305.610..7305.610 rows=11210500 loops=1)
+    |                     Buckets: 2097152  Batches: 16  Memory Usage: 49697kB
+    |                     Buffers: shared read=68352, temp written=47040
+    |                     I/O Timings: shared read=831.351, temp write=935.260
+    |                     ->  Seq Scan on bench_load_map s  (cost=0.00..180457.00 rows=11210500 width=16) (actual time=345.839..2738.414 rows=11210500 loops=1)
+    |                           Buffers: shared read=68352
+    |                           I/O Timings: shared read=831.351
+    |         ->  Memoize  (cost=0.45..0.51 rows=1 width=16) (actual time=0.011..0.011 rows=1 loops=7500000)
+    |               Cache Key: st.d
+    |               Cache Mode: logical
+    |               Hits: 1901712  Misses: 5598288  Evictions: 5042541  Overflows: 0  Memory Usage: 65537kB
+    |               Buffers: shared hit=22362196 read=30956 written=3753
+    |               I/O Timings: shared read=16603.135 write=307.889
+    |               ->  Index Scan using bench_load_map_pkey on bench_load_map d  (cost=0.43..0.50 rows=1 width=16) (actual time=0.012..0.012 rows=1 loops=5598288)
+    |                     Index Cond: (id = st.d)
+    |                     Buffers: shared hit=22362196 read=30956 written=3753
+    |                     I/O Timings: shared read=16603.135 write=307.889
+    | Planning:
+    |   Buffers: shared hit=10 read=8 dirtied=3
+    |   I/O Timings: shared read=16.215
+    | Planning Time: 23.519 ms
+    | Trigger for constraint bench_edge_src_fkey: time=133183.483 calls=7500000
+    | Trigger for constraint bench_edge_dst_fkey: time=384833.319 calls=7500000
+    | JIT:
+    |   Functions: 21
+    |   Options: Inlining true, Optimization true, Expressions true, Deforming true
+    |   Timing: Generation 4.849 ms (Deform 0.569 ms), Inlining 35.224 ms, Optimization 169.208 ms, Emission 138.384 ms, Total 347.665 ms
+    | Execution Time: 699107.485 ms
+  loaded 7,500,000 ON in 704.8 s, 10,642 a second
+    | Insert on bench_edge  (cost=750654.50..1214679.76 rows=0 width=0) (actual time=132230.343..132230.352 rows=0 loops=1)
+    |   Buffers: shared hit=75218928 read=333575 dirtied=3282256 written=196878, temp read=156257 written=156257
+    |   I/O Timings: shared read=43192.718 write=5114.197, temp read=1046.521 write=1240.553
+    |   ->  Hash Join  (cost=750654.50..1214679.76 rows=8305760 width=330) (actual time=6963.367..23125.661 rows=7500000 loops=1)
+    |         Hash Cond: (st.d = d.id)
+    |         Buffers: shared hit=7502082 read=179518 dirtied=42891 written=42816, temp read=156257 written=156257
+    |         I/O Timings: shared read=834.267 write=249.685, temp read=1046.521 write=1240.553
+    |         ->  Hash Join  (cost=375327.25..660934.48 rows=8305760 width=16) (actual time=2869.877..9158.953 rows=7500000 loops=1)
+    |               Hash Cond: (st.s = s.id)
+    |               Buffers: shared hit=2082 read=111166 dirtied=42848 written=42816, temp read=78295 written=78295
+    |               I/O Timings: shared read=240.475 write=249.685, temp read=162.668 write=562.892
+    |               ->  Seq Scan on bench_load_stage st  (cost=0.00..127953.60 rows=8305760 width=16) (actual time=0.074..965.912 rows=7500000 loops=1)
+    |                     Buffers: shared hit=2048 read=42848 dirtied=42848 written=42816
+    |                     I/O Timings: shared read=161.788 write=249.685
+    |               ->  Hash  (cost=180457.00..180457.00 rows=11210500 width=16) (actual time=2844.699..2844.700 rows=11210500 loops=1)
+    |                     Buckets: 2097152  Batches: 16  Memory Usage: 49697kB
+    |                     Buffers: shared hit=34 read=68318, temp written=47040
+    |                     I/O Timings: shared read=78.687, temp write=284.103
+    |                     ->  Seq Scan on bench_load_map s  (cost=0.00..180457.00 rows=11210500 width=16) (actual time=0.138..860.782 rows=11210500 loops=1)
+    |                           Buffers: shared hit=34 read=68318
+    |                           I/O Timings: shared read=78.687
+    |         ->  Hash  (cost=180457.00..180457.00 rows=11210500 width=16) (actual time=3987.472..3987.472 rows=11210500 loops=1)
+    |               Buckets: 2097152  Batches: 16  Memory Usage: 49697kB
+    |               Buffers: shared hit=1 read=68351, temp written=47040
+    |               I/O Timings: shared read=593.159, temp write=381.753
+    |               ->  Seq Scan on bench_load_map d  (cost=0.00..180457.00 rows=11210500 width=16) (actual time=145.554..1571.337 rows=11210500 loops=1)
+    |                     Buffers: shared hit=1 read=68351
+    |                     I/O Timings: shared read=593.159
+    | Planning:
+    |   Buffers: shared hit=6 read=8 dirtied=3
+    |   I/O Timings: shared read=1.376
+    | Planning Time: 4.309 ms
+    | Trigger for constraint bench_edge_src_fkey: time=429660.603 calls=7500000
+    | Trigger for constraint bench_edge_dst_fkey: time=73118.877 calls=7500000
+    | JIT:
+    |   Functions: 19
+    |   Options: Inlining true, Optimization true, Expressions true, Deforming true
+    |   Timing: Generation 3.673 ms (Deform 1.046 ms), Inlining 58.390 ms, Optimization 52.599 ms, Emission 33.978 ms, Total 148.640 ms
+    | Execution Time: 636136.630 ms
+  loaded 7,500,000 WRITTEN_BY in 640.0 s, 11,719 a second
+postgres: 11,210,500 nodes in 95.0 s, 44,818,559 relationships in 1869.6 s
+postgres: container memory 1.464GiB / 4GiB
+## Runs
+
+| engine | ended | machine | image | Drivine | bench |
+|---|---|---|---|---|---|
+| postgres | 2026-11-24T08:55:30Z | Apple M1, 8 cores, 16 GB, Mac OS X 27.2 aarch64 | pgvector/pgvector:pg17 | 0.8.0 | - |
+
+## Load
+
+| | postgres |
+|---|---:|
+| nodes | 11,210,500 |
+| relationships | 44,818,559 |
+| nodes, seconds | 95.0 |
+| relationships, seconds | 1869.6 |

@@ -1,0 +1,41 @@
+postgres: Docker's disk has 35 GB free (GBENCH_MIN_FREE_GB=20)
+postgres: loading 11,210,500 nodes
+  loaded 10,000 Org
+  loaded 1,000,000 Person
+  loaded 200,000 Repo
+  loaded 500 Topic
+  loaded 2,500,000 Issue
+  loaded 7,500,000 Comment
+  deferred [fk, idx]: edge table keeps 0 foreign keys, 1 indexes
+  loaded 1,300,193 MEMBER_OF in 7.2 s, 181,145 a second
+  loaded 15,534,072 FOLLOWS in 34.1 s, 454,997 a second
+  loaded 200,000 OWNED_BY in 1.2 s, 163,403 a second
+  loaded 798,757 DEPENDS_ON in 8.3 s, 95,856 a second
+  loaded 2,500,000 IN_REPO in 11.6 s, 215,570 a second
+  loaded 2,500,000 OPENED_BY in 9.6 s, 259,511 a second
+  loaded 2,000,463 ASSIGNED_TO in 10.6 s, 188,675 a second
+  loaded 4,985,074 TAGGED in 15.8 s, 315,683 a second
+  loaded 7,500,000 ON in 22.0 s, 341,662 a second
+  loaded 7,500,000 WRITTEN_BY in 19.6 s, 382,473 a second
+  made bench_edge_src in 13.7 s
+  made bench_edge_dst in 15.4 s
+  made bench_edge_src_fkey in 16.8 s
+  made bench_edge_dst_fkey in 12.5 s
+  committed in 0.0 s
+  relationships wrote 8,866 MB of WAL, in one transaction
+postgres: 11,210,500 nodes in 96.8 s, 44,818,559 relationships in 218.9 s
+postgres: container memory 1.256GiB / 4GiB
+## Runs
+
+| engine | ended | machine | image | Drivine | bench |
+|---|---|---|---|---|---|
+| postgres | 2026-11-25T05:00:16Z | Apple M1, 8 cores, 16 GB, Mac OS X 27.2 aarch64 | pgvector/pgvector:pg17 | 0.8.0 | - |
+
+## Load
+
+| | postgres |
+|---|---:|
+| nodes | 11,210,500 |
+| relationships | 44,818,559 |
+| nodes, seconds | 96.8 |
+| relationships, seconds | 218.9 |
