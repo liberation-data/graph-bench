@@ -1,0 +1,23 @@
+{
+  "engine" : "postgres",
+  "scale" : 10.0,
+  "load" : {
+    "nodes" : 11210500,
+    "edges" : 44818559,
+    "schemaSeconds" : 0.2631885,
+    "nodeSeconds" : 94.978159666,
+    "edgeSeconds" : 1869.630118208
+  },
+  "outcomes" : [ ],
+  "run" : {
+    "at" : "2026-11-24T08:55:30Z",
+    "machine" : "Apple M1, 8 cores, 16 GB, Mac OS X 27.2 aarch64",
+    "jvm" : "OpenJDK 64-Bit Server VM 25.0.5",
+    "drivine" : "0.8.0",
+    "bench" : null,
+    "image" : "pgvector/pgvector:pg17",
+    "imageId" : "sha256:02913d18924ecf2ccf196cd8275eec6b47711b578c320ab1d18f524a6b946c85",
+    "limits" : "2 CPUs, 4 GB"
+  },
+  "chunks" : null
+}

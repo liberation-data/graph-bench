@@ -44,6 +44,8 @@ results/*
 !results/m1-0.6.1/
 !results/m1-0.4.1/
 !results/m1-scaling/
+# drivine4j#684's probe of the Postgres edge load (GBENCH_PG_*, see Load.kt's PostgresLoader)
+!results/684-pg-load/
 .bench-commit
 
 # Guide's content seed, for the search workloads, where a run is given it beside the harness: fetched, never kept (Seed.kt)
