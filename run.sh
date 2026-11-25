@@ -99,7 +99,7 @@ for engine in $ENGINES; do
     start "$engine"
     build/install/graph-bench/bin/graph-bench run --engine "$engine" --sf "$SF" ${GBENCH_PHASES:+--phases "$GBENCH_PHASES"} 2> "$GBENCH_RESULTS/$engine-sf$SF.log" || echo "$engine: run failed, see $GBENCH_RESULTS/$engine-sf$SF.log"
     docker stats --no-stream --format "$engine: container memory {{.MemUsage}}" "gbench-$engine"
-    # Its own log and how it ended, kept beside the run's, before the container goes.
+    # Before the container goes: its own log, kept beside the run's, and how it ended, printed with the run's output.
     docker logs "gbench-$engine" > "$GBENCH_RESULTS/$engine-sf$SF.container.log" 2>&1 || true
     docker inspect --format "$engine: container {{.State.Status}}, exit {{.State.ExitCode}}, OOM killed {{.State.OOMKilled}}" "gbench-$engine" || true
     # With its volume: a stopped container keeps its data, some 10 GB at scale 10, and the next run then fills the disk.

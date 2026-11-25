@@ -183,36 +183,7 @@ object Load {
             return count
         }
 
-        /**
-         * drivine4j#684's probe: GBENCH_PG_DEFER, as `fk`, `idx` or `fk,idx`, drops the edge table's foreign keys or its
-         * two secondary indexes before the relationships are loaded, and makes them again after, inside their time.
-         * GBENCH_PG_EXPLAIN=1 runs each type's move as EXPLAIN (ANALYZE, BUFFERS), and prints its plan.
-         */
-        private val defer = System.getenv("GBENCH_PG_DEFER").orEmpty().split(',').map { it.trim() }.filter { it.isNotEmpty() }.toSet()
-        private val explain = !System.getenv("GBENCH_PG_EXPLAIN").isNullOrBlank()
-
-        private fun timedRun(what: String, vararg statements: String) {
-            val start = System.nanoTime()
-            run(*statements)
-            println("  %s in %.1f s".format(what, (System.nanoTime() - start) / 1e9))
-        }
-
         override fun beforeEdges() {
-            require(defer.all { it == "fk" || it == "idx" }) { "GBENCH_PG_DEFER is $defer: fk, idx or both" }
-            if ("fk" in defer) run(
-                "ALTER TABLE ${GRAPH}_edge DROP CONSTRAINT IF EXISTS ${GRAPH}_edge_src_fkey",
-                "ALTER TABLE ${GRAPH}_edge DROP CONSTRAINT IF EXISTS ${GRAPH}_edge_dst_fkey",
-            )
-            if ("idx" in defer) run("DROP INDEX IF EXISTS ${GRAPH}_edge_src", "DROP INDEX IF EXISTS ${GRAPH}_edge_dst")
-            // What is left on the edge table, so a drop that missed its name is seen.
-            dataSource.connection.use { c ->
-                c.createStatement().use { st ->
-                    st.executeQuery(
-                        "SELECT (SELECT count(*) FROM pg_constraint WHERE conrelid = '${GRAPH}_edge'::regclass AND contype = 'f'), " +
-                            "(SELECT count(*) FROM pg_index WHERE indrelid = '${GRAPH}_edge'::regclass)",
-                    ).use { it.next(); println("  deferred $defer: edge table keeps ${it.getLong(1)} foreign keys, ${it.getLong(2)} indexes") }
-                }
-            }
             run(
                 "DROP TABLE IF EXISTS ${GRAPH}_load_map PURGE",
                 "DROP TABLE IF EXISTS ${GRAPH}_load_stage PURGE",
@@ -327,11 +298,7 @@ object Load {
 
         private fun timedRun(what: String, vararg statements: String) = timedRun(what) { run(*statements) }
 
-        private fun timedRun(what: String, work: () -> Unit) {
-            val start = System.nanoTime()
-            work()
-            println("  %s in %.1f s".format(what, (System.nanoTime() - start) / 1e9))
-        }
+        private fun timedRun(what: String, work: () -> Unit) = println("  %s in %.1f s".format(what, timed(work).second))
 
         override fun beforeEdges() {
             require(defer.all { it == "fk" || it == "idx" }) { "GBENCH_PG_DEFER is $defer: fk, idx or both" }
@@ -418,8 +385,8 @@ object Load {
         }
 
         /**
-         * drivine4j#684's second probe: what an ordinary edge write pays for its endpoints, by how the store is kept from an
-         * edge to a node that is gone, on the graph as loaded. Each way writes [edges] edges between random nodes, a
+         * drivine4j#684's second probe, run by GBENCH_PG_GUARDS=<edges>: what an ordinary edge write pays for its endpoints,
+         * by how the store is kept from an edge to a node that is gone, on the graph as loaded. Each way writes [edges] edges between random nodes, a
          * thousand to a statement as a saveAll writes them, each statement rolled back so the edge table stays as it was:
          * - `fk read`: today's: the endpoints read, as a compiled MATCH reads them, and the foreign keys checking them again;
          * - `read`: the foreign keys gone and no guard: what option 3 would save at most;

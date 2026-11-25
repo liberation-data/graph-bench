@@ -404,8 +404,13 @@ Loading, in **seconds**, by the paths described [above](#loading-the-graph):
   Neo4j at every size.
 - **Postgres's bulk load grows faster than the graph.** Its relationships took 55 s at 1 times and 4.6 hours at 30,
   where Neo4j's took an hour: 300 times as long for 30 times the rows. The load is the harness's own `COPY` and
-  `INSERT … SELECT`, into Drivine's edge table, with its two foreign keys and three indexes; where the time goes is not
-  measured yet.
+  `INSERT … SELECT`, into Drivine's edge table, with its two foreign keys and three indexes. Measured at 10 times
+  ([`results/684-pg-load`](results/684-pg-load), drivine4j#684, a folder to a run: `sf10-live` with
+  `GBENCH_PG_EXPLAIN=1`, `sf10-fk` with `GBENCH_PG_DEFER=fk`, `sf10-deferred` and `sf10-deferred-2` with `fk,idx`, the
+  second with `GBENCH_PG_GUARDS=300000` too, and `sf10-onetx` with `fk,idx` and `GBENCH_PG_ONE_TX=1`): the foreign keys' checks are most of it, some 1,400 of
+  the 1,870 s, as each locks its node's row and so writes to a node table larger than Postgres's cache; the two indexes
+  over `src` and `dst` are some 220 s. With both dropped before the load and made again after it, the relationships take
+  219 to 285 s, the remaking 60 to 90 of them.
 
 ## Searching: full text and vectors
 
@@ -599,8 +604,9 @@ You need Docker and a JDK (17 or later).
 ```
 
 `run.sh` starts a fresh container for each engine in turn (`gbench-neo4j`, `gbench-falkordb`,
-`gbench-oracle`, `gbench-postgres`, on ports 17687, 16379, 11521 and 15432), loads the graph, runs the workloads, stops the
-container and prints the tables. Results are written to `results/<engine>-sf<scale>.json`, or to the folder named
+`gbench-oracle`, `gbench-postgres`, on ports 17687, 16379, 11521 and 15432), loads the graph, runs the workloads, keeps the
+container's log beside the results and prints how it ended (its exit code, and whether it ran out of memory), removes the container with its volume, and prints the tables. An engine is
+skipped when Docker's disk has less than `GBENCH_MIN_FREE_GB` free (20 by default). Results are written to `results/<engine>-sf<scale>.json`, or to the folder named
 by `GBENCH_RESULTS`, so that runs of two Drivine versions, or on two machines, are kept apart. `DRIVINE_VERSION`
 builds against another release of Drivine than `build.gradle.kts` names. The runs behind this page were these, besides the searches' own run
 (named in their section), with the searches' seed in `seed/guide` (below):
